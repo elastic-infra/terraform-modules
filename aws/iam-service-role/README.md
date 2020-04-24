@@ -49,5 +49,6 @@ module "service_role" {
 | instance\_profile\_name | Name of IAM instance profile |
 | role\_arn | ARN of IAM role |
 | role\_name | Name of IAM role |
+| role\_unique\_id | The stable and unique string identifying the role |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

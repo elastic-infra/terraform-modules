@@ -8,6 +8,11 @@ output "role_name" {
   value       = aws_iam_role.this.name
 }
 
+output "role_unique_id" {
+  description = "The stable and unique string identifying the role"
+  value       = aws_iam_role.this.unique_id
+}
+
 output "instance_profile_arn" {
   description = "ARN of IAM instance profile"
   value       = element(concat(aws_iam_instance_profile.this.*.arn, [""]), 0)
