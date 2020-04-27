@@ -9,7 +9,7 @@
 * module "service_role" {
 *   source = "github.com/elastic-infra/terraform-modules//aws/iam-service-role?ref=v1.0.0"
 *
-*   role_name        = "role-name"
+*   name             = "role-name"
 *   trusted_services = ["ec2.amazonaws.com"]
 *   role_policy_arns = ["arn:aws:iam::aws:policy/PowerUserAccess"]
 *
