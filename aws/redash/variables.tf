@@ -57,6 +57,12 @@ variable "lb_access_log_bucket" {
   description = "The S3 bucket name to store the logs in"
 }
 
+variable "lb_access_log_prefix" {
+  type        = string
+  default     = null
+  description = "The prefix (logical hierarchy) in the access log bucket, the logs are placed the `LB_NAME/` if not configured"
+}
+
 variable "lb_certificate_arn" {
   type        = string
   description = "The ARN of the default SSL server certificate"

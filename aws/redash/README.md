@@ -69,6 +69,7 @@ module "redash" {
 | ecs\_subnet\_ids | The list of subnet IDs to assign to the ECS task or service | `list` | n/a | yes |
 | ecs\_task\_role\_arn | The ARN of the ECS task role | `string` | n/a | yes |
 | lb\_access\_log\_bucket | The S3 bucket name to store the logs in | `string` | `null` | no |
+| lb\_access\_log\_prefix | The prefix (logical hierarchy) in the access log bucket, the logs are placed the `LB_NAME/` if not configured | `string` | `null` | no |
 | lb\_certificate\_arn | The ARN of the default SSL server certificate | `string` | n/a | yes |
 | lb\_security\_groups | The list of security group IDs to assign to the LB | `list` | n/a | yes |
 | lb\_ssl\_policy | The name of the SSL Policy for the listener | `string` | `"ELBSecurityPolicy-2016-08"` | no |
