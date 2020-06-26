@@ -11,7 +11,8 @@ resource "aws_ecs_task_definition" "server" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.server_container_cpu
   memory                   = var.server_container_memory
-  execution_role_arn       = var.ecs_task_role_arn
+  execution_role_arn       = var.ecs_execution_role_arn
+  task_role_arn            = var.ecs_task_role_arn
 }
 
 resource "aws_ecs_service" "server" {
@@ -48,7 +49,8 @@ resource "aws_ecs_task_definition" "worker" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.worker_container_cpu
   memory                   = var.worker_container_memory
-  execution_role_arn       = var.ecs_task_role_arn
+  execution_role_arn       = var.ecs_execution_role_arn
+  task_role_arn            = var.ecs_task_role_arn
 }
 
 resource "aws_ecs_service" "worker" {
@@ -75,7 +77,8 @@ resource "aws_ecs_task_definition" "db_migrate" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.db_container_cpu
   memory                   = var.db_container_memory
-  execution_role_arn       = var.ecs_task_role_arn
+  execution_role_arn       = var.ecs_execution_role_arn
+  task_role_arn            = var.ecs_task_role_arn
 }
 
 ## DB Upgrade
@@ -86,5 +89,6 @@ resource "aws_ecs_task_definition" "db_upgrade" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.db_container_cpu
   memory                   = var.db_container_memory
-  execution_role_arn       = var.ecs_task_role_arn
+  execution_role_arn       = var.ecs_execution_role_arn
+  task_role_arn            = var.ecs_task_role_arn
 }

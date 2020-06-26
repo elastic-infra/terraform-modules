@@ -29,6 +29,7 @@ module "redash" {
     },
   ]
 
+  ecs_execution_role_arn = "arn:aws:iam:abc"
   ecs_security_group_ids = ["sg-aaa", "sg-bbb"]
   ecs_subnet_ids         = ["subnet-aaa", "subnet-bbb"]
   ecs_task_role_arn      = "arn:aws:iam:xyz"
@@ -63,9 +64,10 @@ module "redash" {
 | container\_secrets | The secrets to set to each ECS container | `list` | n/a | yes |
 | db\_container\_cpu | The number of cpu units to reserve for the container which is used to kick the DB tasks | `number` | `512` | no |
 | db\_container\_memory | The amount of memory (in MiB) to allow the container to use the DB tasks | `number` | `1024` | no |
+| ecs\_execution\_role\_arn | The ARN of ECS execution role | `string` | n/a | yes |
 | ecs\_security\_group\_ids | The list of security group IDs to assign to the ECS task or service | `list` | n/a | yes |
 | ecs\_subnet\_ids | The list of subnet IDs to assign to the ECS task or service | `list` | n/a | yes |
-| ecs\_task\_role\_arn | The ARN of the task execution role | `string` | n/a | yes |
+| ecs\_task\_role\_arn | The ARN of the ECS task role | `string` | n/a | yes |
 | lb\_access\_log\_bucket | The S3 bucket name to store the logs in | `string` | `null` | no |
 | lb\_certificate\_arn | The ARN of the default SSL server certificate | `string` | n/a | yes |
 | lb\_security\_groups | The list of security group IDs to assign to the LB | `list` | n/a | yes |

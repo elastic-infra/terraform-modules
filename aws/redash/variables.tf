@@ -31,6 +31,11 @@ variable "db_container_memory" {
   description = "The amount of memory (in MiB) to allow the container to use the DB tasks"
 }
 
+variable "ecs_execution_role_arn" {
+  type        = string
+  description = "The ARN of ECS execution role"
+}
+
 variable "ecs_security_group_ids" {
   type        = list
   description = "The list of security group IDs to assign to the ECS task or service"
@@ -43,7 +48,7 @@ variable "ecs_subnet_ids" {
 
 variable "ecs_task_role_arn" {
   type        = string
-  description = "The ARN of the task execution role"
+  description = "The ARN of the ECS task role"
 }
 
 variable "lb_access_log_bucket" {

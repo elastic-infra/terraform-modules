@@ -29,6 +29,7 @@
 *     },
 *   ]
 *
+*   ecs_execution_role_arn = "arn:aws:iam:abc"
 *   ecs_security_group_ids = ["sg-aaa", "sg-bbb"]
 *   ecs_subnet_ids         = ["subnet-aaa", "subnet-bbb"]
 *   ecs_task_role_arn      = "arn:aws:iam:xyz"
