@@ -24,8 +24,8 @@
 *
 *   container_secrets = [
 *     {
-*       name   = "(Secret environment variable name)"
-*       value  = aws_ssm_parameter.xxx.name
+*       name      = "(Secret environment variable name)"
+*       valueFrom = aws_ssm_parameter.xxx.name
 *     },
 *   ]
 *
