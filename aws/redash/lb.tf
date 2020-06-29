@@ -27,13 +27,13 @@ resource "aws_lb_target_group" "redash" {
   target_type          = "ip"
 
   health_check {
-    interval            = "30"
+    interval            = "10"
     path                = "/ping"
     port                = "traffic-port"
     protocol            = "HTTP"
     matcher             = "200"
-    timeout             = 5
-    healthy_threshold   = 5
+    timeout             = 3
+    healthy_threshold   = 3
     unhealthy_threshold = 2
   }
 }
