@@ -12,7 +12,7 @@ resource "aws_lb" "redash" {
 
     content {
       bucket  = access_logs.value
-      prefix  = var.lb_access_log_prefix ? var.lb_access_log_prefix : local.base_name
+      prefix  = var.lb_access_log_prefix == null ? local.base_name : var.lb_access_log_prefix
       enabled = true
     }
   }

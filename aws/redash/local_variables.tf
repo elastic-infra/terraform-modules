@@ -1,11 +1,12 @@
 locals {
-  base_name = var.prefix ? "${var.prefix}-redash" : "redash"
+  base_name = var.prefix == null ? "redash" : "${var.prefix}-redash"
 
   container_names = {
-    server     = var.prefix ? "${var.prefix}-redash-server" : "redash-server"
-    worker     = var.prefix ? "${var.prefix}-redash-worker" : "redash-worker"
-    db_migrate = var.prefix ? "${var.prefix}-redash-db-migrate" : "redash-db-migrate"
-    db_upgrate = var.prefix ? "${var.prefix}-redash-db-upgrade" : "redash-db-upgrade"
+    server     = var.prefix == null ? "redash-server" : "${var.prefix}-redash-server"
+    worker     = var.prefix == null ? "redash-worker" : "${var.prefix}-redash-worker"
+    db_migrate = var.prefix == null ? "redash-db-migrate" : "${var.prefix}-redash-db-migrate"
+    db_upgrade = var.prefix == null ? "redash-db-upgrade" : "${var.prefix}-redash-db-upgrade"
+    db_upgrade = var.prefix == null ? "redash-db-create" : "${var.prefix}-redash-db-create"
   }
 
   commands = {
