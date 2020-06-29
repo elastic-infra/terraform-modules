@@ -87,7 +87,7 @@ variable "lb_subnets" {
 variable "prefix" {
   type        = string
   description = "A prefix for the resource names"
-  default     = ""
+  default     = null
 }
 
 variable "server_container_cpu" {
