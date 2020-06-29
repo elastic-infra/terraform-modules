@@ -69,6 +69,18 @@ resource "aws_ecs_service" "worker" {
   }
 }
 
+## DB Create
+resource "aws_ecs_task_definition" "db_create" {
+  family                   = local.container_names["db_create"]
+  container_definitions    = module.db_create_container_definition.json
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = var.db_container_cpu
+  memory                   = var.db_container_memory
+  execution_role_arn       = var.ecs_execution_role_arn
+  task_role_arn            = var.ecs_task_role_arn
+}
+
 ## DB Migrate
 resource "aws_ecs_task_definition" "db_migrate" {
   family                   = local.container_names["db_migrate"]

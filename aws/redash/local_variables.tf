@@ -12,6 +12,7 @@ locals {
   commands = {
     server     = ["server"]
     worker     = ["scheduler"]
+    db_create  = ["create_db"]
     db_migrate = ["manage", "db", "migrate"]
     db_upgrade = ["manage", "db", "upgrade"]
   }

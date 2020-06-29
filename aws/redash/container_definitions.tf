@@ -50,6 +50,31 @@ module "worker_container_definition" {
   }
 }
 
+# DB Create
+module "db_create_container_definition" {
+  source  = "cloudposse/ecs-container-definition/aws"
+  version = "0.37.0"
+
+  container_name   = local.container_names["db_create"]
+  container_image  = var.container_image_url
+  container_cpu    = var.db_container_cpu
+  container_memory = var.db_container_memory
+  command          = local.commands["db_create"]
+  environment      = []
+  secrets          = var.container_secrets
+
+  log_configuration = {
+    logDriver     = "awslogs"
+    secretOptions = null
+
+    options = {
+      "awslogs-region"        = data.aws_region.current.name
+      "awslogs-group"         = aws_cloudwatch_log_group.logs["db_create"].name
+      "awslogs-stream-prefix" = "db-create"
+    }
+  }
+}
+
 # DB Migrate
 module "db_migrate_container_definition" {
   source  = "cloudposse/ecs-container-definition/aws"
