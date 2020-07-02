@@ -8,7 +8,7 @@ resource "aws_lb" "redash" {
   ip_address_type            = "ipv4"
 
   dynamic "access_logs" {
-    for_each = [var.lb_access_log_bucket]
+    for_each = var.lb_access_log_bucket == null ? [] : [var.lb_access_log_bucket]
 
     content {
       bucket  = access_logs.value
