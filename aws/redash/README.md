@@ -58,6 +58,7 @@ module "redash" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| assign\_public\_ip | If true, Public IP is assigned to ECS service | `bool` | `false` | no |
 | cloudwatch\_logs\_retention\_in\_days | The number of days you want to retain log events | `number` | `90` | no |
 | container\_environments | The environments to set to each ECS container | `list` | n/a | yes |
 | container\_image\_url | The URL of the image used to launch the container. Images in the Docker Hub registry available by default | `string` | n/a | yes |
@@ -74,7 +75,7 @@ module "redash" {
 | lb\_security\_groups | The list of security group IDs to assign to the LB | `list` | n/a | yes |
 | lb\_ssl\_policy | The name of the SSL Policy for the listener | `string` | `"ELBSecurityPolicy-2016-08"` | no |
 | lb\_subnets | The list of subnet IDs to attach to the LB | `list` | n/a | yes |
-| prefix | A prefix for the resource names | `string` | `""` | no |
+| prefix | A prefix for the resource names | `string` | `null` | no |
 | server\_container\_cpu | The number of cpu units to reserve for the server container | `number` | `1024` | no |
 | server\_container\_memory | The amount of memory (in MiB) to allow the server container | `number` | `2048` | no |
 | server\_desired\_count | The number of redash server tasks | `number` | `1` | no |

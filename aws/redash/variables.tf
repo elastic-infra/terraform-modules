@@ -46,6 +46,12 @@ variable "ecs_subnet_ids" {
   description = "The list of subnet IDs to assign to the ECS task or service"
 }
 
+variable "assign_public_ip" {
+  type        = bool
+  default     = false
+  description = "If true, Public IP is assigned to ECS service"
+}
+
 variable "ecs_task_role_arn" {
   type        = string
   description = "The ARN of the ECS task role"

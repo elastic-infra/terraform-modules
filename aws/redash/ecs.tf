@@ -27,7 +27,7 @@ resource "aws_ecs_service" "server" {
   network_configuration {
     security_groups  = var.ecs_security_group_ids
     subnets          = var.ecs_subnet_ids
-    assign_public_ip = false
+    assign_public_ip = var.assign_public_ip
   }
 
   load_balancer {
@@ -65,7 +65,7 @@ resource "aws_ecs_service" "worker" {
   network_configuration {
     security_groups  = var.ecs_security_group_ids
     subnets          = var.ecs_subnet_ids
-    assign_public_ip = false
+    assign_public_ip = var.assign_public_ip
   }
 }
 
