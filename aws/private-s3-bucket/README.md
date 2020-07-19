@@ -52,6 +52,59 @@ logging = [
 ]
 ```
 
+#### lifecycle\_rule
+
+Full featured example.
+
+NOTE:
+  * abort\_incomplete\_multipart\_upload\_days is exclusive against tags
+  * expiration, noncurrent\_version\_{transition,expiration} can be set up to once
+
+```hcl
+lifecycle_rule = [
+  {
+    id      = "t01"
+    enabled = true
+    prefix  = "aaa"
+    tags = {
+      a = "b"
+      c = "d"
+    }
+    abort_incomplete_multipart_upload_days = null
+    transition = [
+      {
+        date          = null
+        days          = 90
+        storage_class = "ONEZONE_IA"
+      },
+      {
+        date          = null
+        days          = 30
+        storage_class = "STANDARD_IA"
+      }
+    ]
+    expiration = [
+      {
+        date = null
+        days = 90
+        expired_object_delete_marker = false
+      }
+    ]
+    noncurrent_version_transition = [
+      {
+        days = 120
+        storage_class = "GLACIER"
+      }
+    ]
+    noncurrent_version_expiration = [
+      {
+        days = 150
+      }
+    ]
+  }
+]
+```
+
 ## Requirements
 
 | Name | Version |
@@ -72,6 +125,7 @@ logging = [
 | region | S3 bucket region | `string` | n/a | yes |
 | disable\_private | If true, disable private bucket feature | `bool` | `false` | no |
 | grant | S3 grants | <pre>list(object({<br>    id          = string<br>    type        = string<br>    permissions = list(string)<br>    uri         = string<br>  }))</pre> | `[]` | no |
+| lifecycle\_rule | S3 lifecycle rule | <pre>list(object({<br>    id                                     = string<br>    enabled                                = bool<br>    prefix                                 = string<br>    abort_incomplete_multipart_upload_days = number<br>    tags                                   = map(string)<br>    transition = list(object({<br>      date          = string<br>      days          = number<br>      storage_class = string<br>    }))<br>    # Note for expiration, noncurrent_version_transition, noncurrent_version_expiration<br>    # define as list for simplicity, though expected only a single object<br>    expiration = list(object({<br>      date                         = string<br>      days                         = number<br>      expired_object_delete_marker = bool<br>    }))<br>    noncurrent_version_transition = list(object({<br>      days          = number<br>      storage_class = string<br>    }))<br>    noncurrent_version_expiration = list(object({<br>      days = number<br>    }))<br>  }))</pre> | `[]` | no |
 | logging | S3 access logging | <pre>list(object({<br>    target_bucket = string<br>    target_prefix = string<br>  }))</pre> | `[]` | no |
 | tags | Tags for S3 bucket | `map(string)` | `{}` | no |
 | versioning | S3 object versioning settings | `bool` | `false` | no |
