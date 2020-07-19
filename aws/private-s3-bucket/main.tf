@@ -105,6 +105,38 @@
 * ]
 * ```
 *
+* #### server_side_encryption_configuration
+*
+* SSE-S3
+*
+* ```hcl
+* server_side_encryption_configuration = [
+*   {
+*     rule = {
+*       apply_server_side_encryption_by_default = {
+*         sse_algorithm = "AES256"
+*         kms_master_key_id = null
+*       }
+*     }
+*   }
+* ]
+* ```
+*
+* SSE-KMS
+*
+* ```hcl
+* server_side_encryption_configuration = [
+*   {
+*     rule = {
+*       apply_server_side_encryption_by_default = {
+*         sse_algorithm = "aws:kms"
+*         kms_master_key_id = "aws/s3" # or your CMK ID
+*       }
+*     }
+*   }
+* ]
+* ```
+*
 */
 
 locals {
@@ -178,6 +210,18 @@ resource "aws_s3_bucket" "b" {
         for_each = lifecycle_rule.value.noncurrent_version_expiration
         content {
           days = noncurrent_version_expiration.value.days
+        }
+      }
+    }
+  }
+
+  dynamic "server_side_encryption_configuration" {
+    for_each = var.server_side_encryption_configuration
+    content {
+      rule {
+        apply_server_side_encryption_by_default {
+          sse_algorithm     = server_side_encryption_configuration.value.rule.apply_server_side_encryption_by_default.sse_algorithm
+          kms_master_key_id = server_side_encryption_configuration.value.rule.apply_server_side_encryption_by_default.kms_master_key_id
         }
       }
     }
