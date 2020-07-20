@@ -51,6 +51,92 @@
 *   }
 * ]
 * ```
+*
+* #### lifecycle_rule
+*
+* Full featured example.
+*
+* NOTE:
+*   * abort_incomplete_multipart_upload_days is exclusive against tags
+*   * expiration, noncurrent_version_{transition,expiration} can be set up to once
+*
+* ```hcl
+* lifecycle_rule = [
+*   {
+*     id      = "t01"
+*     enabled = true
+*     prefix  = "aaa"
+*     tags = {
+*       a = "b"
+*       c = "d"
+*     }
+*     abort_incomplete_multipart_upload_days = null
+*     transition = [
+*       {
+*         date          = null
+*         days          = 90
+*         storage_class = "ONEZONE_IA"
+*       },
+*       {
+*         date          = null
+*         days          = 30
+*         storage_class = "STANDARD_IA"
+*       }
+*     ]
+*     expiration = [
+*       {
+*         date = null
+*         days = 90
+*         expired_object_delete_marker = false
+*       }
+*     ]
+*     noncurrent_version_transition = [
+*       {
+*         days = 120
+*         storage_class = "GLACIER"
+*       }
+*     ]
+*     noncurrent_version_expiration = [
+*       {
+*         days = 150
+*       }
+*     ]
+*   }
+* ]
+* ```
+*
+* #### server_side_encryption_configuration
+*
+* SSE-S3
+*
+* ```hcl
+* server_side_encryption_configuration = [
+*   {
+*     rule = {
+*       apply_server_side_encryption_by_default = {
+*         sse_algorithm = "AES256"
+*         kms_master_key_id = null
+*       }
+*     }
+*   }
+* ]
+* ```
+*
+* SSE-KMS
+*
+* ```hcl
+* server_side_encryption_configuration = [
+*   {
+*     rule = {
+*       apply_server_side_encryption_by_default = {
+*         sse_algorithm = "aws:kms"
+*         kms_master_key_id = "aws/s3" # or your CMK ID
+*       }
+*     }
+*   }
+* ]
+* ```
+*
 */
 
 locals {
@@ -82,6 +168,62 @@ resource "aws_s3_bucket" "b" {
       type        = grant.value.type
       permissions = grant.value.permissions
       uri         = grant.value.uri
+    }
+  }
+
+  /*
+   * tags, enabled, abort_incomplete_multipart_upload_days,
+   * expiration, transition, noncurrent_version_expiration, noncurrent_veersion_transition
+   */
+  dynamic "lifecycle_rule" {
+    for_each = var.lifecycle_rule
+    content {
+      id                                     = lifecycle_rule.value.id
+      enabled                                = lifecycle_rule.value.enabled
+      prefix                                 = lifecycle_rule.value.prefix
+      tags                                   = lifecycle_rule.value.tags
+      abort_incomplete_multipart_upload_days = lifecycle_rule.value.abort_incomplete_multipart_upload_days
+      dynamic "transition" {
+        for_each = lifecycle_rule.value.transition
+        content {
+          date          = transition.value.date
+          days          = transition.value.days
+          storage_class = transition.value.storage_class
+        }
+      }
+      dynamic "expiration" {
+        for_each = lifecycle_rule.value.expiration
+        content {
+          date                         = expiration.value.date
+          days                         = expiration.value.days
+          expired_object_delete_marker = expiration.value.expired_object_delete_marker
+        }
+      }
+      dynamic "noncurrent_version_transition" {
+        for_each = lifecycle_rule.value.noncurrent_version_transition
+        content {
+          days          = noncurrent_version_transition.value.days
+          storage_class = noncurrent_version_transition.value.storage_class
+        }
+      }
+      dynamic "noncurrent_version_expiration" {
+        for_each = lifecycle_rule.value.noncurrent_version_expiration
+        content {
+          days = noncurrent_version_expiration.value.days
+        }
+      }
+    }
+  }
+
+  dynamic "server_side_encryption_configuration" {
+    for_each = var.server_side_encryption_configuration
+    content {
+      rule {
+        apply_server_side_encryption_by_default {
+          sse_algorithm     = server_side_encryption_configuration.value.rule.apply_server_side_encryption_by_default.sse_algorithm
+          kms_master_key_id = server_side_encryption_configuration.value.rule.apply_server_side_encryption_by_default.kms_master_key_id
+        }
+      }
     }
   }
 }
