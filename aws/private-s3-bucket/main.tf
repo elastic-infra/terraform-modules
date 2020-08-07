@@ -137,6 +137,18 @@
 * ]
 * ```
 *
+* #### CORS headers
+*
+* ```hcl
+* cors_rule = [{
+*   allowed_origins = ["*"]
+*   allowed_methods = ["GET", "OPTIONS"]
+*   allowed_headers = ["*"]
+*   expose_headers  = []
+*   max_age_seconds = 3000
+* }]
+* ```
+*
 */
 
 locals {
