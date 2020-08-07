@@ -88,3 +88,15 @@ variable "server_side_encryption_configuration" {
   description = "Server-side encryption configuration"
   default     = []
 }
+
+variable "cors_rule" {
+  type = list(object({
+    allowed_headers = list(string)
+    allowed_methods = list(string)
+    allowed_origins = list(string)
+    expose_headers  = list(string)
+    max_age_seconds = number
+  }))
+  description = "S3 CORS headers"
+  default     = []
+}
