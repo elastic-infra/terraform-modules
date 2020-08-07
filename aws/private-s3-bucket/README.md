@@ -168,7 +168,8 @@ server_side_encryption_configuration = [
 | Name | Description |
 |------|-------------|
 | bucket\_arn | ARN of the S3 Bucket |
+| bucket\_domain\_name | Domain name of the S3 Bucket |
 | bucket\_id | ID of the S3 Bucket |
-| bucket\_regional\_domain\_name | Domain name of the S3 Bucket |
+| bucket\_regional\_domain\_name | Region-specific domain name of the S3 Bucket |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
