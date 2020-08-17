@@ -137,6 +137,18 @@
 * ]
 * ```
 *
+* #### CORS headers
+*
+* ```hcl
+* cors_rule = [{
+*   allowed_origins = ["*"]
+*   allowed_methods = ["GET", "OPTIONS"]
+*   allowed_headers = ["*"]
+*   expose_headers  = []
+*   max_age_seconds = 3000
+* }]
+* ```
+*
 */
 
 locals {
@@ -224,6 +236,17 @@ resource "aws_s3_bucket" "b" {
           kms_master_key_id = server_side_encryption_configuration.value.rule.apply_server_side_encryption_by_default.kms_master_key_id
         }
       }
+    }
+  }
+
+  dynamic "cors_rule" {
+    for_each = var.cors_rule
+    content {
+      allowed_headers = cors_rule.value.allowed_headers
+      allowed_methods = cors_rule.value.allowed_methods
+      allowed_origins = cors_rule.value.allowed_origins
+      expose_headers  = cors_rule.value.expose_headers
+      max_age_seconds = cors_rule.value.max_age_seconds
     }
   }
 }
