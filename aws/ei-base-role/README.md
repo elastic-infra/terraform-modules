@@ -11,6 +11,9 @@ module "ei_base_role" {
 
   prefix            = var.infra_env
   additional_policy = data.aws_iam_policy_document.base.json
+  additional_policy_arns = [
+    aws_iam_policy.your_policy.arn,
+  ]
 }
 ```
 
@@ -31,6 +34,7 @@ module "ei_base_role" {
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | additional\_policy | Policy that merge into the base policy | `string` | `""` | no |
+| additional\_policy\_arns | List of ARNs of IAM policies to attach to base role | `list(string)` | `[]` | no |
 | prefix | Prefix for all resources | `string` | `"ei"` | no |
 
 ## Outputs
