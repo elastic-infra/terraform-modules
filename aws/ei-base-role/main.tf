@@ -11,6 +11,9 @@
 *
 *   prefix            = var.infra_env
 *   additional_policy = data.aws_iam_policy_document.base.json
+*   additional_policy_arns = [
+*     aws_iam_policy.your_policy.arn,
+*   ]
 * }
 * ```
 *
@@ -76,6 +79,13 @@ resource "aws_iam_policy" "ei_base" {
 resource "aws_iam_role_policy_attachment" "ei_base" {
   role       = aws_iam_role.ei_base.name
   policy_arn = aws_iam_policy.ei_base.arn
+}
+
+resource "aws_iam_role_policy_attachment" "additional_ei_base" {
+  for_each = toset(var.additional_policy_arns)
+
+  role       = aws_iam_role.ei_base.name
+  policy_arn = each.value
 }
 
 resource "aws_iam_instance_profile" "ei_base" {

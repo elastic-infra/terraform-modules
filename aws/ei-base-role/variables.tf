@@ -9,3 +9,9 @@ variable "additional_policy" {
   default     = ""
   type        = string
 }
+
+variable "additional_policy_arns" {
+  description = "List of ARNs of IAM policies to attach to base role"
+  type        = list(string)
+  default     = []
+}
