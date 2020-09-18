@@ -153,6 +153,7 @@
 
 locals {
   block_access_enabled = ! var.disable_private
+  versioning_set       = (var.versioning != null ? [true] : [])
 }
 
 resource "aws_s3_bucket" "b" {
@@ -161,8 +162,11 @@ resource "aws_s3_bucket" "b" {
   acl    = length(var.grant) > 0 ? null : "private"
   tags   = var.tags
 
-  versioning {
-    enabled = var.versioning
+  dynamic "versioning" {
+    for_each = local.versioning_set
+    content {
+      enabled = var.versioning
+    }
   }
 
   dynamic "logging" {
