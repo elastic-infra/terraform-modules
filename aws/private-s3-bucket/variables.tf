@@ -22,7 +22,7 @@ variable "disable_private" {
 variable "versioning" {
   type        = bool
   description = "S3 object versioning settings"
-  default     = false
+  default     = null
 }
 
 variable "logging" {
