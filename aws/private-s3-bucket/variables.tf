@@ -1,8 +1,3 @@
-variable "region" {
-  type        = string
-  description = "S3 bucket region"
-}
-
 variable "bucket_name" {
   type        = string
   description = "S3 bucket name"

@@ -7,9 +7,8 @@
 *
 * ```hcl
 * module "bucket" {
-*   source = "github.com/elastic-infra/terraform-modules//aws/private-s3-bucket?ref=v1.2.0"
+*   source = "github.com/elastic-infra/terraform-modules//aws/private-s3-bucket?ref=v2.1.0"
 *
-*   region      = "us-east-1"
 *   bucket_name = "bucket_name"
 *
 *   tags = {
@@ -158,7 +157,6 @@ locals {
 
 resource "aws_s3_bucket" "b" {
   bucket = var.bucket_name
-  region = var.region
   acl    = length(var.grant) > 0 ? null : "private"
   tags   = var.tags
 
