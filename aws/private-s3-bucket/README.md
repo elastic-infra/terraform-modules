@@ -152,6 +152,7 @@ cors_rule = [{
 
 | Name | Version |
 |------|---------|
+| terraform | >= 0.12.26, < 0.14.0 |
 | aws | >= 3.0.0 |
 
 ## Providers
