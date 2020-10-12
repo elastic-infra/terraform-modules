@@ -7,9 +7,8 @@ Create a private bucket in a recommended way
 
 ```hcl
 module "bucket" {
-  source = "github.com/elastic-infra/terraform-modules//aws/private-s3-bucket?ref=v1.2.0"
+  source = "github.com/elastic-infra/terraform-modules//aws/private-s3-bucket?ref=v2.1.0"
 
-  region      = "us-east-1"
   bucket_name = "bucket_name"
 
   tags = {
@@ -153,20 +152,19 @@ cors_rule = [{
 
 | Name | Version |
 |------|---------|
-| aws | >= 2.52.0 |
+| aws | >= 3.0.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | >= 2.52.0 |
+| aws | >= 3.0.0 |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | bucket\_name | S3 bucket name | `string` | n/a | yes |
-| region | S3 bucket region | `string` | n/a | yes |
 | cors\_rule | S3 CORS headers | <pre>list(object({<br>    allowed_headers = list(string)<br>    allowed_methods = list(string)<br>    allowed_origins = list(string)<br>    expose_headers  = list(string)<br>    max_age_seconds = number<br>  }))</pre> | `[]` | no |
 | disable\_private | If true, disable private bucket feature | `bool` | `false` | no |
 | grant | S3 grants | <pre>list(object({<br>    id          = string<br>    type        = string<br>    permissions = list(string)<br>    uri         = string<br>  }))</pre> | `[]` | no |
