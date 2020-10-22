@@ -6,7 +6,7 @@ resource "aws_ecs_cluster" "redash" {
 ## Server
 resource "aws_ecs_task_definition" "server" {
   family                   = local.container_names["server"]
-  container_definitions    = module.server_container_definitions.json
+  container_definitions    = module.server_container_definitions.json_map_encoded_list
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.server_container_cpu
@@ -44,7 +44,7 @@ resource "aws_ecs_service" "server" {
 ## Worker
 resource "aws_ecs_task_definition" "worker" {
   family                   = local.container_names["worker"]
-  container_definitions    = module.worker_container_definition.json
+  container_definitions    = module.worker_container_definition.json_map_encoded_list
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.worker_container_cpu
@@ -72,7 +72,7 @@ resource "aws_ecs_service" "worker" {
 ## DB Create
 resource "aws_ecs_task_definition" "db_create" {
   family                   = local.container_names["db_create"]
-  container_definitions    = module.db_create_container_definition.json
+  container_definitions    = module.db_create_container_definition.json_map_encoded_list
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.db_container_cpu
@@ -84,7 +84,7 @@ resource "aws_ecs_task_definition" "db_create" {
 ## DB Migrate
 resource "aws_ecs_task_definition" "db_migrate" {
   family                   = local.container_names["db_migrate"]
-  container_definitions    = module.db_migrate_container_definition.json
+  container_definitions    = module.db_migrate_container_definition.json_map_encoded_list
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.db_container_cpu
@@ -96,7 +96,7 @@ resource "aws_ecs_task_definition" "db_migrate" {
 ## DB Upgrade
 resource "aws_ecs_task_definition" "db_upgrade" {
   family                   = local.container_names["db_upgrade"]
-  container_definitions    = module.db_upgrade_container_definition.json
+  container_definitions    = module.db_upgrade_container_definition.json_map_encoded_list
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.db_container_cpu
