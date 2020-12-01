@@ -28,7 +28,7 @@
 *   }
 *
 *   providers = {
-*     aws.accepter = aws.us-east-1
+*     aws = aws.us-east-1
 *   }
 * }
 * ```

@@ -30,7 +30,7 @@ module "peering-request" {
   }
 
   providers = {
-    aws.requester = aws.us-east-1
+    aws = aws.us-east-1
   }
 }
 ```
@@ -45,7 +45,7 @@ module "peering-request" {
 
 | Name | Version |
 |------|---------|
-| aws.requester | n/a |
+| aws | n/a |
 
 ## Inputs
 

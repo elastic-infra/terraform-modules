@@ -28,7 +28,7 @@ module "peering_acceptance" {
   }
 
   providers = {
-    aws.accepter = aws.us-east-1
+    aws = aws.us-east-1
   }
 }
 ```
@@ -43,7 +43,7 @@ module "peering_acceptance" {
 
 | Name | Version |
 |------|---------|
-| aws.accepter | n/a |
+| aws | n/a |
 
 ## Inputs
 

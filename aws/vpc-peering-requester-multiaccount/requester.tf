@@ -1,7 +1,3 @@
-provider "aws" {
-  alias = "requester"
-}
-
 locals {
   requester_attributes = concat(var.attributes, list("requester"))
   requester_tags       = merge(var.tags, map("Side", "requester"))
@@ -20,17 +16,15 @@ module "requester" {
 
 # Lookup requester VPC so that we can reference the CIDR
 data "aws_vpc" "requester" {
-  count    = local.count
-  provider = aws.requester
-  id       = var.requester_vpc_id
-  tags     = var.requester_vpc_tags
+  count = local.count
+  id    = var.requester_vpc_id
+  tags  = var.requester_vpc_tags
 }
 
 # Lookup requester subnets
 data "aws_subnet_ids" "requester" {
-  count    = local.count
-  provider = aws.requester
-  vpc_id   = local.requester_vpc_id
+  count  = local.count
+  vpc_id = local.requester_vpc_id
 }
 
 locals {
@@ -42,13 +36,11 @@ locals {
 # Lookup requester route tables
 data "aws_route_table" "requester" {
   count     = local.enabled ? local.requester_subnet_ids_count : 0
-  provider  = aws.requester
   subnet_id = element(local.requester_subnet_ids, count.index)
 }
 
 resource "aws_vpc_peering_connection" "requester" {
   count         = local.count
-  provider      = aws.requester
   vpc_id        = local.requester_vpc_id
   peer_vpc_id   = var.peer_vpc_id
   peer_owner_id = var.peer_owner_id
@@ -69,7 +61,6 @@ locals {
 # Create routes from requester to accepter
 resource "aws_route" "requester" {
   count                     = local.enabled ? local.requester_aws_route_table_ids_count * local.accepter_cidr_block_associations_count : 0
-  provider                  = aws.requester
   route_table_id            = element(local.requester_aws_route_table_ids, ceil(count.index / local.accepter_cidr_block_associations_count))
   destination_cidr_block    = element(var.peer_vpc_cidr_blocks, count.index % local.accepter_cidr_block_associations_count)
   vpc_peering_connection_id = join("", aws_vpc_peering_connection.requester.*.id)

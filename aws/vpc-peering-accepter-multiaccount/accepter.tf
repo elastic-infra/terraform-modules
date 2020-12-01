@@ -1,7 +1,3 @@
-provider "aws" {
-  alias = "accepter"
-}
-
 locals {
   accepter_attributes = concat(var.attributes, list("accepter"))
   accepter_tags       = merge(var.tags, map("Side", "accepter"))
@@ -20,17 +16,15 @@ module "accepter" {
 
 # Lookup accepter VPC so that we can reference the CIDR
 data "aws_vpc" "accepter" {
-  count    = local.count
-  provider = aws.accepter
-  id       = var.accepter_vpc_id
-  tags     = var.accepter_vpc_tags
+  count = local.count
+  id    = var.accepter_vpc_id
+  tags  = var.accepter_vpc_tags
 }
 
 # Lookup accepter subnets
 data "aws_subnet_ids" "accepter" {
-  count    = local.count
-  provider = aws.accepter
-  vpc_id   = local.accepter_vpc_id
+  count  = local.count
+  vpc_id = local.accepter_vpc_id
 }
 
 locals {
@@ -41,15 +35,13 @@ locals {
 
 # Lookup peering connection
 data "aws_vpc_peering_connection" "peering" {
-  count    = local.count
-  provider = aws.accepter
-  id       = var.vpc_peering_id
+  count = local.count
+  id    = var.vpc_peering_id
 }
 
 # Lookup accepter route tables
 data "aws_route_table" "accepter" {
   count     = local.enabled ? local.accepter_subnet_ids_count : 0
-  provider  = aws.accepter
   subnet_id = element(local.accepter_subnet_ids, count.index)
 }
 
@@ -58,7 +50,6 @@ locals {
 }
 
 resource "aws_vpc_peering_connection_accepter" "accepter" {
-  provider                  = aws.accepter
   vpc_peering_connection_id = local.vpc_peering_connection_id
   auto_accept               = true
   tags                      = module.accepter.tags
@@ -75,7 +66,6 @@ locals {
 
 resource "aws_route" "to_requester" {
   count                     = local.enabled ? local.accepter_aws_route_table_ids_count * local.requester_cidr_block_associations_count : 0
-  provider                  = aws.accepter
   route_table_id            = element(local.accepter_aws_route_table_ids, ceil(count.index / local.requester_cidr_block_associations_count))
   destination_cidr_block    = element(local.requester_cidr_block_associations, count.index % local.requester_cidr_block_associations_count)
   vpc_peering_connection_id = local.vpc_peering_connection_id
