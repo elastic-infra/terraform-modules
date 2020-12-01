@@ -43,7 +43,7 @@ module "peering_acceptance" {
 
 | Name | Version |
 |------|---------|
-| aws.accepter | n/a |
+| aws | n/a |
 
 ## Inputs
 

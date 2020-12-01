@@ -45,7 +45,7 @@ module "peering-request" {
 
 | Name | Version |
 |------|---------|
-| aws.requester | n/a |
+| aws | n/a |
 
 ## Inputs
 
