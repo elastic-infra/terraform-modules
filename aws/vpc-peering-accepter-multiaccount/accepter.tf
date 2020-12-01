@@ -1,6 +1,5 @@
 provider "aws" {
-  alias  = "accepter"
-  region = var.accepter_region
+  alias = "accepter"
 }
 
 locals {

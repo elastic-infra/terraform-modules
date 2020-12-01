@@ -13,14 +13,13 @@ set up the route to the requester.
 
 ```hcl
 module "peering-request" {
-  source = "github.com/elastic-infra/terraform-modules//aws/vpc-peering-requester-multiaccount?ref=v1.2.0"
+  source = "github.com/elastic-infra/terraform-modules//aws/vpc-peering-requester-multiaccount?ref=v2.3.0"
 
   enabled              = "true"
   namespace            = "foo"
   stage                = "dev"
   name                 = "bar"
   delimiter            = "-"
-  requester_region     = "us-east-1"
   requester_vpc_id     = "vpc-12345678"
   peer_owner_id        = "012345678901"
   peer_vpc_id          = "vpc-0123456789abcdef"
@@ -29,12 +28,18 @@ module "peering-request" {
   tags {
     Environment = "development"
   }
+
+  providers = {
+    aws.requester = aws.us-east-1
+  }
 }
 ```
 
 ## Requirements
 
-No requirements.
+| Name | Version |
+|------|---------|
+| terraform | >= 0.13 |
 
 ## Providers
 
@@ -52,7 +57,6 @@ No requirements.
 | peer\_region | Region where peer VPC resides | `string` | n/a | yes |
 | peer\_vpc\_cidr\_blocks | CIDR blocks associated with the peer VPC | `list(string)` | n/a | yes |
 | peer\_vpc\_id | Peer VPC ID | `string` | n/a | yes |
-| requester\_region | Requester AWS region | `string` | n/a | yes |
 | stage | Stage (e.g. `prod`, `dev`, `staging`) | `string` | n/a | yes |
 | attributes | Additional attributes (e.g. `a` or `b`) | `list(string)` | `[]` | no |
 | delimiter | Delimiter to be used between `namespace`, `stage`, `name`, and `attributes` | `string` | `"-"` | no |

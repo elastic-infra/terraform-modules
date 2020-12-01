@@ -37,11 +37,6 @@ variable "tags" {
   description = "Additional tags (e.g. `{\"BusinessUnit\" = \"XYZ\"`)"
 }
 
-variable "requester_region" {
-  type        = string
-  description = "Requester AWS region"
-}
-
 variable "requester_vpc_id" {
   type        = string
   description = "Requester VPC ID filter"

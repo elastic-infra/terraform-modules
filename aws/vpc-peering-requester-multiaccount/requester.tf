@@ -1,6 +1,5 @@
 provider "aws" {
-  alias  = "requester"
-  region = var.requester_region
+  alias = "requester"
 }
 
 locals {
