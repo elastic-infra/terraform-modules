@@ -47,11 +47,6 @@ variable "requester_vpc_cidr_blocks" {
   type        = list(string)
 }
 
-variable "accepter_region" {
-  description = "Accepter AWS region"
-  type        = string
-}
-
 variable "accepter_vpc_id" {
   description = "Accepter VPC ID filter"
   type        = string
