@@ -3,14 +3,19 @@ variable "name" {
   description = "Name of the table. For Hive compatibility, this must be entirely lowercase."
 
   validation {
-    condition     = can(regex("^[0-9a-z_]*$", var.name))
+    condition     = can(regex("^[0-9a-z_]+$", var.name))
     error_message = "The name value must be entirely lowercase."
   }
 }
 
 variable "database_name" {
   type        = string
-  description = "Name of the metadata database where the table metadata resides. For Hive compatibility, this must be all lowercase."
+  description = "Name of the metadata database where the table metadata resides. For Hive compatibility, this must be entirely lowercase."
+
+  validation {
+    condition     = can(regex("^[0-9a-z_-]+$", var.name))
+    error_message = "The name value must be entirely lowercase."
+  }
 }
 
 variable "location" {
