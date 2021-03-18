@@ -1,11 +1,11 @@
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Information
 
-Accepts a VPC peering connection and build the route required to utilize the connection across VPC, accounts.  
+Accepts a VPC peering connection and build the route required to utilize the connection across VPC, accounts.
 This module is a mixture with jjno91/vpc-peering-accepter and cloudposse/vpc-peering-multi-account.
 
-This modules does not affect the requester side. It only accepts a VPC peering connection and  
-set up the route to the peer on the accepter side.  
+This modules does not affect the requester side. It only accepts a VPC peering connection and
+set up the route to the peer on the accepter side.
 Users of this module need to set up the requester side in other means in advance.
 
 ## Usage Example
@@ -37,35 +37,52 @@ module "peering_acceptance" {
 
 | Name | Version |
 |------|---------|
-| terraform | >= 0.13 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | n/a |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
+
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| <a name="module_accepter"></a> [accepter](#module\_accepter) | git::https://github.com/cloudposse/terraform-terraform-label.git?ref=master |  |
+
+## Resources
+
+| Name | Type |
+|------|------|
+| [aws_route.to_requester](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route) | resource |
+| [aws_vpc_peering_connection_accepter.accepter](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_peering_connection_accepter) | resource |
+| [aws_route_table.accepter](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/route_table) | data source |
+| [aws_subnet_ids.accepter](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/subnet_ids) | data source |
+| [aws_vpc.accepter](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/vpc) | data source |
+| [aws_vpc_peering_connection.peering](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/vpc_peering_connection) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| name | Name  (e.g. `app` or `cluster`) | `string` | n/a | yes |
-| namespace | Namespace (e.g. `eg` or `cp`) | `string` | n/a | yes |
-| requester\_vpc\_cidr\_blocks | CIDR blocks associated with the peer VPC (it should be fetched via VPC peering information but terraform-provider-aws does not read CidrBlockSet) | `list(string)` | n/a | yes |
-| stage | Stage (e.g. `prod`, `dev`, `staging`) | `string` | n/a | yes |
-| vpc\_peering\_id | VPC peering ID to be accepted | `string` | n/a | yes |
-| accepter\_vpc\_id | Accepter VPC ID filter | `string` | `""` | no |
-| accepter\_vpc\_tags | Accepter VPC Tags filter | `map(string)` | `{}` | no |
-| attributes | Additional attributes (e.g. `a` or `b`) | `list(string)` | `[]` | no |
-| delimiter | Delimiter to be used between `namespace`, `stage`, `name`, and `attributes` | `string` | `"-"` | no |
-| enabled | Set to false to prevent the module from creating or accessing any resources | `string` | `"true"` | no |
-| tags | Additional tags (e.g. `{"BusinessUnit" = "XYZ"`) | `map(string)` | `{}` | no |
+| <a name="input_name"></a> [name](#input\_name) | Name  (e.g. `app` or `cluster`) | `string` | n/a | yes |
+| <a name="input_namespace"></a> [namespace](#input\_namespace) | Namespace (e.g. `eg` or `cp`) | `string` | n/a | yes |
+| <a name="input_requester_vpc_cidr_blocks"></a> [requester\_vpc\_cidr\_blocks](#input\_requester\_vpc\_cidr\_blocks) | CIDR blocks associated with the peer VPC (it should be fetched via VPC peering information but terraform-provider-aws does not read CidrBlockSet) | `list(string)` | n/a | yes |
+| <a name="input_stage"></a> [stage](#input\_stage) | Stage (e.g. `prod`, `dev`, `staging`) | `string` | n/a | yes |
+| <a name="input_vpc_peering_id"></a> [vpc\_peering\_id](#input\_vpc\_peering\_id) | VPC peering ID to be accepted | `string` | n/a | yes |
+| <a name="input_accepter_vpc_id"></a> [accepter\_vpc\_id](#input\_accepter\_vpc\_id) | Accepter VPC ID filter | `string` | `""` | no |
+| <a name="input_accepter_vpc_tags"></a> [accepter\_vpc\_tags](#input\_accepter\_vpc\_tags) | Accepter VPC Tags filter | `map(string)` | `{}` | no |
+| <a name="input_attributes"></a> [attributes](#input\_attributes) | Additional attributes (e.g. `a` or `b`) | `list(string)` | `[]` | no |
+| <a name="input_delimiter"></a> [delimiter](#input\_delimiter) | Delimiter to be used between `namespace`, `stage`, `name`, and `attributes` | `string` | `"-"` | no |
+| <a name="input_enabled"></a> [enabled](#input\_enabled) | Set to false to prevent the module from creating or accessing any resources | `string` | `"true"` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | Additional tags (e.g. `{"BusinessUnit" = "XYZ"`) | `map(string)` | `{}` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| accepting\_vpc\_peering | Accepting VPC peering ID |
-| vpc\_peering\_status | Status of accepting VPC peering |
+| <a name="output_accepting_vpc_peering"></a> [accepting\_vpc\_peering](#output\_accepting\_vpc\_peering) | Accepting VPC peering ID |
+| <a name="output_vpc_peering_status"></a> [vpc\_peering\_status](#output\_vpc\_peering\_status) | Status of accepting VPC peering |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

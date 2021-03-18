@@ -21,27 +21,44 @@ module "ei_base_role" {
 
 | Name | Version |
 |------|---------|
-| terraform | >= 0.12 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.12.0, < 0.15 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | n/a |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
+
+## Modules
+
+No modules.
+
+## Resources
+
+| Name | Type |
+|------|------|
+| [aws_iam_instance_profile.ei_base](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_instance_profile) | resource |
+| [aws_iam_policy.ei_base](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_role.ei_base](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
+| [aws_iam_role_policy_attachment.additional_ei_base](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role_policy_attachment.ei_base](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_policy_document.ec2_sts](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.ei_base](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.merged](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| additional\_policy | Policy that merge into the base policy | `string` | `""` | no |
-| additional\_policy\_arns | List of ARNs of IAM policies to attach to base role | `list(string)` | `[]` | no |
-| prefix | Prefix for all resources | `string` | `"ei"` | no |
+| <a name="input_additional_policy"></a> [additional\_policy](#input\_additional\_policy) | Policy that merge into the base policy | `string` | `""` | no |
+| <a name="input_additional_policy_arns"></a> [additional\_policy\_arns](#input\_additional\_policy\_arns) | List of ARNs of IAM policies to attach to base role | `list(string)` | `[]` | no |
+| <a name="input_prefix"></a> [prefix](#input\_prefix) | Prefix for all resources | `string` | `"ei"` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| policy\_arn | ARN of Base policy |
-| profile\_name | Name of Base instance profile |
+| <a name="output_policy_arn"></a> [policy\_arn](#output\_policy\_arn) | ARN of Base policy |
+| <a name="output_profile_name"></a> [profile\_name](#output\_profile\_name) | Name of Base instance profile |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
