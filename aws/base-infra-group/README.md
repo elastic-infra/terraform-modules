@@ -22,20 +22,33 @@ No requirements.
 
 | Name | Version |
 |------|---------|
-| aws | n/a |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
+
+## Modules
+
+No modules.
+
+## Resources
+
+| Name | Type |
+|------|------|
+| [aws_iam_group.iam_reader](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_group) | resource |
+| [aws_iam_group.infra_system](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_group) | resource |
+| [aws_iam_group_policy_attachment.iam_reader](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_group_policy_attachment) | resource |
+| [aws_iam_group_policy_attachment.system_poweruser](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_group_policy_attachment) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| reader\_group\_name | Name of IAM reader group | `string` | `"iam-reader"` | no |
-| system\_group\_name | Name of system group | `string` | `"infra-system"` | no |
+| <a name="input_reader_group_name"></a> [reader\_group\_name](#input\_reader\_group\_name) | Name of IAM reader group | `string` | `"iam-reader"` | no |
+| <a name="input_system_group_name"></a> [system\_group\_name](#input\_system\_group\_name) | Name of system group | `string` | `"infra-system"` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| iam\_reader\_group\_name | Name of IAM reader group |
-| infra\_system\_group\_name | Name of system group |
+| <a name="output_iam_reader_group_name"></a> [iam\_reader\_group\_name](#output\_iam\_reader\_group\_name) | Name of IAM reader group |
+| <a name="output_infra_system_group_name"></a> [infra\_system\_group\_name](#output\_infra\_system\_group\_name) | Name of system group |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

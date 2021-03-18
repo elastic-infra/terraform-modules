@@ -21,19 +21,31 @@ No requirements.
 
 | Name | Version |
 |------|---------|
-| aws | n/a |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
+
+## Modules
+
+No modules.
+
+## Resources
+
+| Name | Type |
+|------|------|
+| [aws_iam_role.rds_monitor_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
+| [aws_iam_role_policy_attachment.rds_monitor](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_policy_document.rdsmonitor-assume-role-policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| role\_name | RDS monitoring role name | `string` | `"rds-monitoring-role"` | no |
+| <a name="input_role_name"></a> [role\_name](#input\_role\_name) | RDS monitoring role name | `string` | `"rds-monitoring-role"` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| role\_arn | RDS monitoring role ARN |
-| role\_name | RDS monitoring role name |
+| <a name="output_role_arn"></a> [role\_arn](#output\_role\_arn) | RDS monitoring role ARN |
+| <a name="output_role_name"></a> [role\_name](#output\_role\_name) | RDS monitoring role name |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
