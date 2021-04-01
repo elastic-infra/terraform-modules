@@ -58,11 +58,11 @@ module "redash" {
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_db_create_container_definition"></a> [db\_create\_container\_definition](#module\_db\_create\_container\_definition) | cloudposse/ecs-container-definition/aws | 0.42.0 |
-| <a name="module_db_migrate_container_definition"></a> [db\_migrate\_container\_definition](#module\_db\_migrate\_container\_definition) | cloudposse/ecs-container-definition/aws | 0.42.0 |
-| <a name="module_db_upgrade_container_definition"></a> [db\_upgrade\_container\_definition](#module\_db\_upgrade\_container\_definition) | cloudposse/ecs-container-definition/aws | 0.42.0 |
-| <a name="module_server_container_definitions"></a> [server\_container\_definitions](#module\_server\_container\_definitions) | cloudposse/ecs-container-definition/aws | 0.42.0 |
-| <a name="module_worker_container_definition"></a> [worker\_container\_definition](#module\_worker\_container\_definition) | cloudposse/ecs-container-definition/aws | 0.42.0 |
+| <a name="module_db_create_container_definition"></a> [db\_create\_container\_definition](#module\_db\_create\_container\_definition) | cloudposse/ecs-container-definition/aws | 0.56.0 |
+| <a name="module_db_migrate_container_definition"></a> [db\_migrate\_container\_definition](#module\_db\_migrate\_container\_definition) | cloudposse/ecs-container-definition/aws | 0.56.0 |
+| <a name="module_db_upgrade_container_definition"></a> [db\_upgrade\_container\_definition](#module\_db\_upgrade\_container\_definition) | cloudposse/ecs-container-definition/aws | 0.56.0 |
+| <a name="module_server_container_definitions"></a> [server\_container\_definitions](#module\_server\_container\_definitions) | cloudposse/ecs-container-definition/aws | 0.56.0 |
+| <a name="module_worker_container_definition"></a> [worker\_container\_definition](#module\_worker\_container\_definition) | cloudposse/ecs-container-definition/aws | 0.56.0 |
 
 ## Resources
 
