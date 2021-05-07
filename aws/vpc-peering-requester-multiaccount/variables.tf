@@ -68,3 +68,9 @@ variable "peer_vpc_cidr_blocks" {
   description = "CIDR blocks associated with the peer VPC"
   type        = list(string)
 }
+
+variable "peering_auto_accept" {
+  type        = bool
+  description = "Set true to enable auto-accept in an AWS account."
+  default     = false
+}
