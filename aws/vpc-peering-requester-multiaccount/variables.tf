@@ -60,8 +60,9 @@ variable "peer_owner_id" {
 }
 
 variable "peer_region" {
-  description = "Region where peer VPC resides"
+  description = "Region where peer VPC resides; Cannot be set when peering_auto_accept is true"
   type        = string
+  default     = null
 }
 
 variable "peer_vpc_cidr_blocks" {
