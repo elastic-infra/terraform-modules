@@ -70,13 +70,13 @@ module "peering-request" {
 | <a name="input_name"></a> [name](#input\_name) | Name  (e.g. `app` or `cluster`) | `string` | n/a | yes |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | Namespace (e.g. `eg` or `cp`) | `string` | n/a | yes |
 | <a name="input_peer_owner_id"></a> [peer\_owner\_id](#input\_peer\_owner\_id) | Peer VPC owner's account ID | `string` | n/a | yes |
-| <a name="input_peer_region"></a> [peer\_region](#input\_peer\_region) | Region where peer VPC resides | `string` | n/a | yes |
 | <a name="input_peer_vpc_cidr_blocks"></a> [peer\_vpc\_cidr\_blocks](#input\_peer\_vpc\_cidr\_blocks) | CIDR blocks associated with the peer VPC | `list(string)` | n/a | yes |
 | <a name="input_peer_vpc_id"></a> [peer\_vpc\_id](#input\_peer\_vpc\_id) | Peer VPC ID | `string` | n/a | yes |
 | <a name="input_stage"></a> [stage](#input\_stage) | Stage (e.g. `prod`, `dev`, `staging`) | `string` | n/a | yes |
 | <a name="input_attributes"></a> [attributes](#input\_attributes) | Additional attributes (e.g. `a` or `b`) | `list(string)` | `[]` | no |
 | <a name="input_delimiter"></a> [delimiter](#input\_delimiter) | Delimiter to be used between `namespace`, `stage`, `name`, and `attributes` | `string` | `"-"` | no |
 | <a name="input_enabled"></a> [enabled](#input\_enabled) | Set to false to prevent the module from creating or accessing any resources | `string` | `"true"` | no |
+| <a name="input_peer_region"></a> [peer\_region](#input\_peer\_region) | Region where peer VPC resides; Cannot be set when peering\_auto\_accept is true | `string` | `null` | no |
 | <a name="input_peering_auto_accept"></a> [peering\_auto\_accept](#input\_peering\_auto\_accept) | Set true to enable auto-accept in an AWS account. | `bool` | `false` | no |
 | <a name="input_requester_vpc_id"></a> [requester\_vpc\_id](#input\_requester\_vpc\_id) | Requester VPC ID filter | `string` | `""` | no |
 | <a name="input_requester_vpc_tags"></a> [requester\_vpc\_tags](#input\_requester\_vpc\_tags) | Requester VPC Tags filter | `map(string)` | `{}` | no |
