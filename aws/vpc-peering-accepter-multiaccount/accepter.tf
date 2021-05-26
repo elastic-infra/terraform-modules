@@ -1,6 +1,6 @@
 locals {
-  accepter_attributes = concat(var.attributes, list("accepter"))
-  accepter_tags       = merge(var.tags, map("Side", "accepter"))
+  accepter_attributes = concat(var.attributes, tolist(["accepter"]))
+  accepter_tags       = merge(var.tags, tomap({"Side" = "accepter"}))
 }
 
 module "accepter" {
