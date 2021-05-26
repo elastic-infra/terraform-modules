@@ -1,6 +1,6 @@
 locals {
-  requester_attributes = concat(var.attributes, tolist(["requester"]))
-  requester_tags       = merge(var.tags, tomap({"Side" = "requester"}))
+  requester_attributes = concat(var.attributes, ["requester"])
+  requester_tags       = merge(var.tags, {"Side" = "requester"})
 }
 
 module "requester" {
