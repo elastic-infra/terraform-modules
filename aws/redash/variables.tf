@@ -5,7 +5,10 @@ variable "cloudwatch_logs_retention_in_days" {
 }
 
 variable "container_environments" {
-  type        = list
+  type = list(object({
+    name  = string
+    value = string
+  }))
   description = "The environments to set to each ECS container"
 }
 
@@ -15,7 +18,10 @@ variable "container_image_url" {
 }
 
 variable "container_secrets" {
-  type        = list
+  type = list(object({
+    name      = string
+    valueFrom = string
+  }))
   description = "The secrets to set to each ECS container"
 }
 
@@ -37,12 +43,12 @@ variable "ecs_execution_role_arn" {
 }
 
 variable "ecs_security_group_ids" {
-  type        = list
+  type        = list(string)
   description = "The list of security group IDs to assign to the ECS task or service"
 }
 
 variable "ecs_subnet_ids" {
-  type        = list
+  type        = list(string)
   description = "The list of subnet IDs to assign to the ECS task or service"
 }
 
@@ -75,7 +81,7 @@ variable "lb_certificate_arn" {
 }
 
 variable "lb_security_groups" {
-  type        = list
+  type        = list(string)
   description = "The list of security group IDs to assign to the LB"
 }
 
@@ -86,7 +92,7 @@ variable "lb_ssl_policy" {
 }
 
 variable "lb_subnets" {
-  type        = list
+  type        = list(string)
   description = "The list of subnet IDs to attach to the LB"
 }
 

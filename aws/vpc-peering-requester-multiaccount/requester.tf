@@ -1,6 +1,6 @@
 locals {
   requester_attributes = concat(var.attributes, ["requester"])
-  requester_tags       = merge(var.tags, {"Side" = "requester"})
+  requester_tags       = merge(var.tags, { "Side" = "requester" })
 }
 
 module "requester" {
