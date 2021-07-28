@@ -1,6 +1,6 @@
 locals {
   accepter_attributes = concat(var.attributes, ["accepter"])
-  accepter_tags       = merge(var.tags, {"Side" = "accepter"})
+  accepter_tags       = merge(var.tags, { "Side" = "accepter" })
 }
 
 module "accepter" {

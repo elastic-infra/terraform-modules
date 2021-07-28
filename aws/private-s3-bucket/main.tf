@@ -151,7 +151,7 @@
 */
 
 locals {
-  block_access_enabled = ! var.disable_private
+  block_access_enabled = !var.disable_private
   versioning_set       = (var.versioning != null ? [true] : [])
 }
 
