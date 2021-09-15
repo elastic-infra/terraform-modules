@@ -7,7 +7,7 @@ Create a base-role for elastic-infra
 
 ```hcl
 module "ei_base_role" {
-  source = "github.com/elastic-infra/terraform-modules//aws/ei-base-role?ref=v1.3.0"
+  source = "github.com/elastic-infra/terraform-modules//aws/ei-base-role?ref=v3.1.0"
 
   prefix            = var.infra_env
   additional_policy = data.aws_iam_policy_document.base.json
@@ -21,7 +21,7 @@ module "ei_base_role" {
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.12.0, < 0.16 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.12.0, < 1.1.0 |
 
 ## Providers
 
@@ -42,6 +42,7 @@ No modules.
 | [aws_iam_role.ei_base](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role_policy_attachment.additional_ei_base](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.ei_base](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role_policy_attachment.ssm_managed_instance_core](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_policy_document.ec2_sts](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.ei_base](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.merged](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |

@@ -7,7 +7,7 @@
 *
 * ```hcl
 * module "ei_base_role" {
-*   source = "github.com/elastic-infra/terraform-modules//aws/ei-base-role?ref=v1.3.0"
+*   source = "github.com/elastic-infra/terraform-modules//aws/ei-base-role?ref=v3.1.0"
 *
 *   prefix            = var.infra_env
 *   additional_policy = data.aws_iam_policy_document.base.json
@@ -79,6 +79,11 @@ resource "aws_iam_policy" "ei_base" {
 resource "aws_iam_role_policy_attachment" "ei_base" {
   role       = aws_iam_role.ei_base.name
   policy_arn = aws_iam_policy.ei_base.arn
+}
+
+resource "aws_iam_role_policy_attachment" "ssm_managed_instance_core" {
+  role       = aws_iam_role.ei_base.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
 resource "aws_iam_role_policy_attachment" "additional_ei_base" {
