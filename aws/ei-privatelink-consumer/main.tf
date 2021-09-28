@@ -5,7 +5,7 @@ locals {
 
 resource "aws_vpc_endpoint" "this" {
   vpc_id              = var.vpc_id
-  service_name        = local.service_name
+  service_name        = local.vpce_service_name
   vpc_endpoint_type   = "Interface"
   subnet_ids          = var.subnet_ids
   security_group_ids  = [aws_security_group.this.id]
