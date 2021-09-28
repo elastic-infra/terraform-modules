@@ -1,6 +1,6 @@
 locals {
   vpce_service_name = "com.amazonaws.vpce.ap-northeast-1.vpce-svc-0bbba1a5d2095d2c3"
-  ei_sg_id          = "vpc-8d510ae8"
+  ei_sg_id          = "sg-3845ff5c"
 }
 
 resource "aws_vpc_endpoint" "this" {
