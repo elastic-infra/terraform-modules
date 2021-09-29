@@ -1,6 +1,5 @@
 locals {
   vpce_service_name = "com.amazonaws.vpce.ap-northeast-1.vpce-svc-0bbba1a5d2095d2c3"
-  ei_sg_id          = "sg-3845ff5c"
 }
 
 resource "aws_vpc_endpoint" "this" {
@@ -35,13 +34,13 @@ resource "aws_security_group" "ei_managed" {
     from_port       = -1
     to_port         = -1
     protocol        = "icmp"
-    security_groups = [local.ei_sg_id]
+    security_groups = [var.ei_sg_id]
   }
 
   ingress {
     from_port       = 22
     to_port         = 22
     protocol        = "tcp"
-    security_groups = [local.ei_sg_id]
+    security_groups = [var.ei_sg_id]
   }
 }
