@@ -19,3 +19,9 @@ variable "private_dns_enabled" {
   description = "Whether or not to associate a private hosted zone with the specified VPC"
   default     = true
 }
+
+variable "ei_sg_id" {
+  type        = string
+  description = "Security Group ID of EI Management Environment"
+  default     = "089928438340/sg-3845ff5c"
+}
