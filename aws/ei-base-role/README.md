@@ -59,6 +59,7 @@ No modules.
 
 | Name | Description |
 |------|-------------|
+| <a name="output_attached_policy_arns"></a> [attached\_policy\_arns](#output\_attached\_policy\_arns) | List of ARNs for IAM policy attached to the base instance profile |
 | <a name="output_policy_arn"></a> [policy\_arn](#output\_policy\_arn) | ARN of Base policy |
 | <a name="output_profile_name"></a> [profile\_name](#output\_profile\_name) | Name of Base instance profile |
 
