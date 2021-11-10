@@ -1,10 +1,13 @@
 locals {
-  vpce_service_name = "com.amazonaws.vpce.ap-northeast-1.vpce-svc-0bbba1a5d2095d2c3"
+  vpce_service_name = {
+    "ap-northeast-1" = "com.amazonaws.vpce.ap-northeast-1.vpce-svc-0bbba1a5d2095d2c3"
+    "us-east-1"      = "com.amazonaws.vpce.us-east-1.vpce-svc-0d87332b34a7a49dc"
+  }
 }
 
 resource "aws_vpc_endpoint" "this" {
   vpc_id              = var.vpc_id
-  service_name        = local.vpce_service_name
+  service_name        = local.vpce_service_name[var.region]
   vpc_endpoint_type   = "Interface"
   subnet_ids          = var.subnet_ids
   security_group_ids  = [aws_security_group.this.id]
