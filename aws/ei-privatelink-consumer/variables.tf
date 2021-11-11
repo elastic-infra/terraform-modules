@@ -14,14 +14,14 @@ variable "private_dns_enabled" {
   default     = true
 }
 
-variable "ei_sg_id" {
-  type        = string
+variable "ei_sg_ids" {
+  type        = list(string)
   description = "Security Group ID of EI Management Environment"
-  default     = "089928438340/sg-3845ff5c"
+  default     = ["089928438340/sg-3845ff5c"]
 }
 
-variable "ei_cidr" {
-  type        = string
+variable "ei_cidrs" {
+  type        = list(string)
   description = "Cidr block of EI Management Environment"
-  default     = "10.254.0.0/23"
+  default     = ["10.254.0.0/23"]
 }
