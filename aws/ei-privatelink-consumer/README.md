@@ -43,6 +43,7 @@ No modules.
 | [aws_security_group.ei_managed](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
 | [aws_security_group.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
 | [aws_vpc_endpoint.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_endpoint) | resource |
+| [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 
 ## Inputs
 
@@ -52,7 +53,6 @@ No modules.
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | VPC ID where the VPC Endpoints are installed | `string` | n/a | yes |
 | <a name="input_ei_sg_id"></a> [ei\_sg\_id](#input\_ei\_sg\_id) | Security Group ID of EI Management Environment | `string` | `"089928438340/sg-3845ff5c"` | no |
 | <a name="input_private_dns_enabled"></a> [private\_dns\_enabled](#input\_private\_dns\_enabled) | Whether or not to associate a private hosted zone with the specified VPC | `bool` | `true` | no |
-| <a name="input_region"></a> [region](#input\_region) | AWS region of the VPC Endpoints | `string` | `"ap-northeast-1"` | no |
 
 ## Outputs
 

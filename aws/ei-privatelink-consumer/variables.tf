@@ -1,9 +1,3 @@
-variable "region" {
-  type        = string
-  description = "AWS region of the VPC Endpoints"
-  default     = "ap-northeast-1"
-}
-
 variable "vpc_id" {
   type        = string
   description = "VPC ID where the VPC Endpoints are installed"
