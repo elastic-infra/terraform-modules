@@ -19,3 +19,9 @@ variable "ei_sg_id" {
   description = "Security Group ID of EI Management Environment"
   default     = "089928438340/sg-3845ff5c"
 }
+
+variable "ei_cidr" {
+  type        = string
+  description = "Cidr block of EI Management Environment"
+  default     = "10.254.0.0/23"
+}
