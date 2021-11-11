@@ -51,6 +51,7 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | The ID of one or more subnets in which to create a network interface for the endpoint | `list(string)` | n/a | yes |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | VPC ID where the VPC Endpoints are installed | `string` | n/a | yes |
+| <a name="input_ei_cidr"></a> [ei\_cidr](#input\_ei\_cidr) | Cidr block of EI Management Environment | `string` | `"10.254.0.0/23"` | no |
 | <a name="input_ei_sg_id"></a> [ei\_sg\_id](#input\_ei\_sg\_id) | Security Group ID of EI Management Environment | `string` | `"089928438340/sg-3845ff5c"` | no |
 | <a name="input_private_dns_enabled"></a> [private\_dns\_enabled](#input\_private\_dns\_enabled) | Whether or not to associate a private hosted zone with the specified VPC | `bool` | `true` | no |
 
