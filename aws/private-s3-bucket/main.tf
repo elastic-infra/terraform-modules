@@ -153,7 +153,6 @@
 locals {
   block_access_enabled = !var.disable_private
   versioning_set       = (var.versioning != null ? [true] : [])
-  mfa_delete_set       = (var.mfa_delete != null ? [true] : [])
 }
 
 resource "aws_s3_bucket" "b" {
@@ -164,14 +163,8 @@ resource "aws_s3_bucket" "b" {
   dynamic "versioning" {
     for_each = local.versioning_set
     content {
-      enabled = var.versioning
-    }
-  }
-
-  dynamic " mfa_delete" {
-    for_each = local.mfa_delete_set
-    content {
-      enabled = var.mfa_delete
+      enabled    = var.versioning
+      mfa_delete = var.mfa_delete
     }
   }
 
