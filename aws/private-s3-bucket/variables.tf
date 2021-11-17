@@ -20,6 +20,12 @@ variable "versioning" {
   default     = null
 }
 
+variable "mfa_delete" {
+  type        = bool
+  description = "S3 object MFA delete settings"
+  default     = null
+}
+
 variable "logging" {
   type = list(object({
     target_bucket = string
