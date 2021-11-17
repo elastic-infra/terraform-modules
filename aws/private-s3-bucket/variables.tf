@@ -22,7 +22,7 @@ variable "versioning" {
 
 variable "mfa_delete" {
   type        = bool
-  description = "S3 object MFA delete settings"
+  description = "Enable MFA delete, this requires the versioning feature"
   default     = false
 }
 
