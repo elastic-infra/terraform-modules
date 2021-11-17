@@ -163,7 +163,8 @@ resource "aws_s3_bucket" "b" {
   dynamic "versioning" {
     for_each = local.versioning_set
     content {
-      enabled = var.versioning
+      enabled    = var.versioning
+      mfa_delete = var.mfa_delete
     }
   }
 

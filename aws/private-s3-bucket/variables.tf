@@ -20,6 +20,12 @@ variable "versioning" {
   default     = null
 }
 
+variable "mfa_delete" {
+  type        = bool
+  description = "Enable MFA delete, this requires the versioning feature"
+  default     = false
+}
+
 variable "logging" {
   type = list(object({
     target_bucket = string
