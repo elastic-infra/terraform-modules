@@ -148,6 +148,23 @@ cors_rule = [{
 }]
 ```
 
+#### Object Lock configuration
+
+```hcl
+object_lock_configuration = [
+  {
+    enabled = "Enabled"
+    rule = {
+      default_retention = {
+        mode  = "COMPLIANCE"
+        days  = 180
+        years = null
+      }
+    }
+  }
+]
+```
+
 ## Requirements
 
 | Name | Version |
@@ -183,6 +200,7 @@ No modules.
 | <a name="input_lifecycle_rule"></a> [lifecycle\_rule](#input\_lifecycle\_rule) | S3 lifecycle rule | <pre>list(object({<br>    id                                     = string<br>    enabled                                = bool<br>    prefix                                 = string<br>    abort_incomplete_multipart_upload_days = number<br>    tags                                   = map(string)<br>    transition = list(object({<br>      date          = string<br>      days          = number<br>      storage_class = string<br>    }))<br>    # Note for expiration, noncurrent_version_transition, noncurrent_version_expiration<br>    # define as list for simplicity, though expected only a single object<br>    expiration = list(object({<br>      date                         = string<br>      days                         = number<br>      expired_object_delete_marker = bool<br>    }))<br>    noncurrent_version_transition = list(object({<br>      days          = number<br>      storage_class = string<br>    }))<br>    noncurrent_version_expiration = list(object({<br>      days = number<br>    }))<br>  }))</pre> | `[]` | no |
 | <a name="input_logging"></a> [logging](#input\_logging) | S3 access logging | <pre>list(object({<br>    target_bucket = string<br>    target_prefix = string<br>  }))</pre> | `[]` | no |
 | <a name="input_mfa_delete"></a> [mfa\_delete](#input\_mfa\_delete) | Enable MFA delete, this requires the versioning feature | `bool` | `false` | no |
+| <a name="input_object_lock_configuration"></a> [object\_lock\_configuration](#input\_object\_lock\_configuration) | S3 Object Lock Configuration | <pre>list(object({<br>    enabled = string<br>    rule = object({<br>      default_retention = object({<br>        mode  = string<br>        days  = number<br>        years = number<br>      })<br>    })<br>  }))</pre> | `[]` | no |
 | <a name="input_server_side_encryption_configuration"></a> [server\_side\_encryption\_configuration](#input\_server\_side\_encryption\_configuration) | Server-side encryption configuration | <pre>list(object({<br>    rule = object({<br>      apply_server_side_encryption_by_default = object({<br>        sse_algorithm     = string<br>        kms_master_key_id = string<br>      })<br>    })<br>  }))</pre> | `[]` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags for S3 bucket | `map(string)` | `{}` | no |
 | <a name="input_versioning"></a> [versioning](#input\_versioning) | S3 object versioning settings | `bool` | `null` | no |

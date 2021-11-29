@@ -101,3 +101,43 @@ variable "cors_rule" {
   description = "S3 CORS headers"
   default     = []
 }
+
+variable "object_lock_configuration" {
+  type = list(object({
+    enabled = string
+    rule = object({
+      default_retention = object({
+        mode  = string
+        days  = number
+        years = number
+      })
+    })
+  }))
+  description = "S3 Object Lock Configuration"
+  default     = []
+
+  validation {
+    condition = alltrue([
+      for v in var.object_lock_configuration :
+        v.enabled == "Enabled"
+    ])
+    error_message = "Valid value is `Enabled`."
+  }
+
+  validation {
+    condition = alltrue([
+      for v in var.object_lock_configuration :
+        contains(["GOVERNANCE", "COMPLIANCE"], v.rule.default_retention.mode)
+    ])
+    error_message = "Valid values are `GOVERNANCE` and `COMPLIANCE`."
+  }
+
+  validation {
+    condition     = alltrue([
+      for v in var.object_lock_configuration :
+        (v.rule.default_retention.days != null && v.rule.default_retention.years == null) ||
+        (v.rule.default_retention.days == null && v.rule.default_retention.years != null)
+    ])
+    error_message = "Either `days` or `years` must be specified, but not both."
+  }
+}

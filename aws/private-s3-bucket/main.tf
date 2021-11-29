@@ -148,6 +148,23 @@
 * }]
 * ```
 *
+* #### Object Lock configuration
+*
+* ```hcl
+* object_lock_configuration = [
+*   {
+*     enabled = "Enabled"
+*     rule = {
+*       default_retention = {
+*         mode  = "COMPLIANCE"
+*         days  = 180
+*         years = null
+*       }
+*     }
+*   }
+* ]
+* ```
+*
 */
 
 locals {
@@ -250,6 +267,20 @@ resource "aws_s3_bucket" "b" {
       allowed_origins = cors_rule.value.allowed_origins
       expose_headers  = cors_rule.value.expose_headers
       max_age_seconds = cors_rule.value.max_age_seconds
+    }
+  }
+
+  dynamic "object_lock_configuration" {
+    for_each = var.object_lock_configuration
+    content {
+      object_lock_enabled = object_lock_configuration.value.enabled
+      rule {
+        default_retention {
+          mode  = object_lock_configuration.value.rule.default_retention.mode
+          days  = object_lock_configuration.value.rule.default_retention.days
+          years = object_lock_configuration.value.rule.default_retention.years
+        }
+      }
     }
   }
 }
