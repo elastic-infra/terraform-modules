@@ -153,7 +153,6 @@
 * ```hcl
 * object_lock_configuration = [
 *   {
-*     enabled = "Enabled"
 *     rule = {
 *       default_retention = {
 *         mode  = "COMPLIANCE"
@@ -273,7 +272,7 @@ resource "aws_s3_bucket" "b" {
   dynamic "object_lock_configuration" {
     for_each = var.object_lock_configuration
     content {
-      object_lock_enabled = object_lock_configuration.value.enabled
+      object_lock_enabled = "Enabled"
       rule {
         default_retention {
           mode  = object_lock_configuration.value.rule.default_retention.mode
