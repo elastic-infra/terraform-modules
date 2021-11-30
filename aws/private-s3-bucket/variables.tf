@@ -112,7 +112,7 @@ variable "object_lock_configuration" {
       })
     })
   }))
-  description = "S3 Object Lock Configuration"
+  description = "S3 Object Lock Configuration. You can only enable S3 Object Lock for new buckets. If you need to turn on S3 Object Lock for an existing bucket, please contact AWS Support."
   default     = []
 
   validation {
