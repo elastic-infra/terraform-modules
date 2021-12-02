@@ -60,6 +60,18 @@ resource "aws_security_group" "ei_managed" {
   }
 
   dynamic "ingress" {
+    for_each = local.ei_sg_ids
+
+    content {
+      from_port       = 161
+      to_port         = 161
+      protocol        = "udp"
+      security_groups = ingress.value
+      description     = "SNMP"
+    }
+  }
+
+  dynamic "ingress" {
     for_each = local.ei_cidrs
 
     content {
