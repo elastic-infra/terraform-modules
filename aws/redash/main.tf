@@ -11,9 +11,9 @@
 *
 * ```hcl
 * module "redash" {
-*   source = "github.com/elastic-infra/terraform-modules//aws/redash?ref=v1.4.0"
+*   source = "github.com/elastic-infra/terraform-modules//aws/redash?ref=v3.4.0"
 *
-*   container_image_url = "redash/redash:8.0.2.b37747"
+*   container_image_url = "redash/redash:10.1.0.b50633"
 *
 *   container_environments = [
 *     {

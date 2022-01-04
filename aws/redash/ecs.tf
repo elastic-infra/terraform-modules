@@ -44,11 +44,11 @@ resource "aws_ecs_service" "server" {
 ## Worker
 resource "aws_ecs_task_definition" "worker" {
   family                   = local.container_names["worker"]
-  container_definitions    = module.worker_container_definition.json_map_encoded_list
+  container_definitions    = local.redash_major_version >= 10 ? "[${module.worker_container_definition.json_map_encoded}, ${module.scheduler_container_definition[0].json_map_encoded}]" : module.worker_container_definition.json_map_encoded_list
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  cpu                      = var.worker_container_cpu
-  memory                   = var.worker_container_memory
+  cpu                      = local.redash_major_version >= 10 ? var.worker_container_cpu + var.scheduler_container_cpu : var.worker_container_cpu
+  memory                   = local.redash_major_version >= 10 ? var.worker_container_memory + var.scheduler_container_memory : var.worker_container_memory
   execution_role_arn       = var.ecs_execution_role_arn
   task_role_arn            = var.ecs_task_role_arn
 }

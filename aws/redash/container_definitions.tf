@@ -1,7 +1,7 @@
 # Server
 module "server_container_definitions" {
   source  = "cloudposse/ecs-container-definition/aws"
-  version = "0.56.0"
+  version = "0.58.1"
 
   container_name   = local.container_names["server"]
   container_image  = var.container_image_url
@@ -28,7 +28,7 @@ module "server_container_definitions" {
 # Worker
 module "worker_container_definition" {
   source  = "cloudposse/ecs-container-definition/aws"
-  version = "0.56.0"
+  version = "0.58.1"
 
   container_name   = local.container_names["worker"]
   container_image  = var.container_image_url
@@ -50,10 +50,36 @@ module "worker_container_definition" {
   }
 }
 
+# Scheduler
+module "scheduler_container_definition" {
+  count   = local.redash_major_version >= 10 ? 1 : 0
+  source  = "cloudposse/ecs-container-definition/aws"
+  version = "0.58.1"
+
+  container_name   = local.container_names["scheduler"]
+  container_image  = var.container_image_url
+  container_cpu    = var.scheduler_container_cpu
+  container_memory = var.scheduler_container_memory
+  command          = local.commands["scheduler"]
+  environment      = var.container_environments
+  secrets          = var.container_secrets
+
+  log_configuration = {
+    logDriver     = "awslogs"
+    secretOptions = null
+
+    options = {
+      "awslogs-region"        = data.aws_region.current.name
+      "awslogs-group"         = aws_cloudwatch_log_group.logs["scheduler"].name
+      "awslogs-stream-prefix" = "scheduler"
+    }
+  }
+}
+
 # DB Create
 module "db_create_container_definition" {
   source  = "cloudposse/ecs-container-definition/aws"
-  version = "0.56.0"
+  version = "0.58.1"
 
   container_name   = local.container_names["db_create"]
   container_image  = var.container_image_url
@@ -78,7 +104,7 @@ module "db_create_container_definition" {
 # DB Migrate
 module "db_migrate_container_definition" {
   source  = "cloudposse/ecs-container-definition/aws"
-  version = "0.56.0"
+  version = "0.58.1"
 
   container_name   = local.container_names["db_migrate"]
   container_image  = var.container_image_url
@@ -103,7 +129,7 @@ module "db_migrate_container_definition" {
 # DB Upgrade
 module "db_upgrade_container_definition" {
   source  = "cloudposse/ecs-container-definition/aws"
-  version = "0.56.0"
+  version = "0.58.1"
 
   container_name   = local.container_names["db_upgrade"]
   container_image  = var.container_image_url
