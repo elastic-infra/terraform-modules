@@ -109,7 +109,6 @@ module "redash" {
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | A prefix for the resource names | `string` | `null` | no |
 | <a name="input_scheduler_container_cpu"></a> [scheduler\_container\_cpu](#input\_scheduler\_container\_cpu) | The number of cpu units to reserve for the scheduler container | `number` | `1024` | no |
 | <a name="input_scheduler_container_memory"></a> [scheduler\_container\_memory](#input\_scheduler\_container\_memory) | The amount of memory (in MiB) to allow the scheduler container | `number` | `2048` | no |
-| <a name="input_scheduler_desired_count"></a> [scheduler\_desired\_count](#input\_scheduler\_desired\_count) | The number of redash scheduler tasks | `number` | `1` | no |
 | <a name="input_server_container_cpu"></a> [server\_container\_cpu](#input\_server\_container\_cpu) | The number of cpu units to reserve for the server container | `number` | `1024` | no |
 | <a name="input_server_container_memory"></a> [server\_container\_memory](#input\_server\_container\_memory) | The amount of memory (in MiB) to allow the server container | `number` | `2048` | no |
 | <a name="input_server_desired_count"></a> [server\_desired\_count](#input\_server\_desired\_count) | The number of redash server tasks | `number` | `1` | no |

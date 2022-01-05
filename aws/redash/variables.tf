@@ -114,12 +114,6 @@ variable "scheduler_container_memory" {
   description = "The amount of memory (in MiB) to allow the scheduler container"
 }
 
-variable "scheduler_desired_count" {
-  type        = number
-  default     = 1
-  description = "The number of redash scheduler tasks"
-}
-
 variable "server_container_cpu" {
   type        = number
   default     = 1024
