@@ -282,6 +282,12 @@ resource "aws_s3_bucket" "b" {
       }
     }
   }
+
+  lifecycle {
+    ignore_changes = [
+      replication_configuration,
+    ]
+  }
 }
 
 resource "aws_s3_bucket_public_access_block" "b" {
