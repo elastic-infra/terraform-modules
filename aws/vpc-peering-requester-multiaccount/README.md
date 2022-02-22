@@ -40,18 +40,19 @@ module "peering-request" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 2 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 2 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_requester"></a> [requester](#module\_requester) | git::https://github.com/cloudposse/terraform-terraform-label.git?ref=master |  |
+| <a name="module_requester"></a> [requester](#module\_requester) | git::https://github.com/cloudposse/terraform-terraform-label.git | master |
 
 ## Resources
 
