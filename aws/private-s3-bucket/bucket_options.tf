@@ -1,5 +1,5 @@
 resource "aws_s3_bucket_versioning" "b" {
-  count  = local.versioning_count
+  count  = var.versioning != null ? 1 : 0
   bucket = aws_s3_bucket.b.id
   versioning_configuration {
     status     = var.versioning ? "Enabled" : "Suspended"

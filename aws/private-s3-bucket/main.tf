@@ -177,7 +177,6 @@ data "aws_canonical_user_id" "current" {}
 
 locals {
   block_access_enabled = ! var.disable_private
-  versioning_count     = (var.versioning != null ? 1 : 0)
 }
 
 resource "aws_s3_bucket" "b" {
