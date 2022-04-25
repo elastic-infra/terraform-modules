@@ -128,8 +128,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "b" {
             }
           }
           dynamic "and" {
-            # Add prefix as imaginary tags as values, and use `and` if length(values) >= 2
-            for_each = (rule.value.prefix != null && length(rule.value.tags) > 1) || length(rule.value.tags) > 2 ? [1] : []
+            for_each = (rule.value.prefix != null && length(rule.value.tags) >= 1) || length(rule.value.tags) >= 2 ? [1] : []
             content {
               prefix = rule.value.prefix
               tags   = rule.value.tags
