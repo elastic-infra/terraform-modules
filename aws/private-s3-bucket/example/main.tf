@@ -1,7 +1,24 @@
+data "aws_canonical_user_id" "current" {}
+
 module "example_bucket" {
   # source = "github.com/elastic-infra/terraform-modules//aws/private-s3-bucket?ref=v3.0.0"
   source      = "../"
   bucket_name = "ei-private-s3-example-bucket"
+
+  grant = [
+    {
+      id          = data.aws_canonical_user_id.current.id
+      type        = "CanonicalUser"
+      permissions = ["FULL_CONTROL"]
+      uri         = null
+    },
+    {
+      id          = null
+      type        = "Group"
+      permissions = ["WRITE", "READ_ACP"]
+      uri         = "http://acs.amazonaws.com/groups/s3/LogDelivery"
+    }
+  ]
 
   lifecycle_rule = [
     {
