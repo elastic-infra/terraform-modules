@@ -24,14 +24,25 @@ resource "aws_s3_bucket_acl" "b" {
     for_each = length(var.grant) > 0 ? [1] : []
     content {
       dynamic "grant" {
-        for_each = [for g in var.grant : [for p in g : [g, p]]]
+        for_each = flatten(
+          [for g in var.grant :
+            [for p in g.permissions :
+              {
+                id         = g["id"]
+                type       = g["type"]
+                permission = p
+                uri        = g["uri"]
+              }
+            ]
+          ]
+        )
         content {
           grantee {
-            id   = grant.value[0].id
-            type = grant.value[0].type
-            uri  = grant.value[0].uri
+            id   = grant.value.id
+            type = grant.value.type
+            uri  = grant.value.uri
           }
-          permission = grant.value[1]
+          permission = grant.value.permission
         }
       }
       owner {
