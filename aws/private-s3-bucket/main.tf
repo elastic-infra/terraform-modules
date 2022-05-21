@@ -3,6 +3,12 @@
 *
 * Create a private bucket in a recommended way
 *
+* **NOTE**
+*
+* This module will no longer be maintained for future release of AWS terraform provider.
+* Some latest attributes are not implemented.
+* Use the indivisual resources for unimplemented bucket properties.
+*
 * ### Usage
 *
 * ```hcl
@@ -141,7 +147,7 @@
 * ```hcl
 * cors_rule = [{
 *   allowed_origins = ["*"]
-*   allowed_methods = ["GET", "OPTIONS"]
+*   allowed_methods = ["GET", "POST"]
 *   allowed_headers = ["*"]
 *   expose_headers  = []
 *   max_age_seconds = 3000
@@ -166,128 +172,16 @@
 *
 */
 
+# For "grant"
+data "aws_canonical_user_id" "current" {}
+
 locals {
   block_access_enabled = ! var.disable_private
-  versioning_set       = (var.versioning != null ? [true] : [])
 }
 
 resource "aws_s3_bucket" "b" {
   bucket = var.bucket_name
-  acl    = length(var.grant) > 0 ? null : "private"
   tags   = var.tags
-
-  dynamic "versioning" {
-    for_each = local.versioning_set
-    content {
-      enabled    = var.versioning
-      mfa_delete = var.mfa_delete
-    }
-  }
-
-  dynamic "logging" {
-    for_each = var.logging
-    content {
-      target_bucket = logging.value.target_bucket
-      target_prefix = logging.value.target_prefix
-    }
-  }
-
-  dynamic "grant" {
-    for_each = var.grant
-    content {
-      id          = grant.value.id
-      type        = grant.value.type
-      permissions = grant.value.permissions
-      uri         = grant.value.uri
-    }
-  }
-
-  /*
-   * tags, enabled, abort_incomplete_multipart_upload_days,
-   * expiration, transition, noncurrent_version_expiration, noncurrent_veersion_transition
-   */
-  dynamic "lifecycle_rule" {
-    for_each = var.lifecycle_rule
-    content {
-      id                                     = lifecycle_rule.value.id
-      enabled                                = lifecycle_rule.value.enabled
-      prefix                                 = lifecycle_rule.value.prefix
-      tags                                   = lifecycle_rule.value.tags
-      abort_incomplete_multipart_upload_days = lifecycle_rule.value.abort_incomplete_multipart_upload_days
-      dynamic "transition" {
-        for_each = lifecycle_rule.value.transition
-        content {
-          date          = transition.value.date
-          days          = transition.value.days
-          storage_class = transition.value.storage_class
-        }
-      }
-      dynamic "expiration" {
-        for_each = lifecycle_rule.value.expiration
-        content {
-          date                         = expiration.value.date
-          days                         = expiration.value.days
-          expired_object_delete_marker = expiration.value.expired_object_delete_marker
-        }
-      }
-      dynamic "noncurrent_version_transition" {
-        for_each = lifecycle_rule.value.noncurrent_version_transition
-        content {
-          days          = noncurrent_version_transition.value.days
-          storage_class = noncurrent_version_transition.value.storage_class
-        }
-      }
-      dynamic "noncurrent_version_expiration" {
-        for_each = lifecycle_rule.value.noncurrent_version_expiration
-        content {
-          days = noncurrent_version_expiration.value.days
-        }
-      }
-    }
-  }
-
-  dynamic "server_side_encryption_configuration" {
-    for_each = var.server_side_encryption_configuration
-    content {
-      rule {
-        apply_server_side_encryption_by_default {
-          sse_algorithm     = server_side_encryption_configuration.value.rule.apply_server_side_encryption_by_default.sse_algorithm
-          kms_master_key_id = server_side_encryption_configuration.value.rule.apply_server_side_encryption_by_default.kms_master_key_id
-        }
-      }
-    }
-  }
-
-  dynamic "cors_rule" {
-    for_each = var.cors_rule
-    content {
-      allowed_headers = cors_rule.value.allowed_headers
-      allowed_methods = cors_rule.value.allowed_methods
-      allowed_origins = cors_rule.value.allowed_origins
-      expose_headers  = cors_rule.value.expose_headers
-      max_age_seconds = cors_rule.value.max_age_seconds
-    }
-  }
-
-  dynamic "object_lock_configuration" {
-    for_each = var.object_lock_configuration
-    content {
-      object_lock_enabled = "Enabled"
-      rule {
-        default_retention {
-          mode  = object_lock_configuration.value.rule.default_retention.mode
-          days  = object_lock_configuration.value.rule.default_retention.days
-          years = object_lock_configuration.value.rule.default_retention.years
-        }
-      }
-    }
-  }
-
-  lifecycle {
-    ignore_changes = [
-      replication_configuration,
-    ]
-  }
 }
 
 resource "aws_s3_bucket_public_access_block" "b" {
