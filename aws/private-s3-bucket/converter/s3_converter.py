@@ -362,6 +362,9 @@ class S3StateConverter:
         instance = resource["instances"][0]
         lifecycle_attr = instance["attributes"]["lifecycle_rule"]
         bucket = instance["attributes"]["bucket"]
+        if len(lifecycle_attr) == 0:
+            logging.debug("Lifecycle rule is not configured for bucket %s", bucket)
+            return
         resource_prefix = ""
         if "module" in resource:
             resource_prefix = resource["module"] + "."
