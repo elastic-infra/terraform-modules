@@ -298,7 +298,7 @@ class S3StateConverter:
         value = "{rule["tags"]["value"]}"
       }}
 """
-        filter += "    }\n"
+        filter += "    }"
         return filter
 
     def _lifecycle_rule_abort_multipart_incomplete_multipart_upload(self, rule):
@@ -317,7 +317,7 @@ class S3StateConverter:
             s += f'''      storage_class = "{t["storage_class"]}"\n'''
             s += "    }"
             ts.append(s)
-        return "\n".join(ts) + "\n"
+        return "\n".join(ts)
 
     def _lifecycle_rule_expiration(self, rule):
         ts = []
@@ -330,7 +330,7 @@ class S3StateConverter:
             s += f'''      expired_object_delete_marker  = {"true" if t["expired_object_delete_marker"] else "false"}\n'''
             s += "    }"
             ts.append(s)
-        return "".join([t + "\n" for t in ts])
+        return "\n".join(ts)
 
     def _lifecycle_rule_noncurrent_version_transition(self, rule):
         ts = []
@@ -344,7 +344,7 @@ class S3StateConverter:
             s += f'''      storage_class   = "{t["storage_class"]}"\n'''
             s += "    }"
             ts.append(s)
-        return "".join([t + "\n" for t in ts])
+        return "\n".join(ts)
 
     def _lifecycle_rule_noncurrent_version_expiration(self, rule):
         ts = []
@@ -356,7 +356,7 @@ class S3StateConverter:
             s += f'''      noncurrent_days = {t["days"]}\n'''
             s += "    }"
             ts.append(s)
-        return "".join([t + "\n" for t in ts])
+        return "\n".join(ts)
 
     def convert_resource_lifecycle(self, resource):
         instance = resource["instances"][0]
@@ -369,12 +369,22 @@ class S3StateConverter:
         if "module" in resource:
             resource_prefix = resource["module"] + "."
         module_line = f'# In module {resource["module"]}' + "\n" if "module" in resource else ""
+        def lifecycle_rule_attrs(r):
+            return "\n".join(filter(lambda x: x is not None and x != "", [
+                self._lifecycle_rule_filter(r),
+                self._lifecycle_rule_abort_multipart_incomplete_multipart_upload(r),
+                self._lifecycle_rule_transition(r),
+                self._lifecycle_rule_expiration(r),
+                self._lifecycle_rule_noncurrent_version_transition(r),
+                self._lifecycle_rule_noncurrent_version_expiration(r),
+            ]))
 
         lifecycle_hcl = "\n".join([
             f"""  rule {{
     id     = "{r["id"]}"
     status = "{"Enabled" if r["enabled"] else "Disabled"}"
-{self._lifecycle_rule_filter(r)}{self._lifecycle_rule_abort_multipart_incomplete_multipart_upload(r)}{self._lifecycle_rule_transition(r)}{self._lifecycle_rule_expiration(r)}{self._lifecycle_rule_noncurrent_version_transition(r)}{self._lifecycle_rule_noncurrent_version_expiration(r)}  }}"""
+{lifecycle_rule_attrs(r)}
+  }}"""
         for r in lifecycle_attr])
 
         lifecycle = f"""#{module_line}resource "aws_s3_bucket_lifecycle_configuration" "{resource["name"]}" {{
