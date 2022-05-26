@@ -32,6 +32,7 @@ data "aws_iam_policy_document" "ec2_sts" {
 
 data "aws_iam_policy_document" "ei_base" {
   statement {
+    sid    = "OperateTags"
     effect = "Allow"
 
     actions = [
@@ -44,6 +45,7 @@ data "aws_iam_policy_document" "ei_base" {
   }
 
   statement {
+    sid    = "OperateEiHosts"
     effect = "Allow"
 
     actions = [
