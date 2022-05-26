@@ -5,7 +5,7 @@ variable "prefix" {
 }
 
 variable "additional_policy" {
-  description = "Policy that merge into the base policy"
+  description = "Policy that merges into the base policy"
   default     = ""
   type        = string
 }
