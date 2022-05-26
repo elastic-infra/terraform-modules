@@ -52,7 +52,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_additional_policy"></a> [additional\_policy](#input\_additional\_policy) | Policy that merge into the base policy | `string` | `""` | no |
+| <a name="input_additional_policy"></a> [additional\_policy](#input\_additional\_policy) | Policy that merges into the base policy | `string` | `""` | no |
 | <a name="input_additional_policy_arns"></a> [additional\_policy\_arns](#input\_additional\_policy\_arns) | List of ARNs of IAM policies to attach to base role | `list(string)` | `[]` | no |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | Prefix for all resources | `string` | `"ei"` | no |
 
