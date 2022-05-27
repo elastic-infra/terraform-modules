@@ -22,13 +22,16 @@ data "aws_vpc" "requester" {
 }
 
 # Lookup requester subnets
-data "aws_subnet_ids" "requester" {
-  count  = local.count
-  vpc_id = local.requester_vpc_id
+data "aws_subnets" "requester" {
+  count = local.count
+  filter {
+    name   = "vpc-id"
+    values = [local.requester_vpc_id]
+  }
 }
 
 locals {
-  requester_subnet_ids       = distinct(sort(flatten(data.aws_subnet_ids.requester.*.ids)))
+  requester_subnet_ids       = distinct(sort(flatten(data.aws_subnets.requester.*.ids)))
   requester_subnet_ids_count = length(local.requester_subnet_ids)
   requester_vpc_id           = join("", data.aws_vpc.requester.*.id)
 }

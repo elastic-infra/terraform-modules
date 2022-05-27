@@ -32,6 +32,7 @@ data "aws_iam_policy_document" "ec2_sts" {
 
 data "aws_iam_policy_document" "ei_base" {
   statement {
+    sid    = "OperateTags"
     effect = "Allow"
 
     actions = [
@@ -44,6 +45,7 @@ data "aws_iam_policy_document" "ei_base" {
   }
 
   statement {
+    sid    = "OperateEiHosts"
     effect = "Allow"
 
     actions = [
@@ -60,8 +62,8 @@ data "aws_iam_policy_document" "ei_base" {
 }
 
 data "aws_iam_policy_document" "merged" {
-  source_json   = data.aws_iam_policy_document.ei_base.json
-  override_json = var.additional_policy
+  source_policy_documents   = [data.aws_iam_policy_document.ei_base.json]
+  override_policy_documents = [var.additional_policy]
 }
 
 resource "aws_iam_role" "ei_base" {
