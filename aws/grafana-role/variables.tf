@@ -27,3 +27,9 @@ variable "athena_search_buckets" {
   default     = []
   description = "List of buckets searched by Athena"
 }
+
+variable "cwlogs_search_loggroups" {
+  type        = list(string)
+  default     = []
+  description = "List of LogGroups searched by CloudWatch Logs Insight"
+}

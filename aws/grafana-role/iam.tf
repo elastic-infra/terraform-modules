@@ -16,6 +16,68 @@ resource "aws_iam_role" "grafana" {
 }
 
 data "aws_iam_policy_document" "grafana" {
+  # CloudWatch
+  ## https://grafana.com/docs/grafana/latest/datasources/aws-cloudwatch/
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "cloudwatch:ListMetrics",
+    ]
+
+    resources = ["*"]
+  }
+
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "logs:DescribeLogGroups",
+      "logs:GetLogGroupFields",
+      "logs:GetQueryResults",
+    ]
+
+    resources = ["*"]
+  }
+
+  dynamic "statement" {
+    for_each = var.cwlogs_search_loggroups == [] ? [] : [1]
+
+    content {
+      effect = "Allow"
+
+      actions = [
+        "logs:GetLogEvents",
+        "logs:StartQuery",
+        "logs:StopQuery",
+      ]
+
+      resources = var.cwlogs_search_loggroups
+    }
+  }
+
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "ec2:DescribeTags",
+      "ec2:DescribeInstances",
+      "ec2:DescribeRegions",
+    ]
+
+    resources = ["*"]
+  }
+
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "tag:GetResources",
+    ]
+
+    resources = ["*"]
+  }
+
   # Athena
   ## https://docs.aws.amazon.com/ja_jp/athena/latest/ug/example-policies-workgroup.html
   dynamic "statement" {
