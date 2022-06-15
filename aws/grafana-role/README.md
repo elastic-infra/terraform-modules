@@ -44,11 +44,11 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_assumerole_principals"></a> [assumerole\_principals](#input\_assumerole\_principals) | List of principals to invoke assumerole | `list(string)` | <pre>[<br>  "arn:aws:iam::089928438340:role/eicommonprod-grafana-ec2"<br>]</pre> | no |
-| <a name="input_athena_result_bucket"></a> [athena\_result\_bucket](#input\_athena\_result\_bucket) | Bucket of Athena's result | `string` | `null` | no |
-| <a name="input_athena_search_buckets"></a> [athena\_search\_buckets](#input\_athena\_search\_buckets) | List of buckets searched by Athena | `list(string)` | `[]` | no |
-| <a name="input_athena_workgroups"></a> [athena\_workgroups](#input\_athena\_workgroups) | List of WorkGroups | `list(string)` | `[]` | no |
-| <a name="input_cwlogs_search_loggroups"></a> [cwlogs\_search\_loggroups](#input\_cwlogs\_search\_loggroups) | List of LogGroups searched by CloudWatch Logs Insight | `list(string)` | `[]` | no |
+| <a name="input_assumerole_principals"></a> [assumerole\_principals](#input\_assumerole\_principals) | ARN list of principals to invoke assumerole | `list(string)` | <pre>[<br>  "arn:aws:iam::089928438340:role/eicommonprod-grafana-ec2"<br>]</pre> | no |
+| <a name="input_athena_result_bucket"></a> [athena\_result\_bucket](#input\_athena\_result\_bucket) | Bucket ARN of Athena's result | `string` | `null` | no |
+| <a name="input_athena_search_buckets"></a> [athena\_search\_buckets](#input\_athena\_search\_buckets) | ARN list of buckets searched by Athena | `list(string)` | `[]` | no |
+| <a name="input_athena_workgroups"></a> [athena\_workgroups](#input\_athena\_workgroups) | ARN list of WorkGroups | `list(string)` | `[]` | no |
+| <a name="input_cwlogs_search_loggroups"></a> [cwlogs\_search\_loggroups](#input\_cwlogs\_search\_loggroups) | ARN list of LogGroups searched by CloudWatch Logs Insight | `list(string)` | `[]` | no |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | Prefix for all resources | `string` | `"ei"` | no |
 
 ## Outputs
