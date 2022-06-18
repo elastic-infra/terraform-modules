@@ -275,6 +275,9 @@ class S3StateConverter:
             for g in self.__grant_config(grant_attr)])
             acp_hcl  = f"""  access_control_policy {{
 {grants_acl}
+    owner  {{
+      id = data.aws_canonical_user_id.current.id
+    }}
   }}"""
 
         import_cmd = f"terraform import {resource_prefix}aws_s3_bucket_acl.{resource['name']} {bucket}"
