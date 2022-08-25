@@ -121,6 +121,7 @@ module "redash" {
 
 | Name | Description |
 |------|-------------|
+| <a name="output_lb_arn"></a> [lb\_arn](#output\_lb\_arn) | The ARN of LB |
 | <a name="output_lb_dns"></a> [lb\_dns](#output\_lb\_dns) | The DNS name of LB |
 | <a name="output_lb_zone_id"></a> [lb\_zone\_id](#output\_lb\_zone\_id) | The Zone ID of LB |
 
