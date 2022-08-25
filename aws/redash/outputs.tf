@@ -7,3 +7,8 @@ output "lb_zone_id" {
   value       = aws_lb.redash.zone_id
   description = "The Zone ID of LB"
 }
+
+output "lb_arn" {
+  value       = aws_lb.redash.arn
+  description = "The ARN of LB"
+}
