@@ -112,9 +112,13 @@ module "redash" {
 | <a name="input_scheduler_container_memory"></a> [scheduler\_container\_memory](#input\_scheduler\_container\_memory) | The amount of memory (in MiB) to allow the scheduler container | `number` | `2048` | no |
 | <a name="input_server_container_cpu"></a> [server\_container\_cpu](#input\_server\_container\_cpu) | The number of cpu units to reserve for the server container | `number` | `1024` | no |
 | <a name="input_server_container_memory"></a> [server\_container\_memory](#input\_server\_container\_memory) | The amount of memory (in MiB) to allow the server container | `number` | `2048` | no |
+| <a name="input_server_deployment_maximum_percent"></a> [server\_deployment\_maximum\_percent](#input\_server\_deployment\_maximum\_percent) | Upper limit (as a percentage of the service's desiredCount) of the number of running server tasks that can be running in a service during a deployment | `number` | `200` | no |
+| <a name="input_server_deployment_minimum_healthy_percent"></a> [server\_deployment\_minimum\_healthy\_percent](#input\_server\_deployment\_minimum\_healthy\_percent) | Lower limit (as a percentage of the service's desiredCount) of the number of running server tasks that must remain running and healthy in a service during a deployment | `number` | `100` | no |
 | <a name="input_server_desired_count"></a> [server\_desired\_count](#input\_server\_desired\_count) | The number of redash server tasks | `number` | `1` | no |
 | <a name="input_worker_container_cpu"></a> [worker\_container\_cpu](#input\_worker\_container\_cpu) | The number of cpu units to reserve for the worker container | `number` | `1024` | no |
 | <a name="input_worker_container_memory"></a> [worker\_container\_memory](#input\_worker\_container\_memory) | The amount of memory (in MiB) to allow the worker container | `number` | `2048` | no |
+| <a name="input_worker_deployment_maximum_percent"></a> [worker\_deployment\_maximum\_percent](#input\_worker\_deployment\_maximum\_percent) | Upper limit (as a percentage of the service's desiredCount) of the number of running worker tasks that can be running in a service during a deployment | `number` | `200` | no |
+| <a name="input_worker_deployment_minimum_healthy_percent"></a> [worker\_deployment\_minimum\_healthy\_percent](#input\_worker\_deployment\_minimum\_healthy\_percent) | Lower limit (as a percentage of the service's desiredCount) of the number of running worker tasks that must remain running and healthy in a service during a deployment | `number` | `100` | no |
 | <a name="input_worker_desired_count"></a> [worker\_desired\_count](#input\_worker\_desired\_count) | The number of redash worker tasks | `number` | `1` | no |
 
 ## Outputs

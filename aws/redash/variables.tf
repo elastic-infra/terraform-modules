@@ -126,6 +126,18 @@ variable "server_container_memory" {
   description = "The amount of memory (in MiB) to allow the server container"
 }
 
+variable "server_deployment_maximum_percent" {
+  type        = number
+  default     = 200
+  description = "Upper limit (as a percentage of the service's desiredCount) of the number of running server tasks that can be running in a service during a deployment"
+}
+
+variable "server_deployment_minimum_healthy_percent" {
+  type        = number
+  default     = 100
+  description = "Lower limit (as a percentage of the service's desiredCount) of the number of running server tasks that must remain running and healthy in a service during a deployment"
+}
+
 variable "server_desired_count" {
   type        = number
   default     = 1
@@ -147,6 +159,18 @@ variable "worker_container_memory" {
   type        = number
   default     = 2048
   description = "The amount of memory (in MiB) to allow the worker container"
+}
+
+variable "worker_deployment_maximum_percent" {
+  type        = number
+  default     = 200
+  description = "Upper limit (as a percentage of the service's desiredCount) of the number of running worker tasks that can be running in a service during a deployment"
+}
+
+variable "worker_deployment_minimum_healthy_percent" {
+  type        = number
+  default     = 100
+  description = "Lower limit (as a percentage of the service's desiredCount) of the number of running worker tasks that must remain running and healthy in a service during a deployment"
 }
 
 variable "worker_desired_count" {
