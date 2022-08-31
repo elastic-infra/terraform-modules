@@ -59,8 +59,8 @@ resource "aws_ecs_service" "worker" {
   cluster                            = aws_ecs_cluster.redash.id
   task_definition                    = aws_ecs_task_definition.worker.arn
   desired_count                      = var.worker_desired_count
-  deployment_minimum_healthy_percent = 100
-  deployment_maximum_percent         = 200
+  deployment_minimum_healthy_percent = local.redash_major_version >= 10 ? 0 : 100
+  deployment_maximum_percent         = local.redash_major_version >= 10 ? 100 : 200
 
   network_configuration {
     security_groups  = var.ecs_security_group_ids
