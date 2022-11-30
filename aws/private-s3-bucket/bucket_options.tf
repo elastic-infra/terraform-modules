@@ -17,6 +17,7 @@ resource "aws_s3_bucket_logging" "b" {
 
 # grant
 resource "aws_s3_bucket_acl" "b" {
+  count  = local.object_ownership != "BucketOwnerEnforced" ? 1 : 0
   bucket = aws_s3_bucket.b.id
 
   acl = length(var.grant) > 0 ? null : "private"
@@ -49,6 +50,15 @@ resource "aws_s3_bucket_acl" "b" {
         id = data.aws_canonical_user_id.current.id
       }
     }
+  }
+}
+
+# Bucket Ownership Controls
+resource "aws_s3_bucket_ownership_controls" "b" {
+  bucket = aws_s3_bucket.b.id
+
+  rule {
+    object_ownership = local.object_ownership
   }
 }
 # lifecycle
