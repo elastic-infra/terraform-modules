@@ -35,6 +35,12 @@ variable "logging" {
   default     = []
 }
 
+variable "object_ownership" {
+  type        = string
+  description = "Object ownership."
+  default     = null
+}
+
 variable "grant" {
   type = list(object({
     id          = string

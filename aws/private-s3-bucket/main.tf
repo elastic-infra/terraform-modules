@@ -176,7 +176,8 @@
 data "aws_canonical_user_id" "current" {}
 
 locals {
-  block_access_enabled = ! var.disable_private
+  block_access_enabled = !var.disable_private
+  object_ownership     = coalesce(var.object_ownership, length(var.grant) > 0 ? "ObjectWriter" : "BucketOwnerEnforced")
 }
 
 resource "aws_s3_bucket" "b" {
