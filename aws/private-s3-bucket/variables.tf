@@ -83,17 +83,16 @@ variable "lifecycle_rule" {
   default     = []
 }
 
-variable "server_side_encryption_configuration" {
-  type = list(object({
-    rule = object({
-      apply_server_side_encryption_by_default = object({
-        sse_algorithm     = string
-        kms_master_key_id = string
-      })
-    })
-  }))
-  description = "Server-side encryption configuration"
-  default     = []
+variable "disable_server_side_encryption" {
+  type        = bool
+  description = "If true, disable server side encryption"
+  default     = false
+}
+
+variable "server_side_encryption_kms_master_key_id" {
+  type        = string
+  description = "The AWS KMS master key ID used for the SSE-KMS encryption."
+  default     = null
 }
 
 variable "cors_rule" {
