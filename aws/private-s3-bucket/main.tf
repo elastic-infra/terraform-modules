@@ -112,34 +112,18 @@
 *
 * #### server_side_encryption_configuration
 *
-* SSE-S3
+* SSE-S3 is enabled by default. You need specify nothing.
+*
+* If you want to enable SSE-KMS, specify the KMS master key ID.
 *
 * ```hcl
-* server_side_encryption_configuration = [
-*   {
-*     rule = {
-*       apply_server_side_encryption_by_default = {
-*         sse_algorithm = "AES256"
-*         kms_master_key_id = null
-*       }
-*     }
-*   }
-* ]
+* server_side_encryption_kms_master_key_id = "aws/s3" # or your CMK ID
 * ```
 *
-* SSE-KMS
+* If you want to disable server side encryption, set disable_server_side_encryption as `true`.
 *
 * ```hcl
-* server_side_encryption_configuration = [
-*   {
-*     rule = {
-*       apply_server_side_encryption_by_default = {
-*         sse_algorithm = "aws:kms"
-*         kms_master_key_id = "aws/s3" # or your CMK ID
-*       }
-*     }
-*   }
-* ]
+* disable_server_side_encryption = true
 * ```
 *
 * #### CORS headers
