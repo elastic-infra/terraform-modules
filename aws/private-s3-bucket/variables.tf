@@ -83,13 +83,13 @@ variable "lifecycle_rule" {
   default     = []
 }
 
-variable "disable_server_side_encryption" {
+variable "disable_sse" {
   type        = bool
   description = "If true, disable server side encryption"
   default     = false
 }
 
-variable "server_side_encryption_kms_master_key_id" {
+variable "sse_kms_master_key_id" {
   type        = string
   description = "The AWS KMS master key ID used for the SSE-KMS encryption."
   default     = null

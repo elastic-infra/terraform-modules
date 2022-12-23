@@ -117,13 +117,13 @@ SSE-S3 is enabled by default. You need specify nothing.
 If you want to enable SSE-KMS, specify the KMS master key ID.
 
 ```hcl
-server_side_encryption_kms_master_key_id = "aws/s3" # or your CMK ID
+sse_kms_master_key_id = "aws/s3" # or your CMK ID
 ```
 
-If you want to disable server side encryption, set disable\_server\_side\_encryption as `true`.
+If you want to disable server side encryption, set disable\_sse as `true`.
 
 ```hcl
-disable_server_side_encryption = true
+disable_sse = true
 ```
 
 #### CORS headers
@@ -194,14 +194,14 @@ No modules.
 | <a name="input_bucket_name"></a> [bucket\_name](#input\_bucket\_name) | S3 bucket name | `string` | n/a | yes |
 | <a name="input_cors_rule"></a> [cors\_rule](#input\_cors\_rule) | S3 CORS headers | <pre>list(object({<br>    allowed_headers = list(string)<br>    allowed_methods = list(string)<br>    allowed_origins = list(string)<br>    expose_headers  = list(string)<br>    max_age_seconds = number<br>  }))</pre> | `[]` | no |
 | <a name="input_disable_private"></a> [disable\_private](#input\_disable\_private) | If true, disable private bucket feature | `bool` | `false` | no |
-| <a name="input_disable_server_side_encryption"></a> [disable\_server\_side\_encryption](#input\_disable\_server\_side\_encryption) | If true, disable server side encryption | `bool` | `false` | no |
+| <a name="input_disable_sse"></a> [disable\_sse](#input\_disable\_sse) | If true, disable server side encryption | `bool` | `false` | no |
 | <a name="input_grant"></a> [grant](#input\_grant) | S3 grants | <pre>list(object({<br>    id          = string<br>    type        = string<br>    permissions = list(string)<br>    uri         = string<br>  }))</pre> | `[]` | no |
 | <a name="input_lifecycle_rule"></a> [lifecycle\_rule](#input\_lifecycle\_rule) | S3 lifecycle rule | <pre>list(object({<br>    id                                     = string<br>    enabled                                = bool<br>    prefix                                 = string<br>    abort_incomplete_multipart_upload_days = number<br>    tags                                   = map(string)<br>    transition = list(object({<br>      date          = string<br>      days          = number<br>      storage_class = string<br>    }))<br>    # Note for expiration, noncurrent_version_transition, noncurrent_version_expiration<br>    # define as list for simplicity, though expected only a single object<br>    expiration = list(object({<br>      date                         = string<br>      days                         = number<br>      expired_object_delete_marker = bool<br>    }))<br>    noncurrent_version_transition = list(object({<br>      days          = number<br>      storage_class = string<br>    }))<br>    noncurrent_version_expiration = list(object({<br>      days = number<br>    }))<br>  }))</pre> | `[]` | no |
 | <a name="input_logging"></a> [logging](#input\_logging) | S3 access logging | <pre>list(object({<br>    target_bucket = string<br>    target_prefix = string<br>  }))</pre> | `[]` | no |
 | <a name="input_mfa_delete"></a> [mfa\_delete](#input\_mfa\_delete) | Enable MFA delete, this requires the versioning feature | `bool` | `false` | no |
 | <a name="input_object_lock_configuration"></a> [object\_lock\_configuration](#input\_object\_lock\_configuration) | S3 Object Lock Configuration. You can only enable S3 Object Lock for new buckets. If you need to turn on S3 Object Lock for an existing bucket, please contact AWS Support. | <pre>list(object({<br>    rule = object({<br>      default_retention = object({<br>        mode  = string<br>        days  = number<br>        years = number<br>      })<br>    })<br>  }))</pre> | `[]` | no |
 | <a name="input_object_ownership"></a> [object\_ownership](#input\_object\_ownership) | Object ownership. | `string` | `null` | no |
-| <a name="input_server_side_encryption_kms_master_key_id"></a> [server\_side\_encryption\_kms\_master\_key\_id](#input\_server\_side\_encryption\_kms\_master\_key\_id) | The AWS KMS master key ID used for the SSE-KMS encryption. | `string` | `null` | no |
+| <a name="input_sse_kms_master_key_id"></a> [sse\_kms\_master\_key\_id](#input\_sse\_kms\_master\_key\_id) | The AWS KMS master key ID used for the SSE-KMS encryption. | `string` | `null` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags for S3 bucket | `map(string)` | `{}` | no |
 | <a name="input_versioning"></a> [versioning](#input\_versioning) | S3 object versioning settings | `bool` | `null` | no |
 

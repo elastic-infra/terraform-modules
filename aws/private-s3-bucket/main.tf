@@ -117,13 +117,13 @@
 * If you want to enable SSE-KMS, specify the KMS master key ID.
 *
 * ```hcl
-* server_side_encryption_kms_master_key_id = "aws/s3" # or your CMK ID
+* sse_kms_master_key_id = "aws/s3" # or your CMK ID
 * ```
 *
-* If you want to disable server side encryption, set disable_server_side_encryption as `true`.
+* If you want to disable server side encryption, set disable_sse as `true`.
 *
 * ```hcl
-* disable_server_side_encryption = true
+* disable_sse = true
 * ```
 *
 * #### CORS headers

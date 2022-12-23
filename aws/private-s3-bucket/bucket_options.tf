@@ -197,13 +197,13 @@ resource "aws_s3_bucket_lifecycle_configuration" "b" {
 }
 # SSE
 resource "aws_s3_bucket_server_side_encryption_configuration" "b" {
-  count  = var.disable_server_side_encryption ? 0 : 1
+  count  = var.disable_sse ? 0 : 1
   bucket = aws_s3_bucket.b.id
 
   rule {
     apply_server_side_encryption_by_default {
-      kms_master_key_id = var.server_side_encryption_kms_master_key_id
-      sse_algorithm     = var.server_side_encryption_kms_master_key_id == null ? "AES256" : "aws:kms"
+      kms_master_key_id = var.sse_kms_master_key_id
+      sse_algorithm     = var.sse_kms_master_key_id == null ? "AES256" : "aws:kms"
     }
   }
 }
