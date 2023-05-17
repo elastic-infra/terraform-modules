@@ -50,7 +50,7 @@ module "peering_acceptance" {
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_accepter"></a> [accepter](#module\_accepter) | git::https://github.com/cloudposse/terraform-terraform-label.git | master |
+| <a name="module_accepter_label"></a> [accepter\_label](#module\_accepter\_label) | cloudposse/label/null | 0.25.0 |
 
 ## Resources
 
