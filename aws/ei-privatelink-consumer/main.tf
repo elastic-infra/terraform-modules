@@ -1,6 +1,7 @@
 locals {
   vpce_service_name = {
     "ap-northeast-1" = "com.amazonaws.vpce.ap-northeast-1.vpce-svc-0bbba1a5d2095d2c3"
+    "ap-southeast-1" = "com.amazonaws.vpce.ap-southeast-1.vpce-svc-04e0492e238602578"
     "us-east-1"      = "com.amazonaws.vpce.us-east-1.vpce-svc-0d87332b34a7a49dc"
   }
   ei_sg_ids = data.aws_region.current.name == "ap-northeast-1" ? [var.ei_sg_ids] : []
