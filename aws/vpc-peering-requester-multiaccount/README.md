@@ -52,7 +52,7 @@ module "peering-request" {
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_requester"></a> [requester](#module\_requester) | git::https://github.com/cloudposse/terraform-terraform-label.git | master |
+| <a name="module_requester_label"></a> [requester\_label](#module\_requester\_label) | cloudposse/label/null | 0.25.0 |
 
 ## Resources
 

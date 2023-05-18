@@ -3,9 +3,10 @@ locals {
   accepter_tags       = merge(var.tags, { "Side" = "accepter" })
 }
 
-module "accepter" {
-  source     = "git::https://github.com/cloudposse/terraform-terraform-label.git?ref=master"
-  enabled    = var.enabled
+module "accepter_label" {
+  source  = "cloudposse/label/null"
+  version = "0.25.0"
+
   namespace  = var.namespace
   name       = var.name
   stage      = var.stage
@@ -55,7 +56,7 @@ locals {
 resource "aws_vpc_peering_connection_accepter" "accepter" {
   vpc_peering_connection_id = local.vpc_peering_connection_id
   auto_accept               = true
-  tags                      = module.accepter.tags
+  tags                      = module.accepter_label.tags
 }
 
 locals {
