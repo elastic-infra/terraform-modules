@@ -7,12 +7,13 @@ module "accepter_label" {
   source  = "cloudposse/label/null"
   version = "0.25.0"
 
-  namespace  = var.namespace
-  name       = var.name
-  stage      = var.stage
-  delimiter  = var.delimiter
-  attributes = local.accepter_attributes
-  tags       = local.accepter_tags
+  namespace           = var.namespace
+  name                = var.name
+  stage               = var.stage
+  regex_replace_chars = var.regex_replace_chars
+  delimiter           = var.delimiter
+  attributes          = local.accepter_attributes
+  tags                = local.accepter_tags
 }
 
 # Lookup accepter VPC so that we can reference the CIDR

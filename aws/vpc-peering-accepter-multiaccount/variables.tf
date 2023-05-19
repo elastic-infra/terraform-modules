@@ -19,6 +19,16 @@ variable "name" {
   type        = string
 }
 
+variable "regex_replace_chars" {
+  type        = string
+  description = <<-EOT
+    Terraform regular expression (regex) string.
+    Characters matching the regex will be removed from the ID elements.
+    If not set, `"/[^a-zA-Z0-9-]/"` is used to remove all characters other than hyphens, letters and digits.
+  EOT
+  default     = null
+}
+
 variable "delimiter" {
   type        = string
   default     = "-"
