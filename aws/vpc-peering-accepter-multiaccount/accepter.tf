@@ -10,7 +10,7 @@ module "accepter_label" {
   namespace           = var.namespace
   name                = var.name
   stage               = var.stage
-  regex_replace_chars = var.regex_replace_chars
+  regex_replace_chars = "/[^a-zA-Z0-9-_]/"
   delimiter           = var.delimiter
   attributes          = local.accepter_attributes
   tags                = local.accepter_tags
