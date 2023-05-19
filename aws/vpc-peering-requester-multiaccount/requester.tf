@@ -7,12 +7,13 @@ module "requester_label" {
   source  = "cloudposse/label/null"
   version = "0.25.0"
 
-  namespace  = var.namespace
-  name       = var.name
-  stage      = var.stage
-  delimiter  = var.delimiter
-  attributes = local.requester_attributes
-  tags       = local.requester_tags
+  namespace           = var.namespace
+  name                = var.name
+  stage               = var.stage
+  regex_replace_chars = var.regex_replace_chars
+  delimiter           = var.delimiter
+  attributes          = local.requester_attributes
+  tags                = local.requester_tags
 }
 
 # Lookup requester VPC so that we can reference the CIDR

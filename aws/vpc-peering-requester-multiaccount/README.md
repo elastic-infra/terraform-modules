@@ -79,6 +79,7 @@ module "peering-request" {
 | <a name="input_enabled"></a> [enabled](#input\_enabled) | Set to false to prevent the module from creating or accessing any resources | `string` | `"true"` | no |
 | <a name="input_peer_region"></a> [peer\_region](#input\_peer\_region) | Region where peer VPC resides; Cannot be set when peering\_auto\_accept is true | `string` | `null` | no |
 | <a name="input_peering_auto_accept"></a> [peering\_auto\_accept](#input\_peering\_auto\_accept) | Set true to enable auto-accept in an AWS account. | `bool` | `false` | no |
+| <a name="input_regex_replace_chars"></a> [regex\_replace\_chars](#input\_regex\_replace\_chars) | Terraform regular expression (regex) string.<br>Characters matching the regex will be removed from the ID elements.<br>If not set, `"/[^a-zA-Z0-9-]/"` is used to remove all characters other than hyphens, letters and digits. | `string` | `null` | no |
 | <a name="input_requester_vpc_id"></a> [requester\_vpc\_id](#input\_requester\_vpc\_id) | Requester VPC ID filter | `string` | `""` | no |
 | <a name="input_requester_vpc_tags"></a> [requester\_vpc\_tags](#input\_requester\_vpc\_tags) | Requester VPC Tags filter | `map(string)` | `{}` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Additional tags (e.g. `{"BusinessUnit" = "XYZ"`) | `map(string)` | `{}` | no |
