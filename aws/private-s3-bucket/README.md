@@ -97,13 +97,15 @@ lifecycle_rule = [
     ]
     noncurrent_version_transition = [
       {
-        days = 120
+        days          = 120
+        versions      = 3
         storage_class = "GLACIER"
       }
     ]
     noncurrent_version_expiration = [
       {
-        days = 150
+        days     = 150
+        versions = 3
       }
     ]
   }
@@ -158,7 +160,7 @@ object_lock_configuration = [
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.14 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 4.0.0 |
 
 ## Providers
@@ -196,7 +198,7 @@ No modules.
 | <a name="input_disable_private"></a> [disable\_private](#input\_disable\_private) | If true, disable private bucket feature | `bool` | `false` | no |
 | <a name="input_disable_sse"></a> [disable\_sse](#input\_disable\_sse) | If true, disable server side encryption | `bool` | `false` | no |
 | <a name="input_grant"></a> [grant](#input\_grant) | S3 grants | <pre>list(object({<br>    id          = string<br>    type        = string<br>    permissions = list(string)<br>    uri         = string<br>  }))</pre> | `[]` | no |
-| <a name="input_lifecycle_rule"></a> [lifecycle\_rule](#input\_lifecycle\_rule) | S3 lifecycle rule | <pre>list(object({<br>    id                                     = string<br>    enabled                                = bool<br>    prefix                                 = string<br>    abort_incomplete_multipart_upload_days = number<br>    tags                                   = map(string)<br>    transition = list(object({<br>      date          = string<br>      days          = number<br>      storage_class = string<br>    }))<br>    # Note for expiration, noncurrent_version_transition, noncurrent_version_expiration<br>    # define as list for simplicity, though expected only a single object<br>    expiration = list(object({<br>      date                         = string<br>      days                         = number<br>      expired_object_delete_marker = bool<br>    }))<br>    noncurrent_version_transition = list(object({<br>      days          = number<br>      storage_class = string<br>    }))<br>    noncurrent_version_expiration = list(object({<br>      days = number<br>    }))<br>  }))</pre> | `[]` | no |
+| <a name="input_lifecycle_rule"></a> [lifecycle\_rule](#input\_lifecycle\_rule) | S3 lifecycle rule | <pre>list(object({<br>    id                                     = string<br>    enabled                                = bool<br>    prefix                                 = string<br>    abort_incomplete_multipart_upload_days = number<br>    tags                                   = map(string)<br>    transition = list(object({<br>      date          = optional(string)<br>      days          = optional(number)<br>      storage_class = string<br>    }))<br>    # Note for expiration, noncurrent_version_transition, noncurrent_version_expiration<br>    # define as list for simplicity, though expected only a single object<br>    expiration = list(object({<br>      date                         = optional(string)<br>      days                         = optional(number)<br>      expired_object_delete_marker = optional(bool, false)<br>    }))<br>    noncurrent_version_transition = list(object({<br>      days          = number<br>      versions      = optional(number)<br>      storage_class = string<br>    }))<br>    noncurrent_version_expiration = list(object({<br>      days     = number<br>      versions = optional(number)<br>    }))<br>  }))</pre> | `[]` | no |
 | <a name="input_logging"></a> [logging](#input\_logging) | S3 access logging | <pre>list(object({<br>    target_bucket = string<br>    target_prefix = string<br>  }))</pre> | `[]` | no |
 | <a name="input_mfa_delete"></a> [mfa\_delete](#input\_mfa\_delete) | Enable MFA delete, this requires the versioning feature | `bool` | `false` | no |
 | <a name="input_object_lock_configuration"></a> [object\_lock\_configuration](#input\_object\_lock\_configuration) | S3 Object Lock Configuration. You can only enable S3 Object Lock for new buckets. If you need to turn on S3 Object Lock for an existing bucket, please contact AWS Support. | <pre>list(object({<br>    rule = object({<br>      default_retention = object({<br>        mode  = string<br>        days  = number<br>        years = number<br>      })<br>    })<br>  }))</pre> | `[]` | no |
