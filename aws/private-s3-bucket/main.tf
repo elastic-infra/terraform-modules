@@ -97,13 +97,15 @@
 *     ]
 *     noncurrent_version_transition = [
 *       {
-*         days = 120
+*         days          = 120
+*         versions      = 3
 *         storage_class = "GLACIER"
 *       }
 *     ]
 *     noncurrent_version_expiration = [
 *       {
-*         days = 150
+*         days     = 150
+*         versions = 3
 *       }
 *     ]
 *   }
