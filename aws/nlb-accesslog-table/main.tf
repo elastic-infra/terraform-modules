@@ -46,7 +46,7 @@ resource "aws_glue_catalog_table" "t" {
       parameters = {
         "serialization.format" = 1
         # NOTE: https://docs.aws.amazon.com/athena/latest/ug/networkloadbalancer-classic-logs.html
-        "input.regex" = "([^ ]*) ([^ ]*) ([^ ]*) ([^ ]*) ([^ ]*) ([^ ]*):([0-9]*) ([^ ]*):([0-9]*) ([-.0-9]*) ([-.0-9]*) ([-0-9]*) ([-0-9]*) ([-0-9]*) ([^ ]*) ([^ ]*) ([^ ]*) ([^ ]*) ([^ ]*) ([^ ]*) ([^ ]*) ([^ ]*) ([^ ]*)$"
+        "input.regex" = "([^ ]*) ([^ ]*) ([^ ]*) ([^ ]*) ([^ ]*) ([^ ]*):([0-9]*) ([^ ]*):([0-9]*) ([-.0-9]*) ([-.0-9]*) ([-0-9]*) ([-0-9]*) ([-0-9]*) ([^ ]*) ([^ ]*) ([^ ]*) ([^ ]*) ([^ ]*) ([^ ]*) ([^ ]*) ([^ ]*) ([^ ]*)(?: ([^ ]*)){0,1}$"
       }
     }
 
@@ -162,6 +162,11 @@ resource "aws_glue_catalog_table" "t" {
 
     columns {
       name = "alpn_client_preference_list"
+      type = "string"
+    }
+
+    columns {
+      name = "tls_connection_creation_time"
       type = "string"
     }
   }
