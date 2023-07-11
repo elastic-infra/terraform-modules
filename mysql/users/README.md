@@ -21,15 +21,15 @@ module "main_users" {
     user1 = {
       password = data.aws_kms_secrets.db_user.plaintext["user1"]
       privileges = {
-        "example" = ["ALL PRIVILEGES"]
-        "*"       = ["SESSION_VARIABLES_ADMIN"]
+        mysql_database.db.name = ["ALL PRIVILEGES"]
+        "*"                    = ["SESSION_VARIABLES_ADMIN"]
       }
       roles = ["AWS_LOAD_S3_ACCESS", "AWS_SELECT_S3_ACCESS"]
     }
     user2 = {
       password = data.aws_kms_secrets.db_user.plaintext["user2"]
       privileges = {
-        "example.table1" = ["SELECT"]
+        "${mysql_database.db.name}.table1" = ["SELECT"]
       }
     }
   }
