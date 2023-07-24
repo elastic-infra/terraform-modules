@@ -46,7 +46,7 @@ module "redash" {
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13, < 1.3.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 2 |
 
 ## Providers
@@ -106,7 +106,7 @@ module "redash" {
 | <a name="input_db_container_memory"></a> [db\_container\_memory](#input\_db\_container\_memory) | The amount of memory (in MiB) to allow the container to use the DB tasks | `number` | `1024` | no |
 | <a name="input_lb_access_log_bucket"></a> [lb\_access\_log\_bucket](#input\_lb\_access\_log\_bucket) | The S3 bucket name to store the logs in | `string` | `null` | no |
 | <a name="input_lb_access_log_prefix"></a> [lb\_access\_log\_prefix](#input\_lb\_access\_log\_prefix) | The prefix (logical hierarchy) in the access log bucket, the logs are placed the `LB_NAME/` if not configured | `string` | `null` | no |
-| <a name="input_lb_ssl_policy"></a> [lb\_ssl\_policy](#input\_lb\_ssl\_policy) | The name of the SSL Policy for the listener | `string` | `"ELBSecurityPolicy-2016-08"` | no |
+| <a name="input_lb_ssl_policy"></a> [lb\_ssl\_policy](#input\_lb\_ssl\_policy) | The name of the SSL Policy for the listener | `string` | `"ELBSecurityPolicy-TLS13-1-2-2021-06"` | no |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | A prefix for the resource names | `string` | `null` | no |
 | <a name="input_scheduler_container_cpu"></a> [scheduler\_container\_cpu](#input\_scheduler\_container\_cpu) | The number of cpu units to reserve for the scheduler container | `number` | `1024` | no |
 | <a name="input_scheduler_container_memory"></a> [scheduler\_container\_memory](#input\_scheduler\_container\_memory) | The amount of memory (in MiB) to allow the scheduler container | `number` | `2048` | no |
