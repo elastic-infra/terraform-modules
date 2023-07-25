@@ -2,8 +2,10 @@ locals {
   vpce_service_name = {
     "ap-northeast-1" = "com.amazonaws.vpce.ap-northeast-1.vpce-svc-0bbba1a5d2095d2c3"
     "ap-southeast-1" = "com.amazonaws.vpce.ap-southeast-1.vpce-svc-04e0492e238602578"
+    "ap-east-1"      = "com.amazonaws.vpce.ap-east-1.vpce-svc-0f51fd6fe1406f882"
     "us-east-1"      = "com.amazonaws.vpce.us-east-1.vpce-svc-0d87332b34a7a49dc"
     "eu-west-2"      = "com.amazonaws.vpce.eu-west-2.vpce-svc-095f356e082bbf579"
+    "eu-west-3"      = "com.amazonaws.vpce.eu-west-3.vpce-svc-035a632822c04307a"
   }
   ei_sg_ids = data.aws_region.current.name == "ap-northeast-1" ? [var.ei_sg_ids] : []
   ei_cidrs  = data.aws_region.current.name == "ap-northeast-1" ? [] : [var.ei_cidrs]
