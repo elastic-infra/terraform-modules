@@ -22,3 +22,9 @@ variable "location" {
   type        = string
   description = "The s3 location of the CloudFront log. (ex: s3://cloudfront-log/main)"
 }
+
+variable "partition_range" {
+  type        = string
+  description = "A two-element, comma-separated list which provides the minimum and maximum range values. These values are inclusive and can use any format compatible with the Java `java.time.*` date types."
+  default     = "NOW-1MONTH,NOW"
+}

@@ -3,17 +3,46 @@
 *
 * Athena table for CloudFront log
 *
-* Notice: This module does not support partitioning.
+* To use this module, the following application must be deployed and CloudFront logs must be partitioned.
+*
+* https://serverlessrepo.aws.amazon.com/applications/ap-northeast-1/089928438340/cloudfront-log-partition
 *
 * ### Usage
 *
 * ```hcl
+* resource "aws_serverlessapplicationrepository_cloudformation_stack" "cloudfront_log_partition" {
+*   name             = "cloudfront-log-partition"
+*   application_id   = "arn:aws:serverlessrepo:ap-northeast-1:089928438340:applications/cloudfront-log-partition"
+*   semantic_version = "1.1.0"
+*
+*   parameters = {
+*     SourceBucket         = "cloudfront-log"
+*     DestinationBucket    = "cloudfront-log"
+*     DestinationKeyPrefix = "partitioned/"
+*   }
+*
+*   capabilities = [
+*     "CAPABILITY_IAM",
+*     "CAPABILITY_RESOURCE_POLICY",
+*   ]
+* }
+*
+* resource "aws_s3_bucket_notification" "log" {
+*   bucket = "cloudfront-log"
+*
+*   lambda_function {
+*     lambda_function_arn = aws_serverlessapplicationrepository_cloudformation_stack.cloudfront_log_partition.outputs["FunctionArn"]
+*     events              = ["s3:ObjectCreated:*"]
+*     filter_prefix       = "main/"
+*   }
+* }
+*
 * module "main" {
-*   source = "github.com/elastic-infra/terraform-modules//aws/cloudfront-log-table?ref=v2.7.0"
+*   source = "github.com/elastic-infra/terraform-modules//aws/cloudfront-log-table?ref=v6.3.0"
 *
 *   name          = "main"
 *   database_name = "cflog"
-*   location      = "s3://cloudfront-log/main"
+*   location      = "s3://cloudfront-log/partitioned/main"
 * }
 * ```
 *
@@ -30,6 +59,14 @@ resource "aws_glue_catalog_table" "t" {
 
     # CloudFront log has two lines header
     "skip.header.line.count" = 2
+    # NOTE: https://docs.aws.amazon.com/athena/latest/ug/partition-projection.html
+    "projection.enabled"            = true
+    "projection.date.type"          = "date"
+    "projection.date.range"         = var.partition_range
+    "projection.date.format"        = "yyyy/MM/dd"
+    "projection.date.interval"      = 1
+    "projection.date.interval.unit" = "DAYS"
+    "storage.location.template"     = "${var.location}/$${date}"
   }
 
   storage_descriptor {
@@ -47,7 +84,7 @@ resource "aws_glue_catalog_table" "t" {
 
     # NOTE: https://docs.aws.amazon.com/athena/latest/ug/cloudfront-logs.html
     columns {
-      name = "date"
+      name = "log_date"
       type = "date"
     }
 
@@ -210,5 +247,10 @@ resource "aws_glue_catalog_table" "t" {
       name = "sc_range_end"
       type = "bigint"
     }
+  }
+
+  partition_keys {
+    name = "date"
+    type = "string"
   }
 }
