@@ -3,17 +3,46 @@
 *
 * Athena table for CloudFront log
 *
-* Notice: This module does not support partitioning.
+* To use this module, the following application must be deployed and CloudFront logs must be partitioned.
+*
+* https://serverlessrepo.aws.amazon.com/applications/ap-northeast-1/089928438340/cloudfront-log-partition
 *
 * ### Usage
 *
 * ```hcl
+* resource "aws_serverlessapplicationrepository_cloudformation_stack" "cloudfront_log_partition" {
+*   name             = "cloudfront-log-partition"
+*   application_id   = "arn:aws:serverlessrepo:ap-northeast-1:089928438340:applications/cloudfront-log-partition"
+*   semantic_version = "1.1.0"
+*
+*   parameters = {
+*     SourceBucket         = "cloudfront-log"
+*     DestinationBucket    = "cloudfront-log"
+*     DestinationKeyPrefix = "partitioned/"
+*   }
+*
+*   capabilities = [
+*     "CAPABILITY_IAM",
+*     "CAPABILITY_RESOURCE_POLICY",
+*   ]
+* }
+*
+* resource "aws_s3_bucket_notification" "log" {
+*   bucket = "cloudfront-log"
+*
+*   lambda_function {
+*     lambda_function_arn = aws_serverlessapplicationrepository_cloudformation_stack.cloudfront_log_partition.outputs["FunctionArn"]
+*     events              = ["s3:ObjectCreated:*"]
+*     filter_prefix       = "main/"
+*   }
+* }
+*
 * module "main" {
-*   source = "github.com/elastic-infra/terraform-modules//aws/cloudfront-log-table?ref=v2.7.0"
+*   source = "github.com/elastic-infra/terraform-modules//aws/cloudfront-log-table?ref=v6.3.0"
 *
 *   name          = "main"
 *   database_name = "cflog"
-*   location      = "s3://cloudfront-log/main"
+*   location      = "s3://cloudfront-log/partitioned/main"
 * }
 * ```
 *
