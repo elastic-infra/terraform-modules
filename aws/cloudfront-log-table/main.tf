@@ -30,6 +30,14 @@ resource "aws_glue_catalog_table" "t" {
 
     # CloudFront log has two lines header
     "skip.header.line.count" = 2
+    # NOTE: https://docs.aws.amazon.com/athena/latest/ug/partition-projection.html
+    "projection.enabled"            = true
+    "projection.date.type"          = "date"
+    "projection.date.range"         = var.partition_range
+    "projection.date.format"        = "yyyy/MM/dd"
+    "projection.date.interval"      = 1
+    "projection.date.interval.unit" = "DAYS"
+    "storage.location.template"     = "${var.location}/$${date}"
   }
 
   storage_descriptor {
@@ -47,7 +55,7 @@ resource "aws_glue_catalog_table" "t" {
 
     # NOTE: https://docs.aws.amazon.com/athena/latest/ug/cloudfront-logs.html
     columns {
-      name = "date"
+      name = "log_date"
       type = "date"
     }
 
@@ -210,5 +218,10 @@ resource "aws_glue_catalog_table" "t" {
       name = "sc_range_end"
       type = "bigint"
     }
+  }
+
+  partition_keys {
+    name = "date"
+    type = "string"
   }
 }
