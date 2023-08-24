@@ -49,7 +49,7 @@ resource "mysql_user" "users" {
   for_each = var.users
 
   user               = each.key
-  host               = "%"
+  host               = each.value["host"]
   plaintext_password = each.value["password"]
 }
 
