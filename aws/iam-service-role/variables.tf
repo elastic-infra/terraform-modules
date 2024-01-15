@@ -41,3 +41,9 @@ variable "role_description" {
   type        = string
   default     = ""
 }
+
+variable "role_sts_externalid" {
+  description = "STS ExternalId condition values to use with a role"
+  type        = list(string)
+  default     = []
+}

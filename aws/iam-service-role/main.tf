@@ -29,6 +29,15 @@ data "aws_iam_policy_document" "assume_role" {
       type        = "Service"
       identifiers = var.trusted_services
     }
+
+    dynamic "condition" {
+      for_each = length(var.role_sts_externalid) != 0 ? [true] : []
+      content {
+        test     = "StringEquals"
+        variable = "sts:ExternalId"
+        values   = var.role_sts_externalid
+      }
+    }
   }
 }
 
