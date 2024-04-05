@@ -54,32 +54,31 @@ variable "grant" {
 
 variable "lifecycle_rule" {
   type = list(object({
-    id                                     = string
-    enabled                                = bool
-    prefix                                 = string
-    abort_incomplete_multipart_upload_days = number
-    tags                                   = map(string)
-    transition = list(object({
+    id      = string
+    enabled = optional(bool, true)
+    prefix  = optional(string)
+    tags    = optional(map(string), {})
+    transition = optional(list(object({
       date          = optional(string)
       days          = optional(number)
       storage_class = string
-    }))
+    })), [])
     # Note for expiration, noncurrent_version_transition, noncurrent_version_expiration
     # define as list for simplicity, though expected only a single object
-    expiration = list(object({
+    expiration = optional(list(object({
       date                         = optional(string)
       days                         = optional(number)
       expired_object_delete_marker = optional(bool, false)
-    }))
-    noncurrent_version_transition = list(object({
+    })), [])
+    noncurrent_version_transition = optional(list(object({
       days          = number
       versions      = optional(number)
       storage_class = string
-    }))
-    noncurrent_version_expiration = list(object({
+    })), [])
+    noncurrent_version_expiration = optional(list(object({
       days     = number
       versions = optional(number)
-    }))
+    })), [])
   }))
   description = "S3 lifecycle rule"
   default     = []
