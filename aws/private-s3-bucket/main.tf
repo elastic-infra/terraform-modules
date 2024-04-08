@@ -62,7 +62,7 @@
 * Full featured example.
 *
 * NOTE:
-*   * abort_incomplete_multipart_upload_days is exclusive against tags
+*   * abort_incomplete_multipart_upload_days is always set as 3 days
 *   * expiration, noncurrent_version_{transition,expiration} can be set up to once
 *
 * ```hcl
@@ -75,7 +75,6 @@
 *       a = "b"
 *       c = "d"
 *     }
-*     abort_incomplete_multipart_upload_days = null
 *     transition = [
 *       {
 *         date          = null
