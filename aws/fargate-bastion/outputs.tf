@@ -27,3 +27,8 @@ while : ; do
 done
 EOT
 }
+
+output "task_role_arn" {
+  description = "The ARN of ECS task role"
+  value       = module.ecs_bastion_task_role.role_arn
+}
