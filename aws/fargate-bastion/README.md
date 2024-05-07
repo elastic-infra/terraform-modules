@@ -45,7 +45,7 @@ resource "local_file" "proxy_command" {
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_bastion"></a> [bastion](#module\_bastion) | cloudposse/ecs-container-definition/aws | 0.60.1 |
-| <a name="module_ecs_bastion_task_role"></a> [ecs\_bastion\_task\_role](#module\_ecs\_bastion\_task\_role) | github.com/elastic-infra/terraform-modules//aws/iam-service-role | v6.3.1 |
+| <a name="module_ecs_bastion_task_role"></a> [ecs\_bastion\_task\_role](#module\_ecs\_bastion\_task\_role) | ../iam-service-role | n/a |
 | <a name="module_timer"></a> [timer](#module\_timer) | cloudposse/ecs-container-definition/aws | 0.60.1 |
 
 ## Resources
@@ -69,5 +69,6 @@ resource "local_file" "proxy_command" {
 | Name | Description |
 |------|-------------|
 | <a name="output_command"></a> [command](#output\_command) | Output execute command for start-session to ecs container |
+| <a name="output_task_role_arn"></a> [task\_role\_arn](#output\_task\_role\_arn) | The ARN of ECS task role |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
