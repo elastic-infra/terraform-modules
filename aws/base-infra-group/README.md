@@ -56,7 +56,6 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_iam_reader_group_name"></a> [iam\_reader\_group\_name](#output\_iam\_reader\_group\_name) | Name of IAM reader group |
 | <a name="output_infra_system_group_name"></a> [infra\_system\_group\_name](#output\_infra\_system\_group\_name) | Name of system group |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
