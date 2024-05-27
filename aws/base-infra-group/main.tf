@@ -16,20 +16,125 @@
 *
 */
 
-resource "aws_iam_group" "iam_reader" {
-  name = var.reader_group_name
-}
-
 resource "aws_iam_group" "infra_system" {
   name = var.system_group_name
 }
 
-resource "aws_iam_group_policy_attachment" "iam_reader" {
-  group      = aws_iam_group.iam_reader.name
-  policy_arn = "arn:aws:iam::aws:policy/IAMReadOnlyAccess"
+resource "aws_iam_group_policy_attachment" "infra_system" {
+  group      = aws_iam_group.infra_system.name
+  policy_arn = "arn:aws:iam::aws:policy/job-function/ViewOnlyAccess"
 }
 
-resource "aws_iam_group_policy_attachment" "system_poweruser" {
-  group      = aws_iam_group.infra_system.name
-  policy_arn = "arn:aws:iam::aws:policy/PowerUserAccess"
+resource "aws_iam_group_policy" "infra_system_read" {
+  name   = "read"
+  group  = aws_iam_group.infra_system.name
+  policy = data.aws_iam_policy_document.infra_system_read.json
+}
+
+data "aws_iam_policy_document" "infra_system_read" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "cloudfront:GetDistribution",
+      "es:DescribeDomain",
+      "docdb:DescribeDBInstances",
+      "memorydb:DescribeClusters",
+      "wafv2:GetWebACL",
+    ]
+
+    resources = [
+      "*",
+    ]
+  }
+}
+
+resource "aws_iam_group_policy" "infra_system_ami_manager" {
+  name   = "ami-manager"
+  group  = aws_iam_group.infra_system.name
+  policy = data.aws_iam_policy_document.infra_system_ami_manager.json
+}
+
+data "aws_iam_policy_document" "infra_system_ami_manager" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "ec2:CreateTags",
+    ]
+
+    resources = [
+      "arn:aws:ec2:*::snapshot/*",
+      "arn:aws:ec2:*::image/*",
+    ]
+  }
+
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "ec2:DeleteSnapshot",
+    ]
+
+    resources = [
+      "arn:aws:ec2:*::snapshot/*",
+    ]
+  }
+
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "ec2:CreateImage",
+      "ec2:DeregisterImage",
+      "ec2:DescribeImages",
+      "ec2:DescribeInstances",
+    ]
+
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_group_policy" "infra_system_partition_ctl" {
+  count  = length(var.partition_ctl_s3_bucket) > 0 ? 1 : 0
+  name   = "partition-ctl"
+  group  = aws_iam_group.infra_system.name
+  policy = data.aws_iam_policy_document.infra_system_partition_ctl.json
+}
+
+data "aws_s3_bucket" "infra_system_partition_ctl" {
+  for_each = toset(var.partition_ctl_s3_bucket)
+  bucket   = each.key
+}
+
+data "aws_iam_policy_document" "infra_system_partition_ctl" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "s3:GetObject",
+      "s3:PutObject",
+    ]
+
+    resources = formatlist("%s/*", values(data.aws_s3_bucket.infra_system_partition_ctl)[*].arn)
+  }
+}
+
+resource "aws_iam_group_policy" "infra_system_register_r53" {
+  count  = var.use_register_r53 ? 1 : 0
+  name   = "register-r53"
+  group  = aws_iam_group.infra_system.name
+  policy = data.aws_iam_policy_document.infra_system_register_r53.json
+}
+
+data "aws_iam_policy_document" "infra_system_register_r53" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "route53:ChangeResourceRecordSets",
+    ]
+
+    resources = ["*"]
+  }
 }
