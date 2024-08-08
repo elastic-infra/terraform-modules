@@ -1,7 +1,7 @@
 output "command" {
   description = "Output execute command for start-session to ecs container"
   value       = <<EOT
-#/bin/bash
+#!/bin/bash
 
 set -eu
 
