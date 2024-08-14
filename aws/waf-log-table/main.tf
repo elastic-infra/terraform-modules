@@ -81,7 +81,7 @@ resource "aws_glue_catalog_table" "t" {
 
     columns {
       name = "terminatingrulematchdetails"
-      type = "array<struct<conditiontype:string,location:string,matcheddata:array<string>>>"
+      type = "array<struct<conditiontype:string,sensitivitylevel:string,location:string,matcheddata:array<string>>>"
     }
 
     columns {
@@ -96,7 +96,7 @@ resource "aws_glue_catalog_table" "t" {
 
     columns {
       name = "rulegrouplist"
-      type = "array<struct<rulegroupid:string,terminatingrule:struct<ruleid:string,action:string,rulematchdetails:string>,nonterminatingmatchingrules:array<struct<ruleid:string,action:string,rulematchdetails:array<struct<conditiontype:string,location:string,matcheddata:array<string>>>>>,excludedrules:string>>"
+      type = "array<struct<rulegroupid:string,terminatingrule:struct<ruleid:string,action:string,rulematchdetails:array<struct<conditiontype:string,sensitivitylevel:string,location:string,matcheddata:array<string>>>>,nonterminatingmatchingrules:array<struct<ruleid:string,action:string,overriddenaction:string,rulematchdetails:array<struct<conditiontype:string,sensitivitylevel:string,location:string,matcheddata:array<string>>>,challengeresponse:struct<responsecode:string,solvetimestamp:string>,captcharesponse:struct<responsecode:string,solvetimestamp:string>>>,excludedrules:string>>"
     }
 
     columns {
@@ -106,12 +106,57 @@ resource "aws_glue_catalog_table" "t" {
 
     columns {
       name = "nonterminatingmatchingrules"
-      type = "array<struct<ruleid:string,action:string>>"
+      type = "array<struct<ruleid:string,action:string,rulematchdetails:array<struct<conditiontype:string,sensitivitylevel:string,location:string,matcheddata:array<string>>>,challengeresponse:struct<responsecode:string,solvetimestamp:string>,captcharesponse:struct<responsecode:string,solvetimestamp:string>>>"
+    }
+
+    columns {
+      name = "requestheadersinserted"
+      type = "array<struct<name:string,value:string>>"
+    }
+
+    columns {
+      name = "responsecodesent"
+      type = "string"
     }
 
     columns {
       name = "httprequest"
       type = "struct<clientip:string,country:string,headers:array<struct<name:string,value:string>>,uri:string,args:string,httpversion:string,httpmethod:string,requestid:string>"
+    }
+
+    columns {
+      name = "labels"
+      type = "array<struct<name:string>>"
+    }
+
+    columns {
+      name = "captcharesponse"
+      type = "struct<responsecode:string,solvetimestamp:string,failureReason:string>"
+    }
+
+    columns {
+      name = "challengeresponse"
+      type = "struct<responsecode:string,solvetimestamp:string,failureReason:string>"
+    }
+
+    columns {
+      name = "ja3fingerprint"
+      type = "string"
+    }
+
+    columns {
+      name = "oversizefields"
+      type = "string"
+    }
+
+    columns {
+      name = "requestbodysize"
+      type = "int"
+    }
+
+    columns {
+      name = "requestbodysizeinspectedbywaf"
+      type = "int"
     }
   }
 
