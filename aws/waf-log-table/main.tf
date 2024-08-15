@@ -42,11 +42,6 @@ resource "aws_glue_catalog_table" "t" {
 
     ser_de_info {
       serialization_library = "org.openx.data.jsonserde.JsonSerDe"
-
-      parameters = {
-        # NOTE: https://docs.aws.amazon.com/athena/latest/ug/waf-logs.html
-        "paths" = "action,formatVersion,httpRequest,httpSourceId,httpSourceName,nonTerminatingMatchingRules,rateBasedRuleList,ruleGroupList,terminatingRuleId,terminatingRuleMatchDetails,terminatingRuleType,timestamp,webaclId"
-      }
     }
 
     columns {
