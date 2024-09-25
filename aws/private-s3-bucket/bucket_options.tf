@@ -121,14 +121,16 @@ resource "aws_s3_bucket_lifecycle_configuration" "b" {
       dynamic "noncurrent_version_transition" {
         for_each = rule.value.noncurrent_version_transition
         content {
-          noncurrent_days = noncurrent_version_transition.value.days
-          storage_class   = noncurrent_version_transition.value.storage_class
+          newer_noncurrent_versions = noncurrent_version_transition.value.versions
+          noncurrent_days           = noncurrent_version_transition.value.days
+          storage_class             = noncurrent_version_transition.value.storage_class
         }
       }
       dynamic "noncurrent_version_expiration" {
         for_each = rule.value.noncurrent_version_expiration
         content {
-          noncurrent_days = noncurrent_version_expiration.value.days
+          newer_noncurrent_versions = noncurrent_version_expiration.value.versions
+          noncurrent_days           = noncurrent_version_expiration.value.days
         }
       }
     }
