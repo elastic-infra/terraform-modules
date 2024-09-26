@@ -65,6 +65,7 @@ No modules.
 
 | Name | Type |
 |------|------|
+| [mysql_default_roles.default_roles](https://registry.terraform.io/providers/petoju/mysql/latest/docs/resources/default_roles) | resource |
 | [mysql_grant.privileges](https://registry.terraform.io/providers/petoju/mysql/latest/docs/resources/grant) | resource |
 | [mysql_grant.roles](https://registry.terraform.io/providers/petoju/mysql/latest/docs/resources/grant) | resource |
 | [mysql_user.users](https://registry.terraform.io/providers/petoju/mysql/latest/docs/resources/user) | resource |
@@ -73,7 +74,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_users"></a> [users](#input\_users) | Specify mysql users and grants. The key is the user name, and value is the password and grants. | <pre>map(object({<br>    host       = optional(string, "%")<br>    password   = string<br>    privileges = map(list(string))<br>    roles      = optional(list(string), [])<br>  }))</pre> | `{}` | no |
+| <a name="input_users"></a> [users](#input\_users) | Specify mysql users and grants. The key is the user name, and value is the password and grants. | <pre>map(object({<br>    host          = optional(string, "%")<br>    password      = string<br>    tls_option    = optional(string)<br>    privileges    = map(list(string))<br>    roles         = optional(list(string), [])<br>    default_roles = optional(list(string), [])<br>  }))</pre> | `{}` | no |
 
 ## Outputs
 
