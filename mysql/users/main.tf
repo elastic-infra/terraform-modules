@@ -51,6 +51,7 @@ resource "mysql_user" "users" {
   user               = each.key
   host               = each.value["host"]
   plaintext_password = each.value["password"]
+  tls_option         = each.value["tls_option"]
 }
 
 locals {
