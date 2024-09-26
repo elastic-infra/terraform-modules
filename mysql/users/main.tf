@@ -71,6 +71,10 @@ locals {
     for k, v in var.users :
     k => v["roles"] if length(v["roles"]) > 0
   }
+  default_roles = {
+    for k, v in var.users :
+    k => v["default_roles"] if length(v["default_roles"]) > 0
+  }
 }
 
 resource "mysql_grant" "privileges" {
@@ -90,4 +94,12 @@ resource "mysql_grant" "roles" {
   host     = mysql_user.users[each.key].host
   database = ""
   roles    = each.value
+}
+
+resource "mysql_default_roles" "default_roles" {
+  for_each = local.default_roles
+
+  user  = mysql_user.users[each.key].user
+  host  = mysql_user.users[each.key].host
+  roles = each.value
 }
