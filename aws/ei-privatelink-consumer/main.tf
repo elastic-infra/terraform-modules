@@ -7,8 +7,28 @@ locals {
     "eu-west-2"      = "com.amazonaws.vpce.eu-west-2.vpce-svc-095f356e082bbf579"
     "eu-west-3"      = "com.amazonaws.vpce.eu-west-3.vpce-svc-035a632822c04307a"
   }
-  ei_sg_ids = data.aws_region.current.name == "ap-northeast-1" ? [var.ei_sg_ids] : []
-  ei_cidrs  = data.aws_region.current.name == "ap-northeast-1" ? [] : [var.ei_cidrs]
+  rule_optional_arguments = {
+    cidr_blocks      = null
+    description      = null
+    ipv6_cidr_blocks = null
+    prefix_list_ids  = null
+    security_groups  = null
+    self             = null
+  }
+  ingress_rules = {
+    icmp = merge(local.rule_optional_arguments, {
+      from_port = -1
+      to_port   = -1
+      protocol  = "icmp"
+    })
+    ssh = merge(local.rule_optional_arguments, {
+      from_port = 22
+      to_port   = 22
+      protocol  = "tcp"
+    })
+  }
+  ei_sg_ids = length(var.ei_sg_ids) > 0 ? [for v in local.ingress_rules : merge(v, { security_groups = var.ei_sg_ids })] : []
+  ei_cidrs  = length(var.ei_cidrs) > 0 ? [for v in local.ingress_rules : merge(v, { cidr_blocks = var.ei_cidrs })] : []
 }
 
 data "aws_region" "current" {}
@@ -41,47 +61,6 @@ resource "aws_security_group" "ei_managed" {
   name   = "ei-managed"
   vpc_id = var.vpc_id
 
-  dynamic "ingress" {
-    for_each = local.ei_sg_ids
-
-    content {
-      from_port       = -1
-      to_port         = -1
-      protocol        = "icmp"
-      security_groups = ingress.value
-    }
-  }
-
-  dynamic "ingress" {
-    for_each = local.ei_sg_ids
-
-    content {
-      from_port       = 22
-      to_port         = 22
-      protocol        = "tcp"
-      security_groups = ingress.value
-    }
-  }
-
-  dynamic "ingress" {
-    for_each = local.ei_cidrs
-
-    content {
-      from_port   = -1
-      to_port     = -1
-      protocol    = "icmp"
-      cidr_blocks = ingress.value
-    }
-  }
-
-  dynamic "ingress" {
-    for_each = local.ei_cidrs
-
-    content {
-      from_port   = 22
-      to_port     = 22
-      protocol    = "tcp"
-      cidr_blocks = ingress.value
-    }
-  }
+  ingress = data.aws_region.current.name == "ap-northeast-1" ? local.ei_sg_ids : local.ei_cidrs
+  egress  = []
 }
