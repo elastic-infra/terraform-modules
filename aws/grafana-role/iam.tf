@@ -41,7 +41,7 @@ data "aws_iam_policy_document" "grafana" {
   }
 
   dynamic "statement" {
-    for_each = var.cwlogs_search_loggroups == [] ? [] : [1]
+    for_each = length(var.cwlogs_search_loggroups) == 0 ? [] : [1]
 
     content {
       effect = "Allow"
@@ -116,7 +116,7 @@ data "aws_iam_policy_document" "grafana" {
   }
 
   dynamic "statement" {
-    for_each = var.athena_workgroups == [] ? [] : [1]
+    for_each = length(var.athena_workgroups) == 0 ? [] : [1]
 
     content {
       effect = "Allow"
@@ -167,7 +167,7 @@ data "aws_iam_policy_document" "grafana" {
   }
 
   dynamic "statement" {
-    for_each = var.athena_search_buckets == [] ? [] : [1]
+    for_each = length(var.athena_search_buckets) == 0 ? [] : [1]
 
     content {
       effect = "Allow"
