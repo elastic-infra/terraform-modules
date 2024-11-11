@@ -47,3 +47,9 @@ variable "role_sts_externalid" {
   type        = list(string)
   default     = []
 }
+
+variable "role_tags" {
+  description = "Tags for IAM Role"
+  type        = map(string)
+  default     = {}
+}

@@ -55,6 +55,7 @@ No modules.
 | <a name="input_role_path"></a> [role\_path](#input\_role\_path) | Path of IAM role | `string` | `"/"` | no |
 | <a name="input_role_policy_arns"></a> [role\_policy\_arns](#input\_role\_policy\_arns) | List of ARNs of IAM policies to attach to IAM role | `list(string)` | `[]` | no |
 | <a name="input_role_sts_externalid"></a> [role\_sts\_externalid](#input\_role\_sts\_externalid) | STS ExternalId condition values to use with a role | `list(string)` | `[]` | no |
+| <a name="input_role_tags"></a> [role\_tags](#input\_role\_tags) | Tags for IAM Role | `map(string)` | `{}` | no |
 | <a name="input_trusted_services"></a> [trusted\_services](#input\_trusted\_services) | AWS Services that can assume these roles | `list(string)` | `[]` | no |
 
 ## Outputs
