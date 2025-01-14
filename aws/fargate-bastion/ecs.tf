@@ -20,6 +20,11 @@ resource "aws_ecs_cluster" "bastion" {
   count = var.ecs.cluster == null ? 1 : 0
 
   name = "${var.prefix}-${local.bastion.ecs_name}"
+
+  setting {
+    name  = "containerInsights"
+    value = var.ecs.container_insights ? "enabled" : "disabled"
+  }
 }
 
 module "bastion" {
@@ -28,6 +33,8 @@ module "bastion" {
 
   container_name  = "bastion"
   container_image = "public.ecr.aws/elasticinfra/dante-fargate:latest"
+
+  log_configuration = var.ecs.log_configuration
 }
 
 module "timer" {
@@ -43,6 +50,7 @@ resource "aws_ecs_task_definition" "bastion" {
   family                = "${var.prefix}-${local.bastion.ecs_name}"
   container_definitions = "[${module.bastion.json_map_encoded},${module.timer.json_map_encoded}]"
   task_role_arn         = module.ecs_bastion_task_role.role_arn
+  execution_role_arn    = var.ecs.log_configuration != null ? module.ecs_bastion_task_execution_role[0].role_arn : null
 
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
@@ -79,4 +87,17 @@ module "ecs_bastion_task_role" {
       policy = data.aws_iam_policy_document.ecs_bastion_task.json
     },
   ]
+}
+
+module "ecs_bastion_task_execution_role" {
+  count  = var.ecs.log_configuration != null ? 1 : 0
+  source = "../iam-service-role"
+
+  name             = "${var.prefix}-bastion-ecs-task-execution"
+  role_description = "Task execution role for bastion"
+  trusted_services = ["ecs-tasks.amazonaws.com"]
+  role_policy_arns = [
+    "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy",
+  ]
+  create_instance_profile = false
 }

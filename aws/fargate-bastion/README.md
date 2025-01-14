@@ -45,6 +45,7 @@ resource "local_file" "proxy_command" {
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_bastion"></a> [bastion](#module\_bastion) | cloudposse/ecs-container-definition/aws | 0.60.1 |
+| <a name="module_ecs_bastion_task_execution_role"></a> [ecs\_bastion\_task\_execution\_role](#module\_ecs\_bastion\_task\_execution\_role) | ../iam-service-role | n/a |
 | <a name="module_ecs_bastion_task_role"></a> [ecs\_bastion\_task\_role](#module\_ecs\_bastion\_task\_role) | ../iam-service-role | n/a |
 | <a name="module_timer"></a> [timer](#module\_timer) | cloudposse/ecs-container-definition/aws | 0.60.1 |
 
@@ -60,7 +61,7 @@ resource "local_file" "proxy_command" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_ecs"></a> [ecs](#input\_ecs) | Parameters of ECS bastion | <pre>object({<br>    cluster         = optional(string)<br>    subnets         = list(string)<br>    security_groups = list(string)<br>  })</pre> | n/a | yes |
+| <a name="input_ecs"></a> [ecs](#input\_ecs) | Parameters of ECS bastion | <pre>object({<br/>    cluster            = optional(string)<br/>    subnets            = list(string)<br/>    security_groups    = list(string)<br/>    container_insights = optional(bool, false)<br/>    log_configuration = optional(object({<br/>      logDriver = string<br/>      options   = map(string)<br/>      secretOptions = optional(list(object({<br/>        name      = string<br/>        valueFrom = string<br/>      })))<br/>    }))<br/>  })</pre> | n/a | yes |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | Prefix for all resources | `string` | n/a | yes |
 | <a name="input_timeout"></a> [timeout](#input\_timeout) | ECS task timeout | `number` | `3600` | no |
 
