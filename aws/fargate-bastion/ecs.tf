@@ -42,7 +42,7 @@ module "timer" {
   version = "0.60.1"
 
   container_name  = "timer"
-  container_image = "public.ecr.aws/amazonlinux/amazonlinux:2"
+  container_image = "public.ecr.aws/amazonlinux/amazonlinux:2023"
   command         = ["/usr/bin/sleep", var.timeout]
 
   log_configuration = var.ecs.log_configuration_timer
