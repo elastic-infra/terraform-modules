@@ -44,6 +44,8 @@ module "timer" {
   container_name  = "timer"
   container_image = "public.ecr.aws/amazonlinux/amazonlinux:2"
   command         = ["/usr/bin/sleep", var.timeout]
+
+  log_configuration = var.ecs.log_configuration_timer
 }
 
 resource "aws_ecs_task_definition" "bastion" {

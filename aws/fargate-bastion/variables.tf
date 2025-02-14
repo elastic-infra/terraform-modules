@@ -18,6 +18,14 @@ variable "ecs" {
         valueFrom = string
       })))
     }))
+    log_configuration_timer = optional(object({
+      logDriver = string
+      options   = map(string)
+      secretOptions = optional(list(object({
+        name      = string
+        valueFrom = string
+      })))
+    }))
   })
 }
 
