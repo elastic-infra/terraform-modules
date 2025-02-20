@@ -20,6 +20,12 @@ variable "versioning" {
   default     = null
 }
 
+variable "force_destroy" {
+  type        = bool
+  description = "Boolean that indicates all objects (including any [locked objects](https://docs.aws.amazon.com/AmazonS3/latest/dev/object-lock-overview.html)) should be deleted from the bucket when the bucket is destroyed so that the bucket can be destroyed without error."
+  default     = false
+}
+
 variable "mfa_delete" {
   type        = bool
   description = "Enable MFA delete, this requires the versioning feature"
