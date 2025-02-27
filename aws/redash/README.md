@@ -113,6 +113,7 @@ module "redash" {
 | <a name="input_server_container_cpu"></a> [server\_container\_cpu](#input\_server\_container\_cpu) | The number of cpu units to reserve for the server container | `number` | `1024` | no |
 | <a name="input_server_container_memory"></a> [server\_container\_memory](#input\_server\_container\_memory) | The amount of memory (in MiB) to allow the server container | `number` | `2048` | no |
 | <a name="input_server_desired_count"></a> [server\_desired\_count](#input\_server\_desired\_count) | The number of redash server tasks | `number` | `1` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | Tags for resources | `map(string)` | `{}` | no |
 | <a name="input_worker_container_cpu"></a> [worker\_container\_cpu](#input\_worker\_container\_cpu) | The number of cpu units to reserve for the worker container | `number` | `1024` | no |
 | <a name="input_worker_container_memory"></a> [worker\_container\_memory](#input\_worker\_container\_memory) | The amount of memory (in MiB) to allow the worker container | `number` | `2048` | no |
 | <a name="input_worker_desired_count"></a> [worker\_desired\_count](#input\_worker\_desired\_count) | The number of redash worker tasks | `number` | `1` | no |
@@ -121,6 +122,12 @@ module "redash" {
 
 | Name | Description |
 |------|-------------|
+| <a name="output_ecs_cluster_arn"></a> [ecs\_cluster\_arn](#output\_ecs\_cluster\_arn) | The ARN of ECS Cluster on which redash is running |
+| <a name="output_ecs_cluster_name"></a> [ecs\_cluster\_name](#output\_ecs\_cluster\_name) | The Name of ECS Cluster on which redash is running |
+| <a name="output_ecs_service_server_arn"></a> [ecs\_service\_server\_arn](#output\_ecs\_service\_server\_arn) | The ARN of ECS Service on which server is running |
+| <a name="output_ecs_service_server_name"></a> [ecs\_service\_server\_name](#output\_ecs\_service\_server\_name) | The Name of ECS Service on which server is running |
+| <a name="output_ecs_service_worker_arn"></a> [ecs\_service\_worker\_arn](#output\_ecs\_service\_worker\_arn) | The ARN of ECS Service on which worker is running |
+| <a name="output_ecs_service_worker_name"></a> [ecs\_service\_worker\_name](#output\_ecs\_service\_worker\_name) | The Name of ECS Service on which worker is running |
 | <a name="output_lb_arn"></a> [lb\_arn](#output\_lb\_arn) | The ARN of LB |
 | <a name="output_lb_dns"></a> [lb\_dns](#output\_lb\_dns) | The DNS name of LB |
 | <a name="output_lb_zone_id"></a> [lb\_zone\_id](#output\_lb\_zone\_id) | The Zone ID of LB |
