@@ -154,3 +154,9 @@ variable "worker_desired_count" {
   default     = 1
   description = "The number of redash worker tasks"
 }
+
+variable "tags" {
+  type        = map(string)
+  default     = {}
+  description = "Tags for resources"
+}
