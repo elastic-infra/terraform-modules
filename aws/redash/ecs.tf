@@ -1,6 +1,8 @@
 # ECS Cluster
 resource "aws_ecs_cluster" "redash" {
   name = local.base_name
+
+  tags = var.tags
 }
 
 ## Server
@@ -13,6 +15,8 @@ resource "aws_ecs_task_definition" "server" {
   memory                   = var.server_container_memory
   execution_role_arn       = var.ecs_execution_role_arn
   task_role_arn            = var.ecs_task_role_arn
+
+  tags = var.tags
 }
 
 resource "aws_ecs_service" "server" {
@@ -39,6 +43,8 @@ resource "aws_ecs_service" "server" {
   depends_on = [
     aws_lb_listener.https,
   ]
+
+  tags = var.tags
 }
 
 ## Worker
@@ -51,6 +57,8 @@ resource "aws_ecs_task_definition" "worker" {
   memory                   = local.redash_major_version >= 10 ? var.worker_container_memory + var.scheduler_container_memory : var.worker_container_memory
   execution_role_arn       = var.ecs_execution_role_arn
   task_role_arn            = var.ecs_task_role_arn
+
+  tags = var.tags
 }
 
 resource "aws_ecs_service" "worker" {
@@ -67,6 +75,8 @@ resource "aws_ecs_service" "worker" {
     subnets          = var.ecs_subnet_ids
     assign_public_ip = var.assign_public_ip
   }
+
+  tags = var.tags
 }
 
 ## DB Create
@@ -79,6 +89,8 @@ resource "aws_ecs_task_definition" "db_create" {
   memory                   = var.db_container_memory
   execution_role_arn       = var.ecs_execution_role_arn
   task_role_arn            = var.ecs_task_role_arn
+
+  tags = var.tags
 }
 
 ## DB Migrate
@@ -91,6 +103,8 @@ resource "aws_ecs_task_definition" "db_migrate" {
   memory                   = var.db_container_memory
   execution_role_arn       = var.ecs_execution_role_arn
   task_role_arn            = var.ecs_task_role_arn
+
+  tags = var.tags
 }
 
 ## DB Upgrade
@@ -103,4 +117,6 @@ resource "aws_ecs_task_definition" "db_upgrade" {
   memory                   = var.db_container_memory
   execution_role_arn       = var.ecs_execution_role_arn
   task_role_arn            = var.ecs_task_role_arn
+
+  tags = var.tags
 }
