@@ -16,6 +16,8 @@ resource "aws_lb" "redash" {
       enabled = true
     }
   }
+
+  tags = var.tags
 }
 
 resource "aws_lb_target_group" "redash" {
@@ -36,6 +38,8 @@ resource "aws_lb_target_group" "redash" {
     healthy_threshold   = 3
     unhealthy_threshold = 2
   }
+
+  tags = var.tags
 }
 
 resource "aws_lb_listener" "http" {
@@ -52,6 +56,8 @@ resource "aws_lb_listener" "http" {
       status_code = "HTTP_301"
     }
   }
+
+  tags = var.tags
 }
 
 resource "aws_lb_listener" "https" {
@@ -65,4 +71,6 @@ resource "aws_lb_listener" "https" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.redash.arn
   }
+
+  tags = var.tags
 }
