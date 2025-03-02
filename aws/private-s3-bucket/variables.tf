@@ -74,7 +74,7 @@ variable "lifecycle_rule" {
     expiration = optional(list(object({
       date                         = optional(string)
       days                         = optional(number)
-      expired_object_delete_marker = optional(bool, false)
+      expired_object_delete_marker = optional(bool)
     })), [])
     noncurrent_version_transition = optional(list(object({
       days          = number
