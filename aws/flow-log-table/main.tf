@@ -7,7 +7,7 @@
 *
 * ```hcl
 * module "main" {
-*   source = "../module/aws/common/flow-log-table"
+*   source = "github.com/elastic-infra/terraform-modules//aws/flow-log-table?ref=vX.Y.Z"
 *
 *   name          = "main"
 *   database_name = "flowlog"
