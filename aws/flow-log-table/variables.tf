@@ -28,3 +28,13 @@ variable "partition_range" {
   description = "A two-element, comma-separated list which provides the minimum and maximum range values. These values are inclusive and can use any format compatible with the Java `java.time.*` date types."
   default     = "NOW-1MONTH,NOW"
 }
+
+variable "log_format_version" {
+  type        = string
+  description = "The version of the log format. Valid values are like v5, v8 etc."
+  default     = "v5"
+  validation {
+    condition     = can(regex("^v[0-9]+$", var.log_format_version))
+    error_message = "Wrong log format version. Value should be like v5, v8 etc."
+  }
+}
