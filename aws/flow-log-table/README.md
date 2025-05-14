@@ -7,7 +7,7 @@ Athena table for VPC flow log
 
 ```hcl
 module "main" {
-  source = "../module/aws/common/flow-log-table"
+  source = "github.com/elastic-infra/terraform-modules//aws/flow-log-table?ref=vX.Y.Z"
 
   name          = "main"
   database_name = "flowlog"
@@ -45,6 +45,7 @@ No modules.
 | <a name="input_database_name"></a> [database\_name](#input\_database\_name) | Name of the metadata database where the table metadata resides. For Hive compatibility, this must be entirely lowercase. | `string` | n/a | yes |
 | <a name="input_location"></a> [location](#input\_location) | The s3 location of the VPC flow log. (ex: s3://athenavpclogs/AWSLogs/account\_id/vpcflowlogs/region) | `string` | n/a | yes |
 | <a name="input_name"></a> [name](#input\_name) | Name of the table. For Hive compatibility, this must be entirely lowercase. | `string` | n/a | yes |
+| <a name="input_log_format_version"></a> [log\_format\_version](#input\_log\_format\_version) | The version of the log format. Valid values are like v5, v8 etc. | `string` | `"v5"` | no |
 | <a name="input_partition_range"></a> [partition\_range](#input\_partition\_range) | A two-element, comma-separated list which provides the minimum and maximum range values. These values are inclusive and can use any format compatible with the Java `java.time.*` date types. | `string` | `"NOW-1MONTH,NOW"` | no |
 
 ## Outputs

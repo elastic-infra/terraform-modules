@@ -7,7 +7,7 @@
 *
 * ```hcl
 * module "main" {
-*   source = "../module/aws/common/flow-log-table"
+*   source = "github.com/elastic-infra/terraform-modules//aws/flow-log-table?ref=vX.Y.Z"
 *
 *   name          = "main"
 *   database_name = "flowlog"
@@ -49,149 +49,12 @@ resource "aws_glue_catalog_table" "t" {
       }
     }
 
-    columns {
-      name = "version"
-      type = "int"
-    }
-
-    columns {
-      name = "account_id"
-      type = "string"
-    }
-
-    columns {
-      name = "interface_id"
-      type = "string"
-    }
-
-    columns {
-      name = "srcaddr"
-      type = "string"
-    }
-
-    columns {
-      name = "dstaddr"
-      type = "string"
-    }
-
-    columns {
-      name = "srcport"
-      type = "int"
-    }
-
-    columns {
-      name = "dstport"
-      type = "int"
-    }
-
-    columns {
-      name = "protocol"
-      type = "bigint"
-    }
-
-    columns {
-      name = "packets"
-      type = "bigint"
-    }
-
-    columns {
-      name = "bytes"
-      type = "bigint"
-    }
-
-    columns {
-      name = "start"
-      type = "bigint"
-    }
-
-    columns {
-      name = "end"
-      type = "bigint"
-    }
-
-    columns {
-      name = "action"
-      type = "string"
-    }
-
-    columns {
-      name = "log_status"
-      type = "string"
-    }
-
-    columns {
-      name = "vpc_id"
-      type = "string"
-    }
-
-    columns {
-      name = "subnet_id"
-      type = "string"
-    }
-
-    columns {
-      name = "instance_id"
-      type = "string"
-    }
-
-    columns {
-      name = "tcp_flags"
-      type = "int"
-    }
-
-    columns {
-      name = "type"
-      type = "string"
-    }
-
-    columns {
-      name = "pkt_srcaddr"
-      type = "string"
-    }
-
-    columns {
-      name = "pkt_dstaddr"
-      type = "string"
-    }
-
-    columns {
-      name = "region"
-      type = "string"
-    }
-
-    columns {
-      name = "az_id"
-      type = "string"
-    }
-
-    columns {
-      name = "sublocation_type"
-      type = "string"
-    }
-
-    columns {
-      name = "sublocation_id"
-      type = "string"
-    }
-
-    columns {
-      name = "pkt_src_aws_service"
-      type = "string"
-    }
-
-    columns {
-      name = "pkt_dst_aws_service"
-      type = "string"
-    }
-
-    columns {
-      name = "flow_direction"
-      type = "string"
-    }
-
-    columns {
-      name = "traffic_path"
-      type = "int"
+    dynamic "columns" {
+      for_each = local.columns_for_versions[var.log_format_version]
+      content {
+        name = columns.value.name
+        type = columns.value.type
+      }
     }
   }
 
