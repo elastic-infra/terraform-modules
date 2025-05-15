@@ -14,7 +14,7 @@ locals {
     v2 = [
       {
         name = "version"
-        type = "string"
+        type = "int"
       },
       {
         name = "account_id"
@@ -42,7 +42,7 @@ locals {
       },
       {
         name = "protocol"
-        type = "bigint"
+        type = "int"
       },
       {
         name = "packets"
@@ -88,7 +88,7 @@ locals {
       },
       {
         name = "type"
-        type = "int"
+        type = "string"
       },
       {
         name = "pkt_srcaddr"
@@ -132,7 +132,7 @@ locals {
       },
       {
         name = "traffic_path"
-        type = "string"
+        type = "int"
       },
     ]
     v7 = [
