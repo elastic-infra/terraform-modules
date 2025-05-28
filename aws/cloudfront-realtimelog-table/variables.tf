@@ -26,5 +26,5 @@ variable "location" {
 variable "partition_range" {
   type        = string
   description = "A two-element, comma-separated list which provides the minimum and maximum range values. These values are inclusive and can use any format compatible with the Java `java.time.*` date types."
-  default     = "NOW-1YEARS,NOW"
+  default     = "NOW-1MONTH,NOW"
 }

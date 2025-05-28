@@ -30,21 +30,17 @@ resource "aws_glue_catalog_table" "t" {
   parameters = {
     EXTERNAL = "TRUE"
 
-    "skip.header.line.count"    = 2
-    "projection.enabled"        = "true"
-    "projection.year.type"      = "date" # The type must be 'date' to use 'NOW'
-    "projection.year.range"     = var.partition_range
-    "projection.year.format"    = "yyyy"
-    "projection.month.type"     = "integer"
-    "projection.month.range"    = "01,12"
-    "projection.month.digits"   = "2"
-    "projection.day.type"       = "integer"
-    "projection.day.range"      = "01,31"
-    "projection.day.digits"     = "2"
-    "projection.hour.type"      = "integer"
-    "projection.hour.range"     = "00,23"
-    "projection.hour.digits"    = "2"
-    "storage.location.template" = "${var.location}/$${year}/$${month}/$${day}/$${hour}/"
+    "skip.header.line.count"       = 2
+    "projection.enabled"           = "true"
+    "projection.day.type"          = "date"
+    "projection.day.range"         = var.partition_range
+    "projection.day.format"        = "yyyy/MM/dd"
+    "projection.day.interval"      = 1
+    "projection.day.interval.unit" = "DAYS"
+    "projection.hour.type"         = "integer"
+    "projection.hour.range"        = "0,23"
+    "projection.hour.digits"       = "2"
+    "storage.location.template"    = "${var.location}/$${day}/$${hour}/"
   }
 
   storage_descriptor {
@@ -287,22 +283,12 @@ resource "aws_glue_catalog_table" "t" {
   }
 
   partition_keys {
-    name = "year"
-    type = "string"
-  }
-
-  partition_keys {
-    name = "month"
-    type = "string"
-  }
-
-  partition_keys {
     name = "day"
     type = "string"
   }
 
   partition_keys {
     name = "hour"
-    type = "string"
+    type = "int"
   }
 }
