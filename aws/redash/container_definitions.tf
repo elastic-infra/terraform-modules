@@ -18,9 +18,9 @@ module "server_container_definitions" {
     secretOptions = null
 
     options = {
-      "awslogs-region"        = data.aws_region.current.name
-      "awslogs-group"         = aws_cloudwatch_log_group.logs["server"].name
-      "awslogs-stream-prefix" = "server"
+      awslogs-region        = data.aws_region.current.name
+      awslogs-group         = aws_cloudwatch_log_group.logs["server"].name
+      awslogs-stream-prefix = "server"
     }
   }
 }
@@ -43,9 +43,9 @@ module "worker_container_definition" {
     secretOptions = null
 
     options = {
-      "awslogs-region"        = data.aws_region.current.name
-      "awslogs-group"         = aws_cloudwatch_log_group.logs["worker"].name
-      "awslogs-stream-prefix" = "worker"
+      awslogs-region        = data.aws_region.current.name
+      awslogs-group         = aws_cloudwatch_log_group.logs["worker"].name
+      awslogs-stream-prefix = "worker"
     }
   }
 }
@@ -69,9 +69,9 @@ module "scheduler_container_definition" {
     secretOptions = null
 
     options = {
-      "awslogs-region"        = data.aws_region.current.name
-      "awslogs-group"         = aws_cloudwatch_log_group.logs["scheduler"].name
-      "awslogs-stream-prefix" = "scheduler"
+      awslogs-region        = data.aws_region.current.name
+      awslogs-group         = aws_cloudwatch_log_group.logs["scheduler"].name
+      awslogs-stream-prefix = "scheduler"
     }
   }
 }
