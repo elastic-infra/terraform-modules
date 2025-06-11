@@ -63,6 +63,18 @@ variable "ecs_task_role_arn" {
   description = "The ARN of the ECS task role"
 }
 
+variable "ecs_log_mode" {
+  type        = string
+  default     = "blocking"
+  description = "The logging mode of ECS"
+}
+
+variable "ecs_log_max_buffer_size" {
+  type        = string
+  default     = "1m"
+  description = "The maximum size of the in-memory buffer used when mode is set to non-blocking"
+}
+
 variable "lb_access_log_bucket" {
   type        = string
   default     = null

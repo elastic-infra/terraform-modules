@@ -17,11 +17,14 @@ module "server_container_definitions" {
     logDriver     = "awslogs"
     secretOptions = null
 
-    options = {
+    options = merge({
       awslogs-region        = data.aws_region.current.name
       awslogs-group         = aws_cloudwatch_log_group.logs["server"].name
       awslogs-stream-prefix = "server"
-    }
+      mode                  = var.ecs_log_mode
+      }, var.ecs_log_mode == "non-blocking" ? {
+      max-buffer-size = var.ecs_log_max_buffer_size
+    } : {})
   }
 }
 
@@ -42,11 +45,14 @@ module "worker_container_definition" {
     logDriver     = "awslogs"
     secretOptions = null
 
-    options = {
+    options = merge({
       awslogs-region        = data.aws_region.current.name
       awslogs-group         = aws_cloudwatch_log_group.logs["worker"].name
       awslogs-stream-prefix = "worker"
-    }
+      mode                  = var.ecs_log_mode
+      }, var.ecs_log_mode == "non-blocking" ? {
+      max-buffer-size = var.ecs_log_max_buffer_size
+    } : {})
   }
 }
 
@@ -68,11 +74,14 @@ module "scheduler_container_definition" {
     logDriver     = "awslogs"
     secretOptions = null
 
-    options = {
+    options = merge({
       awslogs-region        = data.aws_region.current.name
       awslogs-group         = aws_cloudwatch_log_group.logs["scheduler"].name
       awslogs-stream-prefix = "scheduler"
-    }
+      mode                  = var.ecs_log_mode
+      }, var.ecs_log_mode == "non-blocking" ? {
+      max-buffer-size = var.ecs_log_max_buffer_size
+    } : {})
   }
 }
 
