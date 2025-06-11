@@ -71,7 +71,7 @@ variable "ecs_log_mode" {
 
 variable "ecs_log_max_buffer_size" {
   type        = string
-  default     = "1m"
+  default     = "25m"
   description = "The maximum size of the in-memory buffer used when mode is set to non-blocking"
 }
 
