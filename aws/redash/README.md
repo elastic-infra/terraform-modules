@@ -59,12 +59,12 @@ module "redash" {
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_db_create_container_definition"></a> [db\_create\_container\_definition](#module\_db\_create\_container\_definition) | cloudposse/ecs-container-definition/aws | 0.58.1 |
-| <a name="module_db_migrate_container_definition"></a> [db\_migrate\_container\_definition](#module\_db\_migrate\_container\_definition) | cloudposse/ecs-container-definition/aws | 0.58.1 |
-| <a name="module_db_upgrade_container_definition"></a> [db\_upgrade\_container\_definition](#module\_db\_upgrade\_container\_definition) | cloudposse/ecs-container-definition/aws | 0.58.1 |
-| <a name="module_scheduler_container_definition"></a> [scheduler\_container\_definition](#module\_scheduler\_container\_definition) | cloudposse/ecs-container-definition/aws | 0.58.1 |
-| <a name="module_server_container_definitions"></a> [server\_container\_definitions](#module\_server\_container\_definitions) | cloudposse/ecs-container-definition/aws | 0.58.1 |
-| <a name="module_worker_container_definition"></a> [worker\_container\_definition](#module\_worker\_container\_definition) | cloudposse/ecs-container-definition/aws | 0.58.1 |
+| <a name="module_db_create_container_definition"></a> [db\_create\_container\_definition](#module\_db\_create\_container\_definition) | cloudposse/ecs-container-definition/aws | 0.61.2 |
+| <a name="module_db_migrate_container_definition"></a> [db\_migrate\_container\_definition](#module\_db\_migrate\_container\_definition) | cloudposse/ecs-container-definition/aws | 0.61.2 |
+| <a name="module_db_upgrade_container_definition"></a> [db\_upgrade\_container\_definition](#module\_db\_upgrade\_container\_definition) | cloudposse/ecs-container-definition/aws | 0.61.2 |
+| <a name="module_scheduler_container_definition"></a> [scheduler\_container\_definition](#module\_scheduler\_container\_definition) | cloudposse/ecs-container-definition/aws | 0.61.2 |
+| <a name="module_server_container_definitions"></a> [server\_container\_definitions](#module\_server\_container\_definitions) | cloudposse/ecs-container-definition/aws | 0.61.2 |
+| <a name="module_worker_container_definition"></a> [worker\_container\_definition](#module\_worker\_container\_definition) | cloudposse/ecs-container-definition/aws | 0.61.2 |
 
 ## Resources
 
@@ -89,9 +89,9 @@ module "redash" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_container_environments"></a> [container\_environments](#input\_container\_environments) | The environments to set to each ECS container | <pre>list(object({<br>    name  = string<br>    value = string<br>  }))</pre> | n/a | yes |
+| <a name="input_container_environments"></a> [container\_environments](#input\_container\_environments) | The environments to set to each ECS container | <pre>list(object({<br/>    name  = string<br/>    value = string<br/>  }))</pre> | n/a | yes |
 | <a name="input_container_image_url"></a> [container\_image\_url](#input\_container\_image\_url) | The URL of the image used to launch the container. Images in the Docker Hub registry available by default | `string` | n/a | yes |
-| <a name="input_container_secrets"></a> [container\_secrets](#input\_container\_secrets) | The secrets to set to each ECS container | <pre>list(object({<br>    name      = string<br>    valueFrom = string<br>  }))</pre> | n/a | yes |
+| <a name="input_container_secrets"></a> [container\_secrets](#input\_container\_secrets) | The secrets to set to each ECS container | <pre>list(object({<br/>    name      = string<br/>    valueFrom = string<br/>  }))</pre> | n/a | yes |
 | <a name="input_ecs_execution_role_arn"></a> [ecs\_execution\_role\_arn](#input\_ecs\_execution\_role\_arn) | The ARN of ECS execution role | `string` | n/a | yes |
 | <a name="input_ecs_security_group_ids"></a> [ecs\_security\_group\_ids](#input\_ecs\_security\_group\_ids) | The list of security group IDs to assign to the ECS task or service | `list(string)` | n/a | yes |
 | <a name="input_ecs_subnet_ids"></a> [ecs\_subnet\_ids](#input\_ecs\_subnet\_ids) | The list of subnet IDs to assign to the ECS task or service | `list(string)` | n/a | yes |
@@ -104,6 +104,8 @@ module "redash" {
 | <a name="input_cloudwatch_logs_retention_in_days"></a> [cloudwatch\_logs\_retention\_in\_days](#input\_cloudwatch\_logs\_retention\_in\_days) | The number of days you want to retain log events | `number` | `90` | no |
 | <a name="input_db_container_cpu"></a> [db\_container\_cpu](#input\_db\_container\_cpu) | The number of cpu units to reserve for the container which is used to kick the DB tasks | `number` | `512` | no |
 | <a name="input_db_container_memory"></a> [db\_container\_memory](#input\_db\_container\_memory) | The amount of memory (in MiB) to allow the container to use the DB tasks | `number` | `1024` | no |
+| <a name="input_ecs_log_max_buffer_size"></a> [ecs\_log\_max\_buffer\_size](#input\_ecs\_log\_max\_buffer\_size) | The maximum size of the in-memory buffer used when mode is set to non-blocking | `string` | `"25m"` | no |
+| <a name="input_ecs_log_mode"></a> [ecs\_log\_mode](#input\_ecs\_log\_mode) | The logging mode of ECS | `string` | `"blocking"` | no |
 | <a name="input_lb_access_log_bucket"></a> [lb\_access\_log\_bucket](#input\_lb\_access\_log\_bucket) | The S3 bucket name to store the logs in | `string` | `null` | no |
 | <a name="input_lb_access_log_prefix"></a> [lb\_access\_log\_prefix](#input\_lb\_access\_log\_prefix) | The prefix (logical hierarchy) in the access log bucket, the logs are placed the `LB_NAME/` if not configured | `string` | `null` | no |
 | <a name="input_lb_ssl_policy"></a> [lb\_ssl\_policy](#input\_lb\_ssl\_policy) | The name of the SSL Policy for the listener | `string` | `"ELBSecurityPolicy-TLS13-1-2-2021-06"` | no |
