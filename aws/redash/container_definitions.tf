@@ -1,7 +1,7 @@
 # Server
 module "server_container_definitions" {
   source  = "cloudposse/ecs-container-definition/aws"
-  version = "0.58.1"
+  version = "0.61.2"
 
   container_name   = local.container_names["server"]
   container_image  = var.container_image_url
@@ -17,18 +17,21 @@ module "server_container_definitions" {
     logDriver     = "awslogs"
     secretOptions = null
 
-    options = {
-      "awslogs-region"        = data.aws_region.current.name
-      "awslogs-group"         = aws_cloudwatch_log_group.logs["server"].name
-      "awslogs-stream-prefix" = "server"
-    }
+    options = merge({
+      awslogs-region        = data.aws_region.current.name
+      awslogs-group         = aws_cloudwatch_log_group.logs["server"].name
+      awslogs-stream-prefix = "server"
+      mode                  = var.ecs_log_mode
+      }, var.ecs_log_mode == "non-blocking" ? {
+      max-buffer-size = var.ecs_log_max_buffer_size
+    } : {})
   }
 }
 
 # Worker
 module "worker_container_definition" {
   source  = "cloudposse/ecs-container-definition/aws"
-  version = "0.58.1"
+  version = "0.61.2"
 
   container_name   = local.container_names["worker"]
   container_image  = var.container_image_url
@@ -42,11 +45,14 @@ module "worker_container_definition" {
     logDriver     = "awslogs"
     secretOptions = null
 
-    options = {
-      "awslogs-region"        = data.aws_region.current.name
-      "awslogs-group"         = aws_cloudwatch_log_group.logs["worker"].name
-      "awslogs-stream-prefix" = "worker"
-    }
+    options = merge({
+      awslogs-region        = data.aws_region.current.name
+      awslogs-group         = aws_cloudwatch_log_group.logs["worker"].name
+      awslogs-stream-prefix = "worker"
+      mode                  = var.ecs_log_mode
+      }, var.ecs_log_mode == "non-blocking" ? {
+      max-buffer-size = var.ecs_log_max_buffer_size
+    } : {})
   }
 }
 
@@ -54,7 +60,7 @@ module "worker_container_definition" {
 module "scheduler_container_definition" {
   count   = local.redash_major_version >= 10 ? 1 : 0
   source  = "cloudposse/ecs-container-definition/aws"
-  version = "0.58.1"
+  version = "0.61.2"
 
   container_name   = local.container_names["scheduler"]
   container_image  = var.container_image_url
@@ -68,18 +74,21 @@ module "scheduler_container_definition" {
     logDriver     = "awslogs"
     secretOptions = null
 
-    options = {
-      "awslogs-region"        = data.aws_region.current.name
-      "awslogs-group"         = aws_cloudwatch_log_group.logs["scheduler"].name
-      "awslogs-stream-prefix" = "scheduler"
-    }
+    options = merge({
+      awslogs-region        = data.aws_region.current.name
+      awslogs-group         = aws_cloudwatch_log_group.logs["scheduler"].name
+      awslogs-stream-prefix = "scheduler"
+      mode                  = var.ecs_log_mode
+      }, var.ecs_log_mode == "non-blocking" ? {
+      max-buffer-size = var.ecs_log_max_buffer_size
+    } : {})
   }
 }
 
 # DB Create
 module "db_create_container_definition" {
   source  = "cloudposse/ecs-container-definition/aws"
-  version = "0.58.1"
+  version = "0.61.2"
 
   container_name   = local.container_names["db_create"]
   container_image  = var.container_image_url
@@ -104,7 +113,7 @@ module "db_create_container_definition" {
 # DB Migrate
 module "db_migrate_container_definition" {
   source  = "cloudposse/ecs-container-definition/aws"
-  version = "0.58.1"
+  version = "0.61.2"
 
   container_name   = local.container_names["db_migrate"]
   container_image  = var.container_image_url
@@ -129,7 +138,7 @@ module "db_migrate_container_definition" {
 # DB Upgrade
 module "db_upgrade_container_definition" {
   source  = "cloudposse/ecs-container-definition/aws"
-  version = "0.58.1"
+  version = "0.61.2"
 
   container_name   = local.container_names["db_upgrade"]
   container_image  = var.container_image_url
