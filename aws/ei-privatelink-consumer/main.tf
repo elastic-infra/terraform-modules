@@ -35,7 +35,7 @@ data "aws_region" "current" {}
 
 resource "aws_vpc_endpoint" "this" {
   vpc_id              = var.vpc_id
-  service_name        = local.vpce_service_name[data.aws_region.current.name]
+  service_name        = local.vpce_service_name[data.aws_region.current.region]
   vpc_endpoint_type   = "Interface"
   subnet_ids          = var.subnet_ids
   security_group_ids  = [aws_security_group.this.id]
@@ -61,6 +61,6 @@ resource "aws_security_group" "ei_managed" {
   name   = "ei-managed"
   vpc_id = var.vpc_id
 
-  ingress = data.aws_region.current.name == "ap-northeast-1" ? local.ei_sg_ids : local.ei_cidrs
+  ingress = data.aws_region.current.region == "ap-northeast-1" ? local.ei_sg_ids : local.ei_cidrs
   egress  = []
 }
