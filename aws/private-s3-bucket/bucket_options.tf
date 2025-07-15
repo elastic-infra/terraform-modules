@@ -73,6 +73,8 @@ resource "aws_s3_bucket_lifecycle_configuration" "b" {
     abort_incomplete_multipart_upload {
       days_after_initiation = 3
     }
+    # to suppress warnings
+    filter {}
   }
 
   dynamic "rule" {
@@ -80,25 +82,22 @@ resource "aws_s3_bucket_lifecycle_configuration" "b" {
     content {
       id     = rule.value.id
       status = rule.value.enabled ? "Enabled" : "Disabled"
-      dynamic "filter" {
-        for_each = rule.value.prefix != null || length(rule.value.tags) > 0 ? [1] : []
-        content {
-          # Only prefix or only 1 tag: bare
-          # both prefix and tag, multiple tags: inside `and` block
-          prefix = length(rule.value.tags) == 0 ? rule.value.prefix : null
-          dynamic "tag" {
-            for_each = rule.value.prefix == null && length(rule.value.tags) == 1 ? [1] : []
-            content {
-              key   = keys(rule.value.tags)[0]
-              value = values(rule.value.tags)[0]
-            }
+      filter {
+        # Only prefix or only 1 tag: bare
+        # both prefix and tag, multiple tags: inside `and` block
+        prefix = length(rule.value.tags) == 0 ? rule.value.prefix : null
+        dynamic "tag" {
+          for_each = rule.value.prefix == null && length(rule.value.tags) == 1 ? [1] : []
+          content {
+            key   = keys(rule.value.tags)[0]
+            value = values(rule.value.tags)[0]
           }
-          dynamic "and" {
-            for_each = (rule.value.prefix != null && length(rule.value.tags) >= 1) || length(rule.value.tags) >= 2 ? [1] : []
-            content {
-              prefix = rule.value.prefix
-              tags   = rule.value.tags
-            }
+        }
+        dynamic "and" {
+          for_each = (rule.value.prefix != null && length(rule.value.tags) >= 1) || length(rule.value.tags) >= 2 ? [1] : []
+          content {
+            prefix = rule.value.prefix
+            tags   = rule.value.tags
           }
         }
       }
