@@ -18,7 +18,7 @@ module "server_container_definitions" {
     secretOptions = null
 
     options = merge({
-      awslogs-region        = data.aws_region.current.name
+      awslogs-region        = data.aws_region.current.region
       awslogs-group         = aws_cloudwatch_log_group.logs["server"].name
       awslogs-stream-prefix = "server"
       mode                  = var.ecs_log_mode
@@ -46,7 +46,7 @@ module "worker_container_definition" {
     secretOptions = null
 
     options = merge({
-      awslogs-region        = data.aws_region.current.name
+      awslogs-region        = data.aws_region.current.region
       awslogs-group         = aws_cloudwatch_log_group.logs["worker"].name
       awslogs-stream-prefix = "worker"
       mode                  = var.ecs_log_mode
@@ -75,7 +75,7 @@ module "scheduler_container_definition" {
     secretOptions = null
 
     options = merge({
-      awslogs-region        = data.aws_region.current.name
+      awslogs-region        = data.aws_region.current.region
       awslogs-group         = aws_cloudwatch_log_group.logs["scheduler"].name
       awslogs-stream-prefix = "scheduler"
       mode                  = var.ecs_log_mode
@@ -103,7 +103,7 @@ module "db_create_container_definition" {
     secretOptions = null
 
     options = {
-      "awslogs-region"        = data.aws_region.current.name
+      "awslogs-region"        = data.aws_region.current.region
       "awslogs-group"         = aws_cloudwatch_log_group.logs["db_create"].name
       "awslogs-stream-prefix" = "db-create"
     }
@@ -128,7 +128,7 @@ module "db_migrate_container_definition" {
     secretOptions = null
 
     options = {
-      "awslogs-region"        = data.aws_region.current.name
+      "awslogs-region"        = data.aws_region.current.region
       "awslogs-group"         = aws_cloudwatch_log_group.logs["db_migrate"].name
       "awslogs-stream-prefix" = "db-migrate"
     }
@@ -153,7 +153,7 @@ module "db_upgrade_container_definition" {
     secretOptions = null
 
     options = {
-      "awslogs-region"        = data.aws_region.current.name
+      "awslogs-region"        = data.aws_region.current.region
       "awslogs-group"         = aws_cloudwatch_log_group.logs["db_upgrade"].name
       "awslogs-stream-prefix" = "db-upgrade"
     }
