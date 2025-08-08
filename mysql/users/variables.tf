@@ -4,6 +4,7 @@ variable "users" {
     host          = optional(string, "%")
     password      = string
     tls_option    = optional(string)
+    auth_plugin   = optional(string)
     privileges    = map(list(string))
     roles         = optional(list(string), [])
     default_roles = optional(list(string), [])
