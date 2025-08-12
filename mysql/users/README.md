@@ -74,7 +74,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_users"></a> [users](#input\_users) | Specify mysql users and grants. The key is the user name, and value is the password and grants. | <pre>map(object({<br>    host          = optional(string, "%")<br>    password      = string<br>    tls_option    = optional(string)<br>    privileges    = map(list(string))<br>    roles         = optional(list(string), [])<br>    default_roles = optional(list(string), [])<br>  }))</pre> | `{}` | no |
+| <a name="input_users"></a> [users](#input\_users) | Specify mysql users and grants. The key is the user name, and value is the password and grants. | <pre>map(object({<br/>    host          = optional(string, "%")<br/>    password      = string<br/>    tls_option    = optional(string)<br/>    auth_plugin   = optional(string)<br/>    privileges    = map(list(string))<br/>    roles         = optional(list(string), [])<br/>    default_roles = optional(list(string), [])<br/>  }))</pre> | `{}` | no |
 
 ## Outputs
 
