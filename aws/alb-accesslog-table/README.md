@@ -3,11 +3,13 @@
 
 Athena table for Application Load Balancer access log
 
+This module includes an "additional\_column" field that captures any new fields AWS may add in the future, preventing query failures when the log format is extended.
+
 ### Usage
 
 ```hcl
 module "main" {
-  source = "github.com/elastic-infra/terraform-modules//aws/alb-accesslog-table?ref=v2.2.0"
+  source = "github.com/elastic-infra/terraform-modules//aws/alb-accesslog-table"
 
   name          = "main"
   database_name = "accesslog"

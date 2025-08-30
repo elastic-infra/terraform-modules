@@ -3,11 +3,13 @@
 *
 * Athena table for Application Load Balancer access log
 *
+* This module includes an "additional_column" field that captures any new fields AWS may add in the future, preventing query failures when the log format is extended.
+*
 * ### Usage
 *
 * ```hcl
 * module "main" {
-*   source = "github.com/elastic-infra/terraform-modules//aws/alb-accesslog-table?ref=v2.2.0"
+*   source = "github.com/elastic-infra/terraform-modules//aws/alb-accesslog-table"
 *
 *   name          = "main"
 *   database_name = "accesslog"
@@ -46,7 +48,8 @@ resource "aws_glue_catalog_table" "t" {
       parameters = {
         "serialization.format" = 1
         # NOTE: https://docs.aws.amazon.com/athena/latest/ug/application-load-balancer-logs.html
-        "input.regex" = "([^ ]*) ([^ ]*) ([^ ]*) ([^ ]*):([0-9]*) ([^ ]*)[:-]([0-9]*) ([-.0-9]*) ([-.0-9]*) ([-.0-9]*) (|[-0-9]*) (-|[-0-9]*) ([-0-9]*) ([-0-9]*) \"([^ ]*) (.*) (- |[^ ]*)\" \"([^\"]*)\" ([A-Z0-9-_]+) ([A-Za-z0-9.-]*) ([^ ]*) \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\"(?: ([-.0-9]*)(?: ([^ ]*)(?: \"([^\"]*)\"(?: \"([^\"]*)\"(?: \"([^ ]*)\"(?: \"([^\\s]+?)\" \"([^\\s]+)\"(?: \"([^ ]*)\" \"([^ ]*)\"(?: ([^ ]*)){0,1}){0,1}){0,1}){0,1}){0,1}){0,1}){0,1}){0,1}"
+        # Added ( .*)? at the end to capture any additional fields that AWS may add in the future
+        "input.regex" = "([^ ]*) ([^ ]*) ([^ ]*) ([^ ]*):([0-9]*) ([^ ]*)[:-]([0-9]*) ([-.0-9]*) ([-.0-9]*) ([-.0-9]*) (|[-0-9]*) (-|[-0-9]*) ([-0-9]*) ([-0-9]*) \"([^ ]*) (.*) (- |[^ ]*)\" \"([^\"]*)\" ([A-Z0-9-_]+) ([A-Za-z0-9.-]*) ([^ ]*) \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\"(?: ([-.0-9]*)(?: ([^ ]*)(?: \"([^\"]*)\"(?: \"([^\"]*)\"(?: \"([^ ]*)\"(?: \"([^\\s]+?)\" \"([^\\s]+)\"(?: \"([^ ]*)\" \"([^ ]*)\"(?: ([^ ]*)){0,1}){0,1}){0,1}){0,1}){0,1}){0,1}){0,1}){0,1}( .*){0,1}$"
       }
     }
 
@@ -217,6 +220,11 @@ resource "aws_glue_catalog_table" "t" {
 
     columns {
       name = "traceability_id"
+      type = "string"
+    }
+
+    columns {
+      name = "additional_column"
       type = "string"
     }
   }
