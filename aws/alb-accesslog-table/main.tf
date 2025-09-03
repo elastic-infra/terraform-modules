@@ -219,7 +219,7 @@ resource "aws_glue_catalog_table" "t" {
     }
 
     columns {
-      name = "traceability_id"
+      name = "conn_trace_id"
       type = "string"
     }
 
