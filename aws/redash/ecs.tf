@@ -44,6 +44,9 @@ resource "aws_ecs_service" "server" {
     aws_lb_listener.https,
   ]
 
+  enable_ecs_managed_tags = var.enable_ecs_managed_tags
+  propagate_tags          = var.propagate_tags
+
   tags = var.tags
 }
 
@@ -75,6 +78,9 @@ resource "aws_ecs_service" "worker" {
     subnets          = var.ecs_subnet_ids
     assign_public_ip = var.assign_public_ip
   }
+
+  enable_ecs_managed_tags = var.enable_ecs_managed_tags
+  propagate_tags          = var.propagate_tags
 
   tags = var.tags
 }
