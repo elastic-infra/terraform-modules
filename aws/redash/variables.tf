@@ -172,3 +172,20 @@ variable "tags" {
   default     = {}
   description = "Tags for resources"
 }
+
+variable "enable_ecs_managed_tags" {
+  type        = bool
+  default     = false
+  description = "Whether to enable Amazon ECS managed tags for the tasks within the service"
+}
+
+variable "propagate_tags" {
+  type        = string
+  default     = "NONE"
+  description = "Whether to propagate the tags from the task definition or the service to the tasks"
+
+  validation {
+    condition     = contains(["SERVICE", "TASK_DEFINITION", "NONE"], var.propagate_tags)
+    error_message = "The valid values are SERVICE and TASK_DEFINITION, NONE"
+  }
+}
