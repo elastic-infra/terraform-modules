@@ -63,6 +63,7 @@ resource "local_file" "proxy_command" {
 |------|-------------|------|---------|:--------:|
 | <a name="input_ecs"></a> [ecs](#input\_ecs) | Parameters of ECS bastion | <pre>object({<br/>    cluster            = optional(string)<br/>    subnets            = list(string)<br/>    security_groups    = list(string)<br/>    container_insights = optional(bool, false)<br/>    log_configuration = optional(object({<br/>      logDriver = string<br/>      options   = map(string)<br/>      secretOptions = optional(list(object({<br/>        name      = string<br/>        valueFrom = string<br/>      })))<br/>    }))<br/>    log_configuration_timer = optional(object({<br/>      logDriver = string<br/>      options   = map(string)<br/>      secretOptions = optional(list(object({<br/>        name      = string<br/>        valueFrom = string<br/>      })))<br/>    }))<br/>  })</pre> | n/a | yes |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | Prefix for all resources | `string` | n/a | yes |
+| <a name="input_tags"></a> [tags](#input\_tags) | Tags for resources | `map(string)` | `{}` | no |
 | <a name="input_timeout"></a> [timeout](#input\_timeout) | ECS task timeout | `number` | `3600` | no |
 
 ## Outputs

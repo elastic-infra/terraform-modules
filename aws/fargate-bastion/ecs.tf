@@ -25,6 +25,8 @@ resource "aws_ecs_cluster" "bastion" {
     name  = "containerInsights"
     value = var.ecs.container_insights ? "enabled" : "disabled"
   }
+
+  tags = var.tags
 }
 
 module "bastion" {
@@ -58,6 +60,8 @@ resource "aws_ecs_task_definition" "bastion" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = 512
   memory                   = 1024
+
+  tags = var.tags
 }
 
 data "aws_iam_policy_document" "ecs_bastion_task" {
@@ -89,6 +93,8 @@ module "ecs_bastion_task_role" {
       policy = data.aws_iam_policy_document.ecs_bastion_task.json
     },
   ]
+
+  role_tags = var.tags
 }
 
 module "ecs_bastion_task_execution_role" {
@@ -102,4 +108,6 @@ module "ecs_bastion_task_execution_role" {
     "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy",
   ]
   create_instance_profile = false
+
+  role_tags = var.tags
 }

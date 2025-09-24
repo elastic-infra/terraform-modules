@@ -51,7 +51,7 @@ No modules.
 | <a name="input_name"></a> [name](#input\_name) | IAM role name | `string` | n/a | yes |
 | <a name="input_create_instance_profile"></a> [create\_instance\_profile](#input\_create\_instance\_profile) | Whether to create an instance profile | `bool` | `false` | no |
 | <a name="input_role_description"></a> [role\_description](#input\_role\_description) | IAM Role description | `string` | `""` | no |
-| <a name="input_role_inline_policies"></a> [role\_inline\_policies](#input\_role\_inline\_policies) | List of name and IAM policy document to attach to IAM role | <pre>list(object({<br>    name   = string<br>    policy = string<br>  }))</pre> | `[]` | no |
+| <a name="input_role_inline_policies"></a> [role\_inline\_policies](#input\_role\_inline\_policies) | List of name and IAM policy document to attach to IAM role | <pre>list(object({<br/>    name   = string<br/>    policy = string<br/>  }))</pre> | `[]` | no |
 | <a name="input_role_path"></a> [role\_path](#input\_role\_path) | Path of IAM role | `string` | `"/"` | no |
 | <a name="input_role_policy_arns"></a> [role\_policy\_arns](#input\_role\_policy\_arns) | List of ARNs of IAM policies to attach to IAM role | `list(string)` | `[]` | no |
 | <a name="input_role_sts_externalid"></a> [role\_sts\_externalid](#input\_role\_sts\_externalid) | STS ExternalId condition values to use with a role | `list(string)` | `[]` | no |

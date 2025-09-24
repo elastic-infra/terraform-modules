@@ -34,3 +34,9 @@ variable "timeout" {
   description = "ECS task timeout"
   default     = 60 * 60
 }
+
+variable "tags" {
+  type        = map(string)
+  description = "Tags for resources"
+  default     = {}
+}
