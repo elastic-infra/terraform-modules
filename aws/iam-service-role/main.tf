@@ -50,12 +50,17 @@ resource "aws_iam_role" "this" {
   tags = var.role_tags
 }
 
-resource "aws_iam_role_policy_attachment" "this" {
-  # Use for_each instead of count to prevent the reorder at recreated.
-  for_each = toset(var.role_policy_arns)
+resource "aws_iam_role_policy_attachments_exclusive" "this" {
+  role_name   = aws_iam_role.this.name
+  policy_arns = var.role_policy_arns
+}
 
-  role       = aws_iam_role.this.name
-  policy_arn = each.value
+removed {
+  from = aws_iam_role_policy_attachment.this
+
+  lifecycle {
+    destroy = false
+  }
 }
 
 resource "aws_iam_role_policy" "this" {
@@ -64,6 +69,11 @@ resource "aws_iam_role_policy" "this" {
   name   = each.key
   role   = aws_iam_role.this.name
   policy = each.value
+}
+
+resource "aws_iam_role_policies_exclusive" "this" {
+  role_name    = aws_iam_role.this.name
+  policy_names = var.role_inline_policies[*].name
 }
 
 resource "aws_iam_instance_profile" "this" {
