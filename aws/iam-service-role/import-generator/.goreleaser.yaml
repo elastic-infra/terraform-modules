@@ -1,0 +1,33 @@
+# This is an example .goreleaser.yml file with some sensible defaults.
+# Make sure to check the documentation at https://goreleaser.com
+version: 2
+project_name: iam-service-role
+before:
+  hooks:
+    - go mod download
+builds:
+  -
+    env:
+      - CGO_ENABLED=0
+    binary: import-generator
+    dir: ./
+    flags:
+      - -trimpath
+    goarch:
+      - amd64
+      - arm64
+    goos:
+      - darwin
+      - linux
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  version_template: "{{ .Tag }}-next"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+release:
+  prerelease: auto
