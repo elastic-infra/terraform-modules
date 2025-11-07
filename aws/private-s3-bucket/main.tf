@@ -155,6 +155,19 @@
 * ]
 * ```
 *
+* #### Bucket Policy Management
+*
+* To manage bucket policy in this module, set `manage_bucket_policy` to `true`.
+* This will automatically apply an SSL-only policy to enforce secure data transport.
+*
+* If you want to set additional bucket policy along with SSL-only policy, use `bucket_policy` variable.
+* Note: `bucket_policy` can only be set when `manage_bucket_policy` is `true`.
+*
+* ```hcl
+* manage_bucket_policy = true
+* bucket_policy        = data.aws_iam_policy_document.example_bucket_policy.json
+* ```
+*
 */
 
 # For "grant"
