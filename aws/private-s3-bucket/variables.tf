@@ -144,3 +144,20 @@ variable "object_lock_configuration" {
     error_message = "Either `days` or `years` must be specified, but not both."
   }
 }
+
+variable "manage_bucket_policy" {
+  type        = bool
+  description = "Whether to manage bucket policy in this module."
+  default     = false
+}
+
+variable "bucket_policy" {
+  type        = string
+  description = "Bucket policy to be merged with SSL-only policy. You can only set this when manage_bucket_policy is true."
+  default     = null
+
+  validation {
+    condition     = var.manage_bucket_policy || var.bucket_policy == null
+    error_message = "'bucket_policy' can only be set when 'manage_bucket_policy' is true."
+  }
+}
