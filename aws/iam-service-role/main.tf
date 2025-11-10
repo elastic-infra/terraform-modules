@@ -73,7 +73,7 @@ resource "aws_iam_role_policy" "this" {
 
 resource "aws_iam_role_policies_exclusive" "this" {
   role_name    = aws_iam_role.this.name
-  policy_names = var.role_inline_policies[*].name
+  policy_names = keys(aws_iam_role_policy.this)
 }
 
 resource "aws_iam_instance_profile" "this" {
