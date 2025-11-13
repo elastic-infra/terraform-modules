@@ -142,4 +142,27 @@ module "example_bucket" {
     expose_headers  = []
     max_age_seconds = 3000
   }]
+
+  manage_bucket_policy = true
+  bucket_policy        = data.aws_iam_policy_document.example_bucket_policy.json
+}
+
+data "aws_iam_policy_document" "example_bucket_policy" {
+  statement {
+    sid    = "ExamplePolicyStatement"
+    effect = "Allow"
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::123456789012:role/ExampleRole"]
+    }
+
+    actions   = [
+      "s3:GetObject",
+    ]
+
+    resources = [
+      "${module.example_bucket.bucket_arn}/*",
+    ]
+  }
 }

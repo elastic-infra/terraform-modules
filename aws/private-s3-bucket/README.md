@@ -155,6 +155,19 @@ object_lock_configuration = [
 ]
 ```
 
+#### Bucket Policy Management
+
+To manage bucket policy in this module, set `manage_bucket_policy` to `true`.
+This will automatically apply an SSL-only policy to enforce secure data transport.
+
+If you want to set additional bucket policy along with SSL-only policy, use `bucket_policy` variable.
+Note: `bucket_policy` can only be set when `manage_bucket_policy` is `true`.
+
+```hcl
+manage_bucket_policy = true
+bucket_policy        = data.aws_iam_policy_document.example_bucket_policy.json
+```
+
 ## Requirements
 
 | Name | Version |
@@ -183,16 +196,19 @@ No modules.
 | [aws_s3_bucket_logging.b](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_logging) | resource |
 | [aws_s3_bucket_object_lock_configuration.b](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_object_lock_configuration) | resource |
 | [aws_s3_bucket_ownership_controls.b](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_ownership_controls) | resource |
+| [aws_s3_bucket_policy.b](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_policy) | resource |
 | [aws_s3_bucket_public_access_block.b](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_public_access_block) | resource |
 | [aws_s3_bucket_server_side_encryption_configuration.b](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_server_side_encryption_configuration) | resource |
 | [aws_s3_bucket_versioning.b](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_versioning) | resource |
 | [aws_canonical_user_id.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/canonical_user_id) | data source |
+| [aws_iam_policy_document.policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_bucket_name"></a> [bucket\_name](#input\_bucket\_name) | S3 bucket name | `string` | n/a | yes |
+| <a name="input_bucket_policy"></a> [bucket\_policy](#input\_bucket\_policy) | Bucket policy to be merged with SSL-only policy. You can only set this when manage\_bucket\_policy is true. | `string` | `null` | no |
 | <a name="input_cors_rule"></a> [cors\_rule](#input\_cors\_rule) | S3 CORS headers | <pre>list(object({<br/>    allowed_headers = list(string)<br/>    allowed_methods = list(string)<br/>    allowed_origins = list(string)<br/>    expose_headers  = list(string)<br/>    max_age_seconds = number<br/>  }))</pre> | `[]` | no |
 | <a name="input_disable_private"></a> [disable\_private](#input\_disable\_private) | If true, disable private bucket feature | `bool` | `false` | no |
 | <a name="input_disable_sse"></a> [disable\_sse](#input\_disable\_sse) | If true, disable server side encryption | `bool` | `false` | no |
@@ -200,6 +216,7 @@ No modules.
 | <a name="input_grant"></a> [grant](#input\_grant) | S3 grants | <pre>list(object({<br/>    id          = string<br/>    type        = string<br/>    permissions = list(string)<br/>    uri         = string<br/>  }))</pre> | `[]` | no |
 | <a name="input_lifecycle_rule"></a> [lifecycle\_rule](#input\_lifecycle\_rule) | S3 lifecycle rule | <pre>list(object({<br/>    id      = string<br/>    enabled = optional(bool, true)<br/>    prefix  = optional(string)<br/>    tags    = optional(map(string), {})<br/>    transition = optional(list(object({<br/>      date          = optional(string)<br/>      days          = optional(number)<br/>      storage_class = string<br/>    })), [])<br/>    # Note for expiration, noncurrent_version_transition, noncurrent_version_expiration<br/>    # define as list for simplicity, though expected only a single object<br/>    expiration = optional(list(object({<br/>      date                         = optional(string)<br/>      days                         = optional(number)<br/>      expired_object_delete_marker = optional(bool)<br/>    })), [])<br/>    noncurrent_version_transition = optional(list(object({<br/>      days          = number<br/>      versions      = optional(number)<br/>      storage_class = string<br/>    })), [])<br/>    noncurrent_version_expiration = optional(list(object({<br/>      days     = number<br/>      versions = optional(number)<br/>    })), [])<br/>  }))</pre> | `[]` | no |
 | <a name="input_logging"></a> [logging](#input\_logging) | S3 access logging | <pre>list(object({<br/>    target_bucket = string<br/>    target_prefix = string<br/>  }))</pre> | `[]` | no |
+| <a name="input_manage_bucket_policy"></a> [manage\_bucket\_policy](#input\_manage\_bucket\_policy) | Whether to manage bucket policy in this module. | `bool` | `false` | no |
 | <a name="input_mfa_delete"></a> [mfa\_delete](#input\_mfa\_delete) | Enable MFA delete, this requires the versioning feature | `bool` | `false` | no |
 | <a name="input_object_lock_configuration"></a> [object\_lock\_configuration](#input\_object\_lock\_configuration) | S3 Object Lock Configuration. You can only enable S3 Object Lock for new buckets. If you need to turn on S3 Object Lock for an existing bucket, please contact AWS Support. | <pre>list(object({<br/>    rule = object({<br/>      default_retention = object({<br/>        mode  = string<br/>        days  = number<br/>        years = number<br/>      })<br/>    })<br/>  }))</pre> | `[]` | no |
 | <a name="input_object_ownership"></a> [object\_ownership](#input\_object\_ownership) | Object ownership. | `string` | `null` | no |

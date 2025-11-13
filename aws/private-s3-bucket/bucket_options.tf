@@ -176,3 +176,40 @@ resource "aws_s3_bucket_object_lock_configuration" "b" {
     }
   }
 }
+
+# Bucket policy for SSL-only access that can be merged with user-defined policy
+data "aws_iam_policy_document" "policy" {
+  count = var.manage_bucket_policy ? 1 : 0
+
+  statement {
+    sid    = "DenyNonSSLRequests"
+    effect = "Deny"
+
+    principals {
+      type        = "*"
+      identifiers = ["*"]
+    }
+
+    actions = ["s3:*"]
+
+    resources = [
+      aws_s3_bucket.b.arn,
+      "${aws_s3_bucket.b.arn}/*",
+    ]
+
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+      values   = ["false"]
+    }
+  }
+
+  source_policy_documents = compact([var.bucket_policy])
+}
+
+resource "aws_s3_bucket_policy" "b" {
+  count = length(data.aws_iam_policy_document.policy)
+
+  bucket = aws_s3_bucket.b.id
+  policy = data.aws_iam_policy_document.policy[0].json
+}
