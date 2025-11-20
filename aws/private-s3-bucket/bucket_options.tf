@@ -204,7 +204,7 @@ data "aws_iam_policy_document" "policy" {
     }
   }
 
-  source_policy_documents = compact([var.bucket_policy])
+  source_policy_documents = compact([try(replace(var.bucket_policy, "\\u003cBUCKET_ARN\\u003e", aws_s3_bucket.b.arn), null)])
 }
 
 resource "aws_s3_bucket_policy" "b" {
