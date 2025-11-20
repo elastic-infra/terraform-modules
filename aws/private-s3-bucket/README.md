@@ -168,6 +168,28 @@ manage_bucket_policy = true
 bucket_policy        = data.aws_iam_policy_document.example_bucket_policy.json
 ```
 
+**Avoiding Circular References with `for_each`**
+
+When using `for_each` to generate multiple buckets and their bucket policies, you may encounter circular reference errors.
+
+To avoid this issue, use the `<BUCKET_ARN>` placeholder in the resource field of your bucket policy.
+The module will automatically replace this placeholder with the actual bucket ARN internally.
+
+```hcl
+data "aws_iam_policy_document" "example_bucket_policy" {
+  statement {
+    principals {
+      type        = "Service"
+      identifiers = ["cloudfront.amazonaws.com"]
+    }
+    actions = ["s3:GetObject"]
+    resources = [
+      "<BUCKET_ARN>/*"  # This will be automatically replaced with the actual bucket ARN
+    ]
+  }
+}
+```
+
 ## Requirements
 
 | Name | Version |
