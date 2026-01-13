@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"github.com/hashicorp/hcl/v2/hclparse"
@@ -14,12 +15,14 @@ import (
 )
 
 type ModuleInfo struct {
-	Name       string
-	Source     string
-	NameExpr   string
-	ForEach    string
-	Count      string
-	ModulePath []string
+	Name          string
+	Source        string
+	NameExpr      string
+	ForEach       string
+	Count         string
+	ModulePath    []string
+	ParentForEach string
+	ParentCount   string
 }
 
 type TerraformState struct {
@@ -53,7 +56,7 @@ func main() {
 func run() error {
 	parser := hclparse.NewParser()
 
-	modules, err := scanDirectory(".", []string{}, parser)
+	modules, err := scanDirectory(".", []string{}, "", "", parser)
 	if err != nil {
 		return err
 	}
@@ -96,7 +99,7 @@ func getTerraformState() (*TerraformState, error) {
 	return &state, nil
 }
 
-func scanDirectory(dir string, modulePath []string, parser *hclparse.Parser) ([]ModuleInfo, error) {
+func scanDirectory(dir string, modulePath []string, parentForEach, parentCount string, parser *hclparse.Parser) ([]ModuleInfo, error) {
 	var allModules []ModuleInfo
 
 	pattern := filepath.Join(dir, "*.tf")
@@ -123,14 +126,14 @@ func scanDirectory(dir string, modulePath []string, parser *hclparse.Parser) ([]
 			continue
 		}
 
-		modules := extractModules(body, content, modulePath, dir, parser)
+		modules := extractModules(body, content, modulePath, parentForEach, parentCount, dir, parser)
 		allModules = append(allModules, modules...)
 	}
 
 	return allModules, nil
 }
 
-func extractModules(body *hclsyntax.Body, src []byte, parentModulePath []string, currentDir string, parser *hclparse.Parser) []ModuleInfo {
+func extractModules(body *hclsyntax.Body, src []byte, parentModulePath []string, parentForEach, parentCount, currentDir string, parser *hclparse.Parser) []ModuleInfo {
 	var modules []ModuleInfo
 
 	for _, block := range body.Blocks {
@@ -150,7 +153,15 @@ func extractModules(body *hclsyntax.Body, src []byte, parentModulePath []string,
 				localPath := filepath.Join(currentDir, source)
 				newModulePath := append(parentModulePath, moduleName)
 
-				subModules, err := scanDirectory(localPath, newModulePath, parser)
+				var forEachExpr, countExpr string
+				if attr, exists := moduleBody.Attributes["for_each"]; exists {
+					forEachExpr = string(attr.Expr.Range().SliceBytes(src))
+				}
+				if attr, exists := moduleBody.Attributes["count"]; exists {
+					countExpr = string(attr.Expr.Range().SliceBytes(src))
+				}
+
+				subModules, err := scanDirectory(localPath, newModulePath, forEachExpr, countExpr, parser)
 				if err != nil {
 					fmt.Fprintf(os.Stderr, "Warning: failed to scan local module %s: %v\n", localPath, err)
 				} else {
@@ -159,7 +170,7 @@ func extractModules(body *hclsyntax.Body, src []byte, parentModulePath []string,
 			}
 
 			if strings.Contains(source, "github.com/elastic-infra/terraform-modules//aws/iam-service-role") {
-				mod := analyzeModuleBlock(moduleName, block, src, parentModulePath)
+				mod := analyzeModuleBlock(moduleName, block, src, parentModulePath, parentForEach, parentCount)
 				if mod != nil {
 					modules = append(modules, *mod)
 				}
@@ -176,7 +187,7 @@ func isLocalModule(source string) bool {
 		(!strings.Contains(source, "://") && !strings.Contains(source, "github.com"))
 }
 
-func analyzeModuleBlock(moduleName string, block *hclsyntax.Block, src []byte, parentModulePath []string) *ModuleInfo {
+func analyzeModuleBlock(moduleName string, block *hclsyntax.Block, src []byte, parentModulePath []string, parentForEach, parentCount string) *ModuleInfo {
 	var source, nameExpr, forEachExpr, countExpr string
 
 	body := block.Body
@@ -203,21 +214,121 @@ func analyzeModuleBlock(moduleName string, block *hclsyntax.Block, src []byte, p
 	modulePath := append(parentModulePath, moduleName)
 
 	return &ModuleInfo{
-		Name:       moduleName,
-		Source:     source,
-		NameExpr:   nameExpr,
-		ForEach:    forEachExpr,
-		Count:      countExpr,
-		ModulePath: modulePath,
+		Name:          moduleName,
+		Source:        source,
+		NameExpr:      nameExpr,
+		ForEach:       forEachExpr,
+		Count:         countExpr,
+		ModulePath:    modulePath,
+		ParentForEach: parentForEach,
+		ParentCount:   parentCount,
 	}
 }
 
 func generateImportBlockWithState(mod ModuleInfo, state *TerraformState) error {
-	var pathParts []string
+	var basePathParts []string
 	for _, name := range mod.ModulePath {
-		pathParts = append(pathParts, "module."+name)
+		basePathParts = append(basePathParts, "module."+name)
 	}
-	modulePathPrefix := strings.Join(pathParts, ".")
+	basePath := strings.Join(basePathParts, ".")
+
+	if mod.ParentForEach != "" {
+		parentPathParts := basePathParts[:len(basePathParts)-1]
+		parentPath := strings.Join(parentPathParts, ".")
+
+		keys, err := extractForEachKeys(state, parentPath)
+		if err != nil {
+			return err
+		}
+
+		if len(keys) == 0 {
+			return fmt.Errorf("no instances found in state for parent for_each module")
+		}
+
+		fmt.Printf("import {\n")
+		fmt.Printf("  for_each = %s\n\n", mod.ParentForEach)
+		fmt.Printf("  to = %s[each.key].module.%s.aws_iam_role_policy_attachments_exclusive.this\n", parentPath, mod.Name)
+		fmt.Printf("  id = {\n")
+		for _, key := range keys {
+			fullPath := fmt.Sprintf("%s[\"%s\"].module.%s", parentPath, key, mod.Name)
+			roleName, err := getRoleNameFromState(state, fullPath, "", -1)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Warning: failed to get role name for %s: %v\n", fullPath, err)
+				continue
+			}
+			fmt.Printf("    %s = %q\n", key, roleName)
+		}
+		fmt.Printf("  }[each.key]\n")
+		fmt.Printf("}\n\n")
+
+		fmt.Printf("import {\n")
+		fmt.Printf("  for_each = %s\n\n", mod.ParentForEach)
+		fmt.Printf("  to = %s[each.key].module.%s.aws_iam_role_policies_exclusive.this\n", parentPath, mod.Name)
+		fmt.Printf("  id = {\n")
+		for _, key := range keys {
+			fullPath := fmt.Sprintf("%s[\"%s\"].module.%s", parentPath, key, mod.Name)
+			roleName, err := getRoleNameFromState(state, fullPath, "", -1)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Warning: failed to get role name for %s: %v\n", fullPath, err)
+				continue
+			}
+			fmt.Printf("    %s = %q\n", key, roleName)
+		}
+		fmt.Printf("  }[each.key]\n")
+		fmt.Printf("}\n\n")
+
+		return nil
+	}
+
+	if mod.ParentCount != "" {
+		parentPathParts := basePathParts[:len(basePathParts)-1]
+		parentPath := strings.Join(parentPathParts, ".")
+
+		count, err := extractCountValue(state, parentPath)
+		if err != nil {
+			return err
+		}
+
+		if count == 0 {
+			return fmt.Errorf("no instances found in state for parent count module")
+		}
+
+		fmt.Printf("import {\n")
+		fmt.Printf("  count = %s\n\n", mod.ParentCount)
+		fmt.Printf("  to = %s[count.index].module.%s.aws_iam_role_policy_attachments_exclusive.this\n", parentPath, mod.Name)
+		fmt.Printf("  id = [\n")
+		for i := 0; i < count; i++ {
+			fullPath := fmt.Sprintf("%s[%d].module.%s", parentPath, i, mod.Name)
+			roleName, err := getRoleNameFromState(state, fullPath, "", -1)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Warning: failed to get role name for %s: %v\n", fullPath, err)
+				continue
+			}
+			fmt.Printf("    %q,\n", roleName)
+		}
+		fmt.Printf("  ][count.index]\n")
+		fmt.Printf("}\n\n")
+
+		fmt.Printf("import {\n")
+		fmt.Printf("  count = %s\n\n", mod.ParentCount)
+		fmt.Printf("  to = %s[count.index].module.%s.aws_iam_role_policies_exclusive.this\n", parentPath, mod.Name)
+		fmt.Printf("  id = [\n")
+		for i := 0; i < count; i++ {
+			fullPath := fmt.Sprintf("%s[%d].module.%s", parentPath, i, mod.Name)
+			roleName, err := getRoleNameFromState(state, fullPath, "", -1)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Warning: failed to get role name for %s: %v\n", fullPath, err)
+				continue
+			}
+			fmt.Printf("    %q,\n", roleName)
+		}
+		fmt.Printf("  ][count.index]\n")
+		fmt.Printf("}\n\n")
+
+		return nil
+	}
+
+	modulePathPrefix := basePath
 
 	if mod.ForEach != "" {
 		keys, err := extractForEachKeys(state, modulePathPrefix)
@@ -317,7 +428,7 @@ func generateImportBlockWithState(mod ModuleInfo, state *TerraformState) error {
 }
 
 func extractForEachKeys(state *TerraformState, modulePathPrefix string) ([]string, error) {
-	var keys []string
+	keyMap := make(map[string]bool)
 	modules := findModules(state.Values.RootModule.ChildModules, modulePathPrefix)
 
 	for _, mod := range modules {
@@ -326,10 +437,16 @@ func extractForEachKeys(state *TerraformState, modulePathPrefix string) ([]strin
 			end := strings.Index(mod.Address, "\"]")
 			if start != -1 && end != -1 {
 				key := mod.Address[start+2 : end]
-				keys = append(keys, key)
+				keyMap[key] = true
 			}
 		}
 	}
+
+	var keys []string
+	for key := range keyMap {
+		keys = append(keys, key)
+	}
+	sort.Strings(keys)
 
 	return keys, nil
 }
