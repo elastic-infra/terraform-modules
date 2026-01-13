@@ -363,9 +363,9 @@ func TestGetRoleNameFromState(t *testing.T) {
 
 func TestGenerateImportBlockWithState(t *testing.T) {
 	tests := []struct {
-		name            string
-		mod             ModuleInfo
-		modules         []Module
+		name              string
+		mod               ModuleInfo
+		modules           []Module
 		expectedToContain []string
 	}{
 		{

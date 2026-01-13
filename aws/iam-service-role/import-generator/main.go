@@ -25,6 +25,28 @@ const (
 	forEachKeyEndMarker   = "\"]"
 )
 
+type IterationType int
+
+const (
+	IterationForEach IterationType = iota
+	IterationCount
+)
+
+type ImportBlockConfig struct {
+	IterationType    IterationType
+	IterationExpr    string
+	ToAddress        string
+	ModulePathPrefix string
+	ModuleName       string
+	IsParent         bool
+}
+
+type InstanceData struct {
+	Key      string
+	Index    int
+	RoleName string
+}
+
 type ModuleInfo struct {
 	Name          string
 	Source        string
@@ -243,6 +265,90 @@ func buildModulePath(modulePath []string) string {
 	return strings.Join(pathParts, ".")
 }
 
+func collectInstanceData(state *TerraformState, config ImportBlockConfig, keys []string, count int) []InstanceData {
+	var instances []InstanceData
+
+	if config.IterationType == IterationForEach {
+		for _, key := range keys {
+			var fullPath string
+			var roleKey string
+			var roleIndex int
+			if config.IsParent {
+				fullPath = fmt.Sprintf("%s[\"%s\"].%s%s", config.ModulePathPrefix, key, modulePrefix, config.ModuleName)
+				roleKey = ""
+				roleIndex = -1
+			} else {
+				fullPath = config.ModulePathPrefix
+				roleKey = key
+				roleIndex = -1
+			}
+
+			roleName, err := getRoleNameFromState(state, fullPath, roleKey, roleIndex)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Warning: failed to get role name for %s: %v\n", fullPath, err)
+				continue
+			}
+			instances = append(instances, InstanceData{Key: key, Index: -1, RoleName: roleName})
+		}
+	} else {
+		for i := 0; i < count; i++ {
+			var fullPath string
+			var roleKey string
+			var roleIndex int
+			if config.IsParent {
+				fullPath = fmt.Sprintf("%s[%d].%s%s", config.ModulePathPrefix, i, modulePrefix, config.ModuleName)
+				roleKey = ""
+				roleIndex = -1
+			} else {
+				fullPath = config.ModulePathPrefix
+				roleKey = ""
+				roleIndex = i
+			}
+
+			roleName, err := getRoleNameFromState(state, fullPath, roleKey, roleIndex)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Warning: failed to get role name for %s: %v\n", fullPath, err)
+				continue
+			}
+			instances = append(instances, InstanceData{Key: "", Index: i, RoleName: roleName})
+		}
+	}
+
+	return instances
+}
+
+func formatIDMapping(instances []InstanceData, iterationType IterationType) {
+	if iterationType == IterationForEach {
+		fmt.Printf("  id = {\n")
+		for _, inst := range instances {
+			fmt.Printf("    %s = %q\n", inst.Key, inst.RoleName)
+		}
+		fmt.Printf("  }[each.key]\n")
+	} else {
+		fmt.Printf("  id = [\n")
+		for _, inst := range instances {
+			fmt.Printf("    %q,\n", inst.RoleName)
+		}
+		fmt.Printf("  ][count.index]\n")
+	}
+}
+
+func generateImportBlock(config ImportBlockConfig, instances []InstanceData) {
+	fmt.Printf("import {\n")
+
+	if config.IterationType == IterationForEach {
+		fmt.Printf("  for_each = %s\n\n", config.IterationExpr)
+	} else {
+		fmt.Printf("  count = %s\n\n", config.IterationExpr)
+	}
+
+	fmt.Printf("  to = %s\n", config.ToAddress)
+
+	formatIDMapping(instances, config.IterationType)
+
+	fmt.Printf("}\n\n")
+}
+
 func generateParentForEachImports(mod ModuleInfo, state *TerraformState, basePath string) error {
 	parentPath := buildModulePath(mod.ModulePath[:len(mod.ModulePath)-1])
 
@@ -255,37 +361,23 @@ func generateParentForEachImports(mod ModuleInfo, state *TerraformState, basePat
 		return fmt.Errorf("no instances found in state for parent for_each module")
 	}
 
-	fmt.Printf("import {\n")
-	fmt.Printf("  for_each = %s\n\n", mod.ParentForEach)
-	fmt.Printf("  to = %s[each.key].%s%s.%s.%s\n", parentPath, modulePrefix, mod.Name, resourceTypeAttachments, resourceName)
-	fmt.Printf("  id = {\n")
-	for _, key := range keys {
-		fullPath := fmt.Sprintf("%s[\"%s\"].%s%s", parentPath, key, modulePrefix, mod.Name)
-		roleName, err := getRoleNameFromState(state, fullPath, "", -1)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Warning: failed to get role name for %s: %v\n", fullPath, err)
-			continue
-		}
-		fmt.Printf("    %s = %q\n", key, roleName)
+	baseConfig := ImportBlockConfig{
+		IterationType:    IterationForEach,
+		IterationExpr:    mod.ParentForEach,
+		ModulePathPrefix: parentPath,
+		ModuleName:       mod.Name,
+		IsParent:         true,
 	}
-	fmt.Printf("  }[each.key]\n")
-	fmt.Printf("}\n\n")
 
-	fmt.Printf("import {\n")
-	fmt.Printf("  for_each = %s\n\n", mod.ParentForEach)
-	fmt.Printf("  to = %s[each.key].%s%s.%s.%s\n", parentPath, modulePrefix, mod.Name, resourceTypePolicies, resourceName)
-	fmt.Printf("  id = {\n")
-	for _, key := range keys {
-		fullPath := fmt.Sprintf("%s[\"%s\"].%s%s", parentPath, key, modulePrefix, mod.Name)
-		roleName, err := getRoleNameFromState(state, fullPath, "", -1)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Warning: failed to get role name for %s: %v\n", fullPath, err)
-			continue
-		}
-		fmt.Printf("    %s = %q\n", key, roleName)
-	}
-	fmt.Printf("  }[each.key]\n")
-	fmt.Printf("}\n\n")
+	instances := collectInstanceData(state, baseConfig, keys, 0)
+	config := baseConfig
+	config.ToAddress = fmt.Sprintf("%s[each.key].%s%s.%s.%s", parentPath, modulePrefix, mod.Name, resourceTypeAttachments, resourceName)
+	generateImportBlock(config, instances)
+
+	instances = collectInstanceData(state, baseConfig, keys, 0)
+	config = baseConfig
+	config.ToAddress = fmt.Sprintf("%s[each.key].%s%s.%s.%s", parentPath, modulePrefix, mod.Name, resourceTypePolicies, resourceName)
+	generateImportBlock(config, instances)
 
 	return nil
 }
@@ -302,37 +394,23 @@ func generateParentCountImports(mod ModuleInfo, state *TerraformState, basePath 
 		return fmt.Errorf("no instances found in state for parent count module")
 	}
 
-	fmt.Printf("import {\n")
-	fmt.Printf("  count = %s\n\n", mod.ParentCount)
-	fmt.Printf("  to = %s[count.index].%s%s.%s.%s\n", parentPath, modulePrefix, mod.Name, resourceTypeAttachments, resourceName)
-	fmt.Printf("  id = [\n")
-	for i := 0; i < count; i++ {
-		fullPath := fmt.Sprintf("%s[%d].%s%s", parentPath, i, modulePrefix, mod.Name)
-		roleName, err := getRoleNameFromState(state, fullPath, "", -1)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Warning: failed to get role name for %s: %v\n", fullPath, err)
-			continue
-		}
-		fmt.Printf("    %q,\n", roleName)
+	baseConfig := ImportBlockConfig{
+		IterationType:    IterationCount,
+		IterationExpr:    mod.ParentCount,
+		ModulePathPrefix: parentPath,
+		ModuleName:       mod.Name,
+		IsParent:         true,
 	}
-	fmt.Printf("  ][count.index]\n")
-	fmt.Printf("}\n\n")
 
-	fmt.Printf("import {\n")
-	fmt.Printf("  count = %s\n\n", mod.ParentCount)
-	fmt.Printf("  to = %s[count.index].%s%s.%s.%s\n", parentPath, modulePrefix, mod.Name, resourceTypePolicies, resourceName)
-	fmt.Printf("  id = [\n")
-	for i := 0; i < count; i++ {
-		fullPath := fmt.Sprintf("%s[%d].%s%s", parentPath, i, modulePrefix, mod.Name)
-		roleName, err := getRoleNameFromState(state, fullPath, "", -1)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Warning: failed to get role name for %s: %v\n", fullPath, err)
-			continue
-		}
-		fmt.Printf("    %q,\n", roleName)
-	}
-	fmt.Printf("  ][count.index]\n")
-	fmt.Printf("}\n\n")
+	instances := collectInstanceData(state, baseConfig, []string{}, count)
+	config := baseConfig
+	config.ToAddress = fmt.Sprintf("%s[count.index].%s%s.%s.%s", parentPath, modulePrefix, mod.Name, resourceTypeAttachments, resourceName)
+	generateImportBlock(config, instances)
+
+	instances = collectInstanceData(state, baseConfig, []string{}, count)
+	config = baseConfig
+	config.ToAddress = fmt.Sprintf("%s[count.index].%s%s.%s.%s", parentPath, modulePrefix, mod.Name, resourceTypePolicies, resourceName)
+	generateImportBlock(config, instances)
 
 	return nil
 }
@@ -347,35 +425,22 @@ func generateModuleForEachImports(mod ModuleInfo, state *TerraformState, basePat
 		return fmt.Errorf("no instances found in state for for_each module")
 	}
 
-	fmt.Printf("import {\n")
-	fmt.Printf("  for_each = %s\n\n", mod.ForEach)
-	fmt.Printf("  to = %s[each.key].%s.%s\n", basePath, resourceTypeAttachments, resourceName)
-	fmt.Printf("  id = {\n")
-	for _, key := range keys {
-		roleName, err := getRoleNameFromState(state, basePath, key, -1)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Warning: failed to get role name for %s[%s]: %v\n", basePath, key, err)
-			continue
-		}
-		fmt.Printf("    %s = %q\n", key, roleName)
+	baseConfig := ImportBlockConfig{
+		IterationType:    IterationForEach,
+		IterationExpr:    mod.ForEach,
+		ModulePathPrefix: basePath,
+		IsParent:         false,
 	}
-	fmt.Printf("  }[each.key]\n")
-	fmt.Printf("}\n\n")
 
-	fmt.Printf("import {\n")
-	fmt.Printf("  for_each = %s\n\n", mod.ForEach)
-	fmt.Printf("  to = %s[each.key].%s.%s\n", basePath, resourceTypePolicies, resourceName)
-	fmt.Printf("  id = {\n")
-	for _, key := range keys {
-		roleName, err := getRoleNameFromState(state, basePath, key, -1)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Warning: failed to get role name for %s[%s]: %v\n", basePath, key, err)
-			continue
-		}
-		fmt.Printf("    %s = %q\n", key, roleName)
-	}
-	fmt.Printf("  }[each.key]\n")
-	fmt.Printf("}\n\n")
+	instances := collectInstanceData(state, baseConfig, keys, 0)
+	config := baseConfig
+	config.ToAddress = fmt.Sprintf("%s[each.key].%s.%s", basePath, resourceTypeAttachments, resourceName)
+	generateImportBlock(config, instances)
+
+	instances = collectInstanceData(state, baseConfig, keys, 0)
+	config = baseConfig
+	config.ToAddress = fmt.Sprintf("%s[each.key].%s.%s", basePath, resourceTypePolicies, resourceName)
+	generateImportBlock(config, instances)
 
 	return nil
 }
@@ -390,35 +455,22 @@ func generateModuleCountImports(mod ModuleInfo, state *TerraformState, basePath 
 		return fmt.Errorf("no instances found in state for count module")
 	}
 
-	fmt.Printf("import {\n")
-	fmt.Printf("  count = %s\n\n", mod.Count)
-	fmt.Printf("  to = %s[count.index].%s.%s\n", basePath, resourceTypeAttachments, resourceName)
-	fmt.Printf("  id = [\n")
-	for i := 0; i < count; i++ {
-		roleName, err := getRoleNameFromState(state, basePath, "", i)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Warning: failed to get role name for %s[%d]: %v\n", basePath, i, err)
-			continue
-		}
-		fmt.Printf("    %q,\n", roleName)
+	baseConfig := ImportBlockConfig{
+		IterationType:    IterationCount,
+		IterationExpr:    mod.Count,
+		ModulePathPrefix: basePath,
+		IsParent:         false,
 	}
-	fmt.Printf("  ][count.index]\n")
-	fmt.Printf("}\n\n")
 
-	fmt.Printf("import {\n")
-	fmt.Printf("  count = %s\n\n", mod.Count)
-	fmt.Printf("  to = %s[count.index].%s.%s\n", basePath, resourceTypePolicies, resourceName)
-	fmt.Printf("  id = [\n")
-	for i := 0; i < count; i++ {
-		roleName, err := getRoleNameFromState(state, basePath, "", i)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Warning: failed to get role name for %s[%d]: %v\n", basePath, i, err)
-			continue
-		}
-		fmt.Printf("    %q,\n", roleName)
-	}
-	fmt.Printf("  ][count.index]\n")
-	fmt.Printf("}\n\n")
+	instances := collectInstanceData(state, baseConfig, []string{}, count)
+	config := baseConfig
+	config.ToAddress = fmt.Sprintf("%s[count.index].%s.%s", basePath, resourceTypeAttachments, resourceName)
+	generateImportBlock(config, instances)
+
+	instances = collectInstanceData(state, baseConfig, []string{}, count)
+	config = baseConfig
+	config.ToAddress = fmt.Sprintf("%s[count.index].%s.%s", basePath, resourceTypePolicies, resourceName)
+	generateImportBlock(config, instances)
 
 	return nil
 }
@@ -470,10 +522,10 @@ func extractForEachKeys(state *TerraformState, modulePathPrefix string) ([]strin
 
 	for _, mod := range modules {
 		if strings.Contains(mod.Address, "[") {
-			start := strings.Index(mod.Address, "[\"")
-			end := strings.Index(mod.Address, "\"]")
+			start := strings.Index(mod.Address, forEachKeyStartMarker)
+			end := strings.Index(mod.Address, forEachKeyEndMarker)
 			if start != -1 && end != -1 {
-				key := mod.Address[start+2 : end]
+				key := mod.Address[start+len(forEachKeyStartMarker) : end]
 				keyMap[key] = true
 			}
 		}
@@ -510,15 +562,15 @@ func getRoleNameFromState(state *TerraformState, modulePathPrefix, forEachKey st
 	}
 
 	for _, resource := range modules[0].Resources {
-		if resource.Type == "aws_iam_role" && resource.Name == "this" {
+		if resource.Type == iamRoleType && resource.Name == "this" {
 			if name, ok := resource.Values["name"].(string); ok {
 				return name, nil
 			}
-			return "", fmt.Errorf("name attribute not found in aws_iam_role")
+			return "", fmt.Errorf("name attribute not found in %s", iamRoleType)
 		}
 	}
 
-	return "", fmt.Errorf("aws_iam_role.this not found in module %s", targetAddress)
+	return "", fmt.Errorf("%s.this not found in module %s", iamRoleType, targetAddress)
 }
 
 func findModules(modules []Module, targetAddress string) []Module {
