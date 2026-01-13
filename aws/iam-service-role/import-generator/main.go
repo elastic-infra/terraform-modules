@@ -243,200 +243,225 @@ func buildModulePath(modulePath []string) string {
 	return strings.Join(pathParts, ".")
 }
 
+func generateParentForEachImports(mod ModuleInfo, state *TerraformState, basePath string) error {
+	parentPath := buildModulePath(mod.ModulePath[:len(mod.ModulePath)-1])
+
+	keys, err := extractForEachKeys(state, parentPath)
+	if err != nil {
+		return err
+	}
+
+	if len(keys) == 0 {
+		return fmt.Errorf("no instances found in state for parent for_each module")
+	}
+
+	fmt.Printf("import {\n")
+	fmt.Printf("  for_each = %s\n\n", mod.ParentForEach)
+	fmt.Printf("  to = %s[each.key].%s%s.%s.%s\n", parentPath, modulePrefix, mod.Name, resourceTypeAttachments, resourceName)
+	fmt.Printf("  id = {\n")
+	for _, key := range keys {
+		fullPath := fmt.Sprintf("%s[\"%s\"].%s%s", parentPath, key, modulePrefix, mod.Name)
+		roleName, err := getRoleNameFromState(state, fullPath, "", -1)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Warning: failed to get role name for %s: %v\n", fullPath, err)
+			continue
+		}
+		fmt.Printf("    %s = %q\n", key, roleName)
+	}
+	fmt.Printf("  }[each.key]\n")
+	fmt.Printf("}\n\n")
+
+	fmt.Printf("import {\n")
+	fmt.Printf("  for_each = %s\n\n", mod.ParentForEach)
+	fmt.Printf("  to = %s[each.key].%s%s.%s.%s\n", parentPath, modulePrefix, mod.Name, resourceTypePolicies, resourceName)
+	fmt.Printf("  id = {\n")
+	for _, key := range keys {
+		fullPath := fmt.Sprintf("%s[\"%s\"].%s%s", parentPath, key, modulePrefix, mod.Name)
+		roleName, err := getRoleNameFromState(state, fullPath, "", -1)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Warning: failed to get role name for %s: %v\n", fullPath, err)
+			continue
+		}
+		fmt.Printf("    %s = %q\n", key, roleName)
+	}
+	fmt.Printf("  }[each.key]\n")
+	fmt.Printf("}\n\n")
+
+	return nil
+}
+
+func generateParentCountImports(mod ModuleInfo, state *TerraformState, basePath string) error {
+	parentPath := buildModulePath(mod.ModulePath[:len(mod.ModulePath)-1])
+
+	count, err := extractCountValue(state, parentPath)
+	if err != nil {
+		return err
+	}
+
+	if count == 0 {
+		return fmt.Errorf("no instances found in state for parent count module")
+	}
+
+	fmt.Printf("import {\n")
+	fmt.Printf("  count = %s\n\n", mod.ParentCount)
+	fmt.Printf("  to = %s[count.index].%s%s.%s.%s\n", parentPath, modulePrefix, mod.Name, resourceTypeAttachments, resourceName)
+	fmt.Printf("  id = [\n")
+	for i := 0; i < count; i++ {
+		fullPath := fmt.Sprintf("%s[%d].%s%s", parentPath, i, modulePrefix, mod.Name)
+		roleName, err := getRoleNameFromState(state, fullPath, "", -1)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Warning: failed to get role name for %s: %v\n", fullPath, err)
+			continue
+		}
+		fmt.Printf("    %q,\n", roleName)
+	}
+	fmt.Printf("  ][count.index]\n")
+	fmt.Printf("}\n\n")
+
+	fmt.Printf("import {\n")
+	fmt.Printf("  count = %s\n\n", mod.ParentCount)
+	fmt.Printf("  to = %s[count.index].%s%s.%s.%s\n", parentPath, modulePrefix, mod.Name, resourceTypePolicies, resourceName)
+	fmt.Printf("  id = [\n")
+	for i := 0; i < count; i++ {
+		fullPath := fmt.Sprintf("%s[%d].%s%s", parentPath, i, modulePrefix, mod.Name)
+		roleName, err := getRoleNameFromState(state, fullPath, "", -1)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Warning: failed to get role name for %s: %v\n", fullPath, err)
+			continue
+		}
+		fmt.Printf("    %q,\n", roleName)
+	}
+	fmt.Printf("  ][count.index]\n")
+	fmt.Printf("}\n\n")
+
+	return nil
+}
+
+func generateModuleForEachImports(mod ModuleInfo, state *TerraformState, basePath string) error {
+	keys, err := extractForEachKeys(state, basePath)
+	if err != nil {
+		return err
+	}
+
+	if len(keys) == 0 {
+		return fmt.Errorf("no instances found in state for for_each module")
+	}
+
+	fmt.Printf("import {\n")
+	fmt.Printf("  for_each = %s\n\n", mod.ForEach)
+	fmt.Printf("  to = %s[each.key].%s.%s\n", basePath, resourceTypeAttachments, resourceName)
+	fmt.Printf("  id = {\n")
+	for _, key := range keys {
+		roleName, err := getRoleNameFromState(state, basePath, key, -1)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Warning: failed to get role name for %s[%s]: %v\n", basePath, key, err)
+			continue
+		}
+		fmt.Printf("    %s = %q\n", key, roleName)
+	}
+	fmt.Printf("  }[each.key]\n")
+	fmt.Printf("}\n\n")
+
+	fmt.Printf("import {\n")
+	fmt.Printf("  for_each = %s\n\n", mod.ForEach)
+	fmt.Printf("  to = %s[each.key].%s.%s\n", basePath, resourceTypePolicies, resourceName)
+	fmt.Printf("  id = {\n")
+	for _, key := range keys {
+		roleName, err := getRoleNameFromState(state, basePath, key, -1)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Warning: failed to get role name for %s[%s]: %v\n", basePath, key, err)
+			continue
+		}
+		fmt.Printf("    %s = %q\n", key, roleName)
+	}
+	fmt.Printf("  }[each.key]\n")
+	fmt.Printf("}\n\n")
+
+	return nil
+}
+
+func generateModuleCountImports(mod ModuleInfo, state *TerraformState, basePath string) error {
+	count, err := extractCountValue(state, basePath)
+	if err != nil {
+		return err
+	}
+
+	if count == 0 {
+		return fmt.Errorf("no instances found in state for count module")
+	}
+
+	fmt.Printf("import {\n")
+	fmt.Printf("  count = %s\n\n", mod.Count)
+	fmt.Printf("  to = %s[count.index].%s.%s\n", basePath, resourceTypeAttachments, resourceName)
+	fmt.Printf("  id = [\n")
+	for i := 0; i < count; i++ {
+		roleName, err := getRoleNameFromState(state, basePath, "", i)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Warning: failed to get role name for %s[%d]: %v\n", basePath, i, err)
+			continue
+		}
+		fmt.Printf("    %q,\n", roleName)
+	}
+	fmt.Printf("  ][count.index]\n")
+	fmt.Printf("}\n\n")
+
+	fmt.Printf("import {\n")
+	fmt.Printf("  count = %s\n\n", mod.Count)
+	fmt.Printf("  to = %s[count.index].%s.%s\n", basePath, resourceTypePolicies, resourceName)
+	fmt.Printf("  id = [\n")
+	for i := 0; i < count; i++ {
+		roleName, err := getRoleNameFromState(state, basePath, "", i)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Warning: failed to get role name for %s[%d]: %v\n", basePath, i, err)
+			continue
+		}
+		fmt.Printf("    %q,\n", roleName)
+	}
+	fmt.Printf("  ][count.index]\n")
+	fmt.Printf("}\n\n")
+
+	return nil
+}
+
+func generateSimpleImports(mod ModuleInfo, state *TerraformState, basePath string) error {
+	roleName, err := getRoleNameFromState(state, basePath, "", -1)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("import {\n")
+	fmt.Printf("  to = %s.%s.%s\n", basePath, resourceTypeAttachments, resourceName)
+	fmt.Printf("  id = %q\n", roleName)
+	fmt.Printf("}\n\n")
+
+	fmt.Printf("import {\n")
+	fmt.Printf("  to = %s.%s.%s\n", basePath, resourceTypePolicies, resourceName)
+	fmt.Printf("  id = %q\n", roleName)
+	fmt.Printf("}\n\n")
+
+	return nil
+}
+
 func generateImportBlockWithState(mod ModuleInfo, state *TerraformState) error {
 	basePath := buildModulePath(mod.ModulePath)
 
 	if mod.ParentForEach != "" {
-		parentPath := buildModulePath(mod.ModulePath[:len(mod.ModulePath)-1])
-
-		keys, err := extractForEachKeys(state, parentPath)
-		if err != nil {
-			return err
-		}
-
-		if len(keys) == 0 {
-			return fmt.Errorf("no instances found in state for parent for_each module")
-		}
-
-		fmt.Printf("import {\n")
-		fmt.Printf("  for_each = %s\n\n", mod.ParentForEach)
-		fmt.Printf("  to = %s[each.key].module.%s.aws_iam_role_policy_attachments_exclusive.this\n", parentPath, mod.Name)
-		fmt.Printf("  id = {\n")
-		for _, key := range keys {
-			fullPath := fmt.Sprintf("%s[\"%s\"].module.%s", parentPath, key, mod.Name)
-			roleName, err := getRoleNameFromState(state, fullPath, "", -1)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "Warning: failed to get role name for %s: %v\n", fullPath, err)
-				continue
-			}
-			fmt.Printf("    %s = %q\n", key, roleName)
-		}
-		fmt.Printf("  }[each.key]\n")
-		fmt.Printf("}\n\n")
-
-		fmt.Printf("import {\n")
-		fmt.Printf("  for_each = %s\n\n", mod.ParentForEach)
-		fmt.Printf("  to = %s[each.key].module.%s.aws_iam_role_policies_exclusive.this\n", parentPath, mod.Name)
-		fmt.Printf("  id = {\n")
-		for _, key := range keys {
-			fullPath := fmt.Sprintf("%s[\"%s\"].module.%s", parentPath, key, mod.Name)
-			roleName, err := getRoleNameFromState(state, fullPath, "", -1)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "Warning: failed to get role name for %s: %v\n", fullPath, err)
-				continue
-			}
-			fmt.Printf("    %s = %q\n", key, roleName)
-		}
-		fmt.Printf("  }[each.key]\n")
-		fmt.Printf("}\n\n")
-
-		return nil
+		return generateParentForEachImports(mod, state, basePath)
 	}
 
 	if mod.ParentCount != "" {
-		parentPath := buildModulePath(mod.ModulePath[:len(mod.ModulePath)-1])
-
-		count, err := extractCountValue(state, parentPath)
-		if err != nil {
-			return err
-		}
-
-		if count == 0 {
-			return fmt.Errorf("no instances found in state for parent count module")
-		}
-
-		fmt.Printf("import {\n")
-		fmt.Printf("  count = %s\n\n", mod.ParentCount)
-		fmt.Printf("  to = %s[count.index].module.%s.aws_iam_role_policy_attachments_exclusive.this\n", parentPath, mod.Name)
-		fmt.Printf("  id = [\n")
-		for i := 0; i < count; i++ {
-			fullPath := fmt.Sprintf("%s[%d].module.%s", parentPath, i, mod.Name)
-			roleName, err := getRoleNameFromState(state, fullPath, "", -1)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "Warning: failed to get role name for %s: %v\n", fullPath, err)
-				continue
-			}
-			fmt.Printf("    %q,\n", roleName)
-		}
-		fmt.Printf("  ][count.index]\n")
-		fmt.Printf("}\n\n")
-
-		fmt.Printf("import {\n")
-		fmt.Printf("  count = %s\n\n", mod.ParentCount)
-		fmt.Printf("  to = %s[count.index].module.%s.aws_iam_role_policies_exclusive.this\n", parentPath, mod.Name)
-		fmt.Printf("  id = [\n")
-		for i := 0; i < count; i++ {
-			fullPath := fmt.Sprintf("%s[%d].module.%s", parentPath, i, mod.Name)
-			roleName, err := getRoleNameFromState(state, fullPath, "", -1)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "Warning: failed to get role name for %s: %v\n", fullPath, err)
-				continue
-			}
-			fmt.Printf("    %q,\n", roleName)
-		}
-		fmt.Printf("  ][count.index]\n")
-		fmt.Printf("}\n\n")
-
-		return nil
+		return generateParentCountImports(mod, state, basePath)
 	}
-
-	modulePathPrefix := basePath
 
 	if mod.ForEach != "" {
-		keys, err := extractForEachKeys(state, modulePathPrefix)
-		if err != nil {
-			return err
-		}
-
-		if len(keys) == 0 {
-			return fmt.Errorf("no instances found in state for for_each module")
-		}
-
-		fmt.Printf("import {\n")
-		fmt.Printf("  for_each = %s\n\n", mod.ForEach)
-		fmt.Printf("  to = %s[each.key].aws_iam_role_policy_attachments_exclusive.this\n", modulePathPrefix)
-		fmt.Printf("  id = {\n")
-		for _, key := range keys {
-			roleName, err := getRoleNameFromState(state, modulePathPrefix, key, -1)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "Warning: failed to get role name for %s[%s]: %v\n", modulePathPrefix, key, err)
-				continue
-			}
-			fmt.Printf("    %s = %q\n", key, roleName)
-		}
-		fmt.Printf("  }[each.key]\n")
-		fmt.Printf("}\n\n")
-		fmt.Printf("import {\n")
-		fmt.Printf("  for_each = %s\n\n", mod.ForEach)
-		fmt.Printf("  to = %s[each.key].aws_iam_role_policies_exclusive.this\n", modulePathPrefix)
-		fmt.Printf("  id = {\n")
-		for _, key := range keys {
-			roleName, err := getRoleNameFromState(state, modulePathPrefix, key, -1)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "Warning: failed to get role name for %s[%s]: %v\n", modulePathPrefix, key, err)
-				continue
-			}
-			fmt.Printf("    %s = %q\n", key, roleName)
-		}
-		fmt.Printf("  }[each.key]\n")
-		fmt.Printf("}\n\n")
-
-	} else if mod.Count != "" {
-		count, err := extractCountValue(state, modulePathPrefix)
-		if err != nil {
-			return err
-		}
-
-		if count == 0 {
-			return fmt.Errorf("no instances found in state for count module")
-		}
-
-		fmt.Printf("import {\n")
-		fmt.Printf("  count = %s\n\n", mod.Count)
-		fmt.Printf("  to = %s[count.index].aws_iam_role_policy_attachments_exclusive.this\n", modulePathPrefix)
-		fmt.Printf("  id = [\n")
-		for i := 0; i < count; i++ {
-			roleName, err := getRoleNameFromState(state, modulePathPrefix, "", i)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "Warning: failed to get role name for %s[%d]: %v\n", modulePathPrefix, i, err)
-				continue
-			}
-			fmt.Printf("    %q,\n", roleName)
-		}
-		fmt.Printf("  ][count.index]\n")
-		fmt.Printf("}\n\n")
-		fmt.Printf("import {\n")
-		fmt.Printf("  count = %s\n\n", mod.Count)
-		fmt.Printf("  to = %s[count.index].aws_iam_role_policies_exclusive.this\n", modulePathPrefix)
-		fmt.Printf("  id = [\n")
-		for i := 0; i < count; i++ {
-			roleName, err := getRoleNameFromState(state, modulePathPrefix, "", i)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "Warning: failed to get role name for %s[%d]: %v\n", modulePathPrefix, i, err)
-				continue
-			}
-			fmt.Printf("    %q,\n", roleName)
-		}
-		fmt.Printf("  ][count.index]\n")
-		fmt.Printf("}\n\n")
-
-	} else {
-		roleName, err := getRoleNameFromState(state, modulePathPrefix, "", -1)
-		if err != nil {
-			return err
-		}
-
-		fmt.Printf("import {\n")
-		fmt.Printf("  to = %s.aws_iam_role_policy_attachments_exclusive.this\n", modulePathPrefix)
-		fmt.Printf("  id = %q\n", roleName)
-		fmt.Printf("}\n\n")
-		fmt.Printf("import {\n")
-		fmt.Printf("  to = %s.aws_iam_role_policies_exclusive.this\n", modulePathPrefix)
-		fmt.Printf("  id = %q\n", roleName)
-		fmt.Printf("}\n\n")
+		return generateModuleForEachImports(mod, state, basePath)
 	}
 
-	return nil
+	if mod.Count != "" {
+		return generateModuleCountImports(mod, state, basePath)
+	}
+
+	return generateSimpleImports(mod, state, basePath)
 }
 
 func extractForEachKeys(state *TerraformState, modulePathPrefix string) ([]string, error) {
