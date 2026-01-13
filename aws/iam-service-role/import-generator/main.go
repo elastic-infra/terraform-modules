@@ -14,6 +14,17 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
+const (
+	resourceTypeAttachments = "aws_iam_role_policy_attachments_exclusive"
+	resourceTypePolicies    = "aws_iam_role_policies_exclusive"
+	resourceName            = "this"
+	modulePrefix            = "module."
+	iamRoleType             = "aws_iam_role"
+
+	forEachKeyStartMarker = "[\""
+	forEachKeyEndMarker   = "\"]"
+)
+
 type ModuleInfo struct {
 	Name          string
 	Source        string
@@ -183,8 +194,7 @@ func extractModules(body *hclsyntax.Body, src []byte, parentModulePath []string,
 
 func isLocalModule(source string) bool {
 	return strings.HasPrefix(source, "./") ||
-		strings.HasPrefix(source, "../") ||
-		(!strings.Contains(source, "://") && !strings.Contains(source, "github.com"))
+		strings.HasPrefix(source, "../")
 }
 
 func analyzeModuleBlock(moduleName string, block *hclsyntax.Block, src []byte, parentModulePath []string, parentForEach, parentCount string) *ModuleInfo {
@@ -225,16 +235,19 @@ func analyzeModuleBlock(moduleName string, block *hclsyntax.Block, src []byte, p
 	}
 }
 
-func generateImportBlockWithState(mod ModuleInfo, state *TerraformState) error {
-	var basePathParts []string
-	for _, name := range mod.ModulePath {
-		basePathParts = append(basePathParts, "module."+name)
+func buildModulePath(modulePath []string) string {
+	var pathParts []string
+	for _, name := range modulePath {
+		pathParts = append(pathParts, modulePrefix+name)
 	}
-	basePath := strings.Join(basePathParts, ".")
+	return strings.Join(pathParts, ".")
+}
+
+func generateImportBlockWithState(mod ModuleInfo, state *TerraformState) error {
+	basePath := buildModulePath(mod.ModulePath)
 
 	if mod.ParentForEach != "" {
-		parentPathParts := basePathParts[:len(basePathParts)-1]
-		parentPath := strings.Join(parentPathParts, ".")
+		parentPath := buildModulePath(mod.ModulePath[:len(mod.ModulePath)-1])
 
 		keys, err := extractForEachKeys(state, parentPath)
 		if err != nil {
@@ -281,8 +294,7 @@ func generateImportBlockWithState(mod ModuleInfo, state *TerraformState) error {
 	}
 
 	if mod.ParentCount != "" {
-		parentPathParts := basePathParts[:len(basePathParts)-1]
-		parentPath := strings.Join(parentPathParts, ".")
+		parentPath := buildModulePath(mod.ModulePath[:len(mod.ModulePath)-1])
 
 		count, err := extractCountValue(state, parentPath)
 		if err != nil {
