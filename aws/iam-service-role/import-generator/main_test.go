@@ -41,8 +41,8 @@ func TestIsLocalModule(t *testing.T) {
 		{"relative path ../../", "../../module/path", true},
 		{"GitHub URL", "github.com/org/repo//path", false},
 		{"GitHub URL with https", "https://github.com/org/repo", false},
-		{"Registry module", "hashicorp/consul/aws", true},
-		{"Registry module with version", "hashicorp/consul/aws?version=1.0.0", true},
+		{"Registry module", "hashicorp/consul/aws", false},
+		{"Registry module with version", "hashicorp/consul/aws?version=1.0.0", false},
 		{"S3 source", "s3::https://bucket.s3.amazonaws.com/module.zip", false},
 	}
 
@@ -363,9 +363,9 @@ func TestGetRoleNameFromState(t *testing.T) {
 
 func TestGenerateImportBlockWithState(t *testing.T) {
 	tests := []struct {
-		name            string
-		mod             ModuleInfo
-		modules         []Module
+		name              string
+		mod               ModuleInfo
+		modules           []Module
 		expectedToContain []string
 	}{
 		{
