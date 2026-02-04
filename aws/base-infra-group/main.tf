@@ -37,8 +37,9 @@ data "aws_iam_policy_document" "infra_system_read" {
 
     actions = [
       "cloudfront:GetDistribution",
-      "es:DescribeDomain",
+      "dms:DescribeReplicationInstances",
       "docdb:DescribeDBInstances",
+      "es:DescribeDomain",
       "memorydb:DescribeClusters",
       "wafv2:GetWebACL",
     ]
