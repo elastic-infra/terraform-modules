@@ -27,15 +27,17 @@ locals {
       protocol  = "tcp"
     })
   }
-  ei_sg_ids = length(var.ei_sg_ids) > 0 ? [for v in local.ingress_rules : merge(v, { security_groups = var.ei_sg_ids })] : []
-  ei_cidrs  = length(var.ei_cidrs) > 0 ? [for v in local.ingress_rules : merge(v, { cidr_blocks = var.ei_cidrs })] : []
+  ei_sg_ids     = length(var.ei_sg_ids) > 0 ? [for v in local.ingress_rules : merge(v, { security_groups = var.ei_sg_ids })] : []
+  ei_cidrs      = length(var.ei_cidrs) > 0 ? [for v in local.ingress_rules : merge(v, { cidr_blocks = var.ei_cidrs })] : []
+  target_region = coalesce(var.service_region, data.aws_region.current.region)
 }
 
 data "aws_region" "current" {}
 
 resource "aws_vpc_endpoint" "this" {
   vpc_id              = var.vpc_id
-  service_name        = local.vpce_service_name[data.aws_region.current.region]
+  service_name        = local.vpce_service_name[local.target_region]
+  service_region      = var.service_region
   vpc_endpoint_type   = "Interface"
   subnet_ids          = var.subnet_ids
   security_group_ids  = [aws_security_group.this.id]
