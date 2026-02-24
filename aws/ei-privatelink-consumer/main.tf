@@ -35,16 +35,20 @@ locals {
 data "aws_region" "current" {}
 
 resource "aws_vpc_endpoint" "this" {
-  vpc_id              = var.vpc_id
-  service_name        = local.vpce_service_name[local.target_region]
-  service_region      = var.service_region
-  vpc_endpoint_type   = "Interface"
-  subnet_ids          = var.subnet_ids
-  security_group_ids  = [aws_security_group.this.id]
-  private_dns_enabled = var.private_dns_enabled
+  vpc_id             = var.vpc_id
+  service_name       = local.vpce_service_name[local.target_region]
+  service_region     = var.service_region
+  vpc_endpoint_type  = "Interface"
+  subnet_ids         = var.subnet_ids
+  security_group_ids = [aws_security_group.this.id]
   tags = {
     Name = "Elastic Infra Common Service"
   }
+}
+
+resource "aws_vpc_endpoint_private_dns" "this" {
+  vpc_endpoint_id     = aws_vpc_endpoint.this.id
+  private_dns_enabled = var.private_dns_enabled
 }
 
 resource "aws_security_group" "this" {
