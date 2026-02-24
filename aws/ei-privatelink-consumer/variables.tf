@@ -3,6 +3,12 @@ variable "vpc_id" {
   description = "VPC ID where the VPC Endpoints are installed"
 }
 
+variable "service_region" {
+  type        = string
+  description = "Region where the endpoint service is hosted. If null, uses current region (same-region access)."
+  default     = null
+}
+
 variable "subnet_ids" {
   type        = list(string)
   description = "The ID of one or more subnets in which to create a network interface for the endpoint"

@@ -55,6 +55,7 @@ No modules.
 | <a name="input_ei_cidrs"></a> [ei\_cidrs](#input\_ei\_cidrs) | CIDR blocks of EI Management Environment | `list(string)` | <pre>[<br/>  "10.254.0.0/23"<br/>]</pre> | no |
 | <a name="input_ei_sg_ids"></a> [ei\_sg\_ids](#input\_ei\_sg\_ids) | Security Group IDs of EI Management Environment | `list(string)` | <pre>[<br/>  "089928438340/sg-3845ff5c"<br/>]</pre> | no |
 | <a name="input_private_dns_enabled"></a> [private\_dns\_enabled](#input\_private\_dns\_enabled) | Whether or not to associate a private hosted zone with the specified VPC | `bool` | `true` | no |
+| <a name="input_service_region"></a> [service\_region](#input\_service\_region) | Region where the endpoint service is hosted. If null, uses current region (same-region access). | `string` | `null` | no |
 
 ## Outputs
 
