@@ -35,6 +35,17 @@ variable "timeout" {
   default     = 60 * 60
 }
 
+variable "cpu_architecture" {
+  type        = string
+  description = "CPU architecture for ECS task (X86_64 or ARM64)"
+  default     = "X86_64"
+
+  validation {
+    condition     = contains(["X86_64", "ARM64"], var.cpu_architecture)
+    error_message = "cpu_architecture must be X86_64 or ARM64."
+  }
+}
+
 variable "tags" {
   type        = map(string)
   description = "Tags for resources"

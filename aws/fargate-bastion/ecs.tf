@@ -61,6 +61,11 @@ resource "aws_ecs_task_definition" "bastion" {
   cpu                      = 512
   memory                   = 1024
 
+  runtime_platform {
+    operating_system_family = "LINUX"
+    cpu_architecture        = var.cpu_architecture
+  }
+
   tags = var.tags
 }
 
