@@ -27,7 +27,8 @@ module "main_users" {
       roles = ["AWS_LOAD_S3_ACCESS", "AWS_SELECT_S3_ACCESS"]
     }
     user2 = {
-      password = data.aws_kms_secrets.db_user.plaintext["user2"]
+      password_wo         = data.aws_kms_secrets.db_user.plaintext["user2"]
+      password_wo_version = 1
       privileges = {
         "${mysql_database.db.name}.table1" = ["SELECT"]
       }
@@ -40,7 +41,9 @@ module "main_users" {
 }
 ```
 
-* `password` - The password for the user.
+* `password` - The password for the user. The unsalted hash of the password is stored in the state.
+* `password_wo` - The password for the user. Unlike `password`, this is not stored in the state. Requires Terraform v1.11+.
+* `password_wo_version` - A version number to trigger password updates when using `password_wo`. Increment this to rotate the password.
 * `privileges` - The keys are targets to grant privileges on. You specify asterisk`*`, database name or `database.table`(join database name and table name with dot). The value is the list of privileges to grant to the user.
 * `roles` - Only supported in MySQL 8 and above. A list of roles to grant to the user.
 
@@ -48,14 +51,14 @@ module "main_users" {
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
-| <a name="requirement_mysql"></a> [mysql](#requirement\_mysql) | >= 3 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.11 |
+| <a name="requirement_mysql"></a> [mysql](#requirement\_mysql) | >= 3.0.87 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_mysql"></a> [mysql](#provider\_mysql) | >= 3 |
+| <a name="provider_mysql"></a> [mysql](#provider\_mysql) | >= 3.0.87 |
 
 ## Modules
 
@@ -74,7 +77,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_users"></a> [users](#input\_users) | Specify mysql users and grants. The key is the user name, and value is the password and grants. | <pre>map(object({<br/>    host          = optional(string, "%")<br/>    password      = string<br/>    tls_option    = optional(string)<br/>    auth_plugin   = optional(string)<br/>    privileges    = map(list(string))<br/>    roles         = optional(list(string), [])<br/>    default_roles = optional(list(string), [])<br/>  }))</pre> | `{}` | no |
+| <a name="input_users"></a> [users](#input\_users) | Specify mysql users and grants. The key is the user name, and value is the password and grants. | <pre>map(object({<br/>    host                = optional(string, "%")<br/>    password            = optional(string)<br/>    password_wo         = optional(string)<br/>    password_wo_version = optional(number)<br/>    tls_option          = optional(string)<br/>    auth_plugin         = optional(string)<br/>    privileges          = map(list(string))<br/>    roles               = optional(list(string), [])<br/>    default_roles       = optional(list(string), [])<br/>  }))</pre> | `{}` | no |
 
 ## Outputs
 
