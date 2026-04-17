@@ -3,19 +3,13 @@
 
 Create mysql users with grants
 
-### Usage
+### Usage with `password`
+
+Password hash is stored in the state.
 
 ```hcl
-resource "mysql_database" "db" {
-  provider = mysql.main
-
-  name                  = "example"
-  default_character_set = "utf8mb4"
-  default_collation     = "utf8mb4_general_ci"
-}
-
 module "main_users" {
-  source = "github.com/elastic-infra/terraform-modules//mysql/users?ref=v6.2.0"
+  source = "github.com/elastic-infra/terraform-modules//mysql/users"
 
   users = {
     user1 = {
@@ -26,13 +20,42 @@ module "main_users" {
       }
       roles = ["AWS_LOAD_S3_ACCESS", "AWS_SELECT_S3_ACCESS"]
     }
-    user2 = {
-      password_wo         = data.aws_kms_secrets.db_user.plaintext["user2"]
+  }
+
+  providers = {
+    mysql = mysql.main
+  }
+}
+```
+
+### Usage with `password_wo`
+
+Password is not stored in the state. Requires Terraform v1.11+.
+The `password_wo` variable is a separate ephemeral variable that accepts values from ephemeral resources.
+
+```hcl
+ephemeral "aws_kms_secrets" "db_user" {
+  secret {
+    name    = "user1"
+    payload = "AQICAHg..."
+  }
+}
+
+module "main_users" {
+  source = "github.com/elastic-infra/terraform-modules//mysql/users"
+
+  users = {
+    user1 = {
       password_wo_version = 1
       privileges = {
-        "${mysql_database.db.name}.table1" = ["SELECT"]
+        mysql_database.db.name = ["ALL PRIVILEGES"]
+        "*"                    = ["SESSION_VARIABLES_ADMIN"]
       }
     }
+  }
+
+  password_wo = {
+    user1 = ephemeral.aws_kms_secrets.db_user.plaintext["user1"]
   }
 
   providers = {
@@ -42,7 +65,7 @@ module "main_users" {
 ```
 
 * `password` - The password for the user. The unsalted hash of the password is stored in the state.
-* `password_wo` - The password for the user. Unlike `password`, this is not stored in the state. Requires Terraform v1.11+.
+* `password_wo` - A separate ephemeral variable. Map of user names to write-only passwords. Not stored in the state.
 * `password_wo_version` - A version number to trigger password updates when using `password_wo`. Increment this to rotate the password.
 * `privileges` - The keys are targets to grant privileges on. You specify asterisk`*`, database name or `database.table`(join database name and table name with dot). The value is the list of privileges to grant to the user.
 * `roles` - Only supported in MySQL 8 and above. A list of roles to grant to the user.
@@ -58,7 +81,7 @@ module "main_users" {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_mysql"></a> [mysql](#provider\_mysql) | >= 3.0.87 |
+| <a name="provider_mysql"></a> [mysql](#provider\_mysql) | 3.0.93 |
 
 ## Modules
 
@@ -77,7 +100,8 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_users"></a> [users](#input\_users) | Specify mysql users and grants. The key is the user name, and value is the password and grants. | <pre>map(object({<br/>    host                = optional(string, "%")<br/>    password            = optional(string)<br/>    password_wo         = optional(string)<br/>    password_wo_version = optional(number)<br/>    tls_option          = optional(string)<br/>    auth_plugin         = optional(string)<br/>    privileges          = map(list(string))<br/>    roles               = optional(list(string), [])<br/>    default_roles       = optional(list(string), [])<br/>  }))</pre> | `{}` | no |
+| <a name="input_password_wo"></a> [password\_wo](#input\_password\_wo) | Map of user names to write-only passwords. These are ephemeral and not stored in state. | `map(string)` | `{}` | no |
+| <a name="input_users"></a> [users](#input\_users) | Specify mysql users and grants. The key is the user name, and value is the password and grants. | <pre>map(object({<br/>    host                = optional(string, "%")<br/>    password            = optional(string)<br/>    password_wo_version = optional(number)<br/>    tls_option          = optional(string)<br/>    auth_plugin         = optional(string)<br/>    privileges          = map(list(string))<br/>    roles               = optional(list(string), [])<br/>    default_roles       = optional(list(string), [])<br/>  }))</pre> | `{}` | no |
 
 ## Outputs
 

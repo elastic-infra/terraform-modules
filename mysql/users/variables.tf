@@ -3,7 +3,6 @@ variable "users" {
   type = map(object({
     host                = optional(string, "%")
     password            = optional(string)
-    password_wo         = optional(string)
     password_wo_version = optional(number)
     tls_option          = optional(string)
     auth_plugin         = optional(string)
@@ -16,8 +15,15 @@ variable "users" {
   validation {
     condition = alltrue([
       for k, v in var.users :
-      !(v.password != null && v.password_wo != null)
+      !(v.password != null && contains(keys(var.password_wo), k))
     ])
-    error_message = "Each user must not have both 'password' and 'password_wo' set. Use one or the other."
+    error_message = "Each user must not have both 'password' and an entry in 'password_wo'. Use one or the other."
   }
+}
+
+variable "password_wo" {
+  description = "Map of user names to write-only passwords. These are ephemeral and not stored in state."
+  type        = map(string)
+  default     = {}
+  ephemeral   = true
 }
