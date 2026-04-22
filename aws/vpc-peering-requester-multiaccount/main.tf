@@ -17,7 +17,9 @@
 *
 * ```hcl
 * module "peering-request" {
-*   source = "github.com/elastic-infra/terraform-modules//aws/vpc-peering-requester-multiaccount?ref=v3.0.0"
+*   source = "github.com/elastic-infra/terraform-modules//aws/vpc-peering-requester-multiaccount?ref=10.0.0"
+*
+*   region = "us-east-1"
 *
 *   enabled              = "true"
 *   namespace            = "foo"
@@ -27,7 +29,6 @@
 *   requester_vpc_id     = "vpc-12345678"
 *   peer_owner_id        = "012345678901"
 *   peer_vpc_id          = "vpc-0123456789abcdef"
-*   region               = "us-east-1"
 *   peer_region          = "us-west-1"
 *   peer_vpc_cidr_blocks = ["192.0.2.0/24"]
 *   tags {

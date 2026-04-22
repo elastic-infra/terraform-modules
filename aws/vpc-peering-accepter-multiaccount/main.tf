@@ -12,7 +12,9 @@
 *
 * ```hcl
 * module "peering_acceptance" {
-*   source = "github.com/elastic-infra/terraform-modules//aws/vpc-peering-accepter-multiaccount?ref=v3.0.0"
+*   source = "github.com/elastic-infra/terraform-modules//aws/vpc-peering-accepter-multiaccount?ref=10.0.0"
+*
+*   region = "us-east-1"
 *
 *   enabled                   = "true"
 *   namespace                 = "foo"
@@ -22,7 +24,6 @@
 *   requester_vpc_cidr_blocks = ["198.51.100/24"]
 *   accepter_vpc_id           = "vpc-0123456789"
 *   vpc_peering_id            = "pcx-0123456789abcdef"
-*   region                    = "us-east-1"
 *
 *   tags {
 *     Environment = "development"
