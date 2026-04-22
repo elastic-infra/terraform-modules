@@ -12,7 +12,7 @@ Users of this module need to set up the requester side in other means in advance
 
 ```hcl
 module "peering_acceptance" {
-  source = "github.com/elastic-infra/terraform-modules//aws/vpc-peering-accepter-multiaccount?ref=v2.3.0"
+  source = "github.com/elastic-infra/terraform-modules//aws/vpc-peering-accepter-multiaccount?ref=v3.0.0"
 
   enabled                   = "true"
   namespace                 = "foo"
@@ -22,13 +22,10 @@ module "peering_acceptance" {
   requester_vpc_cidr_blocks = ["198.51.100/24"]
   accepter_vpc_id           = "vpc-0123456789"
   vpc_peering_id            = "pcx-0123456789abcdef"
+  region                    = "us-east-1"
 
   tags {
     Environment = "development"
-  }
-
-  providers = {
-    aws = aws.us-east-1
   }
 }
 ```
@@ -37,14 +34,14 @@ module "peering_acceptance" {
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 2 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 6.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 2 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 6.0 |
 
 ## Modules
 
@@ -77,6 +74,7 @@ module "peering_acceptance" {
 | <a name="input_attributes"></a> [attributes](#input\_attributes) | Additional attributes (e.g. `a` or `b`) | `list(string)` | `[]` | no |
 | <a name="input_delimiter"></a> [delimiter](#input\_delimiter) | Delimiter to be used between `namespace`, `stage`, `name`, and `attributes` | `string` | `"-"` | no |
 | <a name="input_enabled"></a> [enabled](#input\_enabled) | Set to false to prevent the module from creating or accessing any resources | `string` | `"true"` | no |
+| <a name="input_region"></a> [region](#input\_region) | AWS region where the accepter-side resources are created. When null, uses the provider's configured region. | `string` | `null` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Additional tags (e.g. `{"BusinessUnit" = "XYZ"`) | `map(string)` | `{}` | no |
 
 ## Outputs

@@ -9,12 +9,15 @@
 * Users of this module need to set up the accepter side in other means, by accepting the VPC peering connection and
 * set up the route to the requester.
 *
+* `region` specifies where the requester-side resources are created; `peer_region` is the region the
+* peer VPC resides in and is passed to `aws_vpc_peering_connection.peer_region`.
+*
 * ## Usage Example
 *
 *
 * ```hcl
 * module "peering-request" {
-*   source = "github.com/elastic-infra/terraform-modules//aws/vpc-peering-requester-multiaccount?ref=v2.3.0"
+*   source = "github.com/elastic-infra/terraform-modules//aws/vpc-peering-requester-multiaccount?ref=v3.0.0"
 *
 *   enabled              = "true"
 *   namespace            = "foo"
@@ -24,14 +27,11 @@
 *   requester_vpc_id     = "vpc-12345678"
 *   peer_owner_id        = "012345678901"
 *   peer_vpc_id          = "vpc-0123456789abcdef"
+*   region               = "us-east-1"
 *   peer_region          = "us-west-1"
 *   peer_vpc_cidr_blocks = ["192.0.2.0/24"]
 *   tags {
 *     Environment = "development"
-*   }
-*
-*   providers = {
-*     aws = aws.us-east-1
 *   }
 * }
 * ```
@@ -40,14 +40,4 @@
 locals {
   enabled = var.enabled == "true"
   count   = local.enabled ? 1 : 0
-}
-
-terraform {
-  required_version = ">= 0.13"
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = ">= 2"
-    }
-  }
 }

@@ -9,11 +9,14 @@ set up the route to the peer (blackhole then) on the requester side.
 Users of this module need to set up the accepter side in other means, by accepting the VPC peering connection and
 set up the route to the requester.
 
+`region` specifies where the requester-side resources are created; `peer_region` is the region the
+peer VPC resides in and is passed to `aws_vpc_peering_connection.peer_region`.
+
 ## Usage Example
 
 ```hcl
 module "peering-request" {
-  source = "github.com/elastic-infra/terraform-modules//aws/vpc-peering-requester-multiaccount?ref=v2.3.0"
+  source = "github.com/elastic-infra/terraform-modules//aws/vpc-peering-requester-multiaccount?ref=v3.0.0"
 
   enabled              = "true"
   namespace            = "foo"
@@ -23,14 +26,11 @@ module "peering-request" {
   requester_vpc_id     = "vpc-12345678"
   peer_owner_id        = "012345678901"
   peer_vpc_id          = "vpc-0123456789abcdef"
+  region               = "us-east-1"
   peer_region          = "us-west-1"
   peer_vpc_cidr_blocks = ["192.0.2.0/24"]
   tags {
     Environment = "development"
-  }
-
-  providers = {
-    aws = aws.us-east-1
   }
 }
 ```
@@ -39,14 +39,14 @@ module "peering-request" {
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 2 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 6.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 2 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 6.0 |
 
 ## Modules
 
@@ -79,6 +79,7 @@ module "peering-request" {
 | <a name="input_enabled"></a> [enabled](#input\_enabled) | Set to false to prevent the module from creating or accessing any resources | `string` | `"true"` | no |
 | <a name="input_peer_region"></a> [peer\_region](#input\_peer\_region) | Region where peer VPC resides; Cannot be set when peering\_auto\_accept is true | `string` | `null` | no |
 | <a name="input_peering_auto_accept"></a> [peering\_auto\_accept](#input\_peering\_auto\_accept) | Set true to enable auto-accept in an AWS account. | `bool` | `false` | no |
+| <a name="input_region"></a> [region](#input\_region) | AWS region where the requester-side resources are created. When null, uses the provider's configured region. Distinct from `peer_region`, which is the region of the peer VPC. | `string` | `null` | no |
 | <a name="input_requester_vpc_id"></a> [requester\_vpc\_id](#input\_requester\_vpc\_id) | Requester VPC ID filter | `string` | `""` | no |
 | <a name="input_requester_vpc_tags"></a> [requester\_vpc\_tags](#input\_requester\_vpc\_tags) | Requester VPC Tags filter | `map(string)` | `{}` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Additional tags (e.g. `{"BusinessUnit" = "XYZ"`) | `map(string)` | `{}` | no |
