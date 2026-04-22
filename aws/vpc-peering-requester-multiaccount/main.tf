@@ -17,7 +17,7 @@
 *
 * ```hcl
 * module "peering-request" {
-*   source = "github.com/elastic-infra/terraform-modules//aws/vpc-peering-requester-multiaccount?ref=10.0.0"
+*   source = "github.com/elastic-infra/terraform-modules//aws/vpc-peering-requester-multiaccount?ref=v10.0.0"
 *
 *   region = "us-east-1"
 *
