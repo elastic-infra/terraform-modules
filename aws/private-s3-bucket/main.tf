@@ -201,6 +201,8 @@ locals {
 }
 
 resource "aws_s3_bucket" "b" {
+  region = var.region
+
   bucket = var.bucket_name
   tags   = var.tags
 
@@ -208,6 +210,8 @@ resource "aws_s3_bucket" "b" {
 }
 
 resource "aws_s3_bucket_public_access_block" "b" {
+  region = var.region
+
   bucket = aws_s3_bucket.b.id
 
   # ACL should always not be used nor used

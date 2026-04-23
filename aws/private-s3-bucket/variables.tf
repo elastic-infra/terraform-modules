@@ -1,3 +1,9 @@
+variable "region" {
+  type        = string
+  default     = null
+  description = "AWS region where the bucket and its configurations are created. When null, uses the provider's configured region."
+}
+
 variable "bucket_name" {
   type        = string
   description = "S3 bucket name"

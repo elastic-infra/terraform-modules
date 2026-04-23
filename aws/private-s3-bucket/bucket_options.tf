@@ -1,5 +1,8 @@
 resource "aws_s3_bucket_versioning" "b" {
-  count  = var.versioning != null ? 1 : 0
+  count = var.versioning != null ? 1 : 0
+
+  region = var.region
+
   bucket = aws_s3_bucket.b.id
   versioning_configuration {
     status     = var.versioning ? "Enabled" : "Suspended"
@@ -8,7 +11,10 @@ resource "aws_s3_bucket_versioning" "b" {
 }
 
 resource "aws_s3_bucket_logging" "b" {
-  count  = length(var.logging) > 0 ? 1 : 0
+  count = length(var.logging) > 0 ? 1 : 0
+
+  region = var.region
+
   bucket = aws_s3_bucket.b.id
 
   target_bucket = var.logging[0].target_bucket
@@ -17,7 +23,10 @@ resource "aws_s3_bucket_logging" "b" {
 
 # grant
 resource "aws_s3_bucket_acl" "b" {
-  count  = local.object_ownership != "BucketOwnerEnforced" ? 1 : 0
+  count = local.object_ownership != "BucketOwnerEnforced" ? 1 : 0
+
+  region = var.region
+
   bucket = aws_s3_bucket.b.id
 
   acl = length(var.grant) > 0 ? null : "private"
@@ -55,6 +64,8 @@ resource "aws_s3_bucket_acl" "b" {
 
 # Bucket Ownership Controls
 resource "aws_s3_bucket_ownership_controls" "b" {
+  region = var.region
+
   bucket = aws_s3_bucket.b.id
 
   rule {
@@ -64,6 +75,8 @@ resource "aws_s3_bucket_ownership_controls" "b" {
 
 # lifecycle
 resource "aws_s3_bucket_lifecycle_configuration" "b" {
+  region = var.region
+
   bucket = aws_s3_bucket.b.id
 
   rule {
@@ -137,7 +150,10 @@ resource "aws_s3_bucket_lifecycle_configuration" "b" {
 }
 # SSE
 resource "aws_s3_bucket_server_side_encryption_configuration" "b" {
-  count  = var.disable_sse ? 0 : 1
+  count = var.disable_sse ? 0 : 1
+
+  region = var.region
+
   bucket = aws_s3_bucket.b.id
 
   rule {
@@ -149,7 +165,10 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "b" {
 }
 # CORS
 resource "aws_s3_bucket_cors_configuration" "b" {
-  count  = length(var.cors_rule) > 0 ? 1 : 0
+  count = length(var.cors_rule) > 0 ? 1 : 0
+
+  region = var.region
+
   bucket = aws_s3_bucket.b.id
 
   dynamic "cors_rule" {
@@ -165,7 +184,10 @@ resource "aws_s3_bucket_cors_configuration" "b" {
 }
 # Object Lock
 resource "aws_s3_bucket_object_lock_configuration" "b" {
-  count  = length(var.object_lock_configuration) > 0 ? 1 : 0
+  count = length(var.object_lock_configuration) > 0 ? 1 : 0
+
+  region = var.region
+
   bucket = aws_s3_bucket.b.id
 
   rule {
@@ -209,6 +231,8 @@ data "aws_iam_policy_document" "policy" {
 
 resource "aws_s3_bucket_policy" "b" {
   count = length(data.aws_iam_policy_document.policy)
+
+  region = var.region
 
   bucket = aws_s3_bucket.b.id
   policy = data.aws_iam_policy_document.policy[0].json
