@@ -1,3 +1,9 @@
+variable "region" {
+  type        = string
+  default     = null
+  description = "AWS region where the requester-side resources are created. When null, uses the provider's configured region. Distinct from `peer_region`, which is the region of the peer VPC."
+}
+
 variable "enabled" {
   default     = "true"
   type        = string

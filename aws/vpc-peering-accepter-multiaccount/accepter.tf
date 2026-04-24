@@ -19,13 +19,19 @@ module "accepter_label" {
 # Lookup accepter VPC so that we can reference the CIDR
 data "aws_vpc" "accepter" {
   count = local.count
-  id    = var.accepter_vpc_id
-  tags  = var.accepter_vpc_tags
+
+  region = var.region
+
+  id   = var.accepter_vpc_id
+  tags = var.accepter_vpc_tags
 }
 
 # Lookup accepter subnets
 data "aws_subnets" "accepter" {
   count = local.count
+
+  region = var.region
+
   filter {
     name   = "vpc-id"
     values = [local.accepter_vpc_id]
@@ -41,12 +47,16 @@ locals {
 # Lookup peering connection
 data "aws_vpc_peering_connection" "peering" {
   count = local.count
-  id    = var.vpc_peering_id
+
+  id = var.vpc_peering_id
 }
 
 # Lookup accepter route tables
 data "aws_route_table" "accepter" {
-  count     = local.enabled ? local.accepter_subnet_ids_count : 0
+  count = local.enabled ? local.accepter_subnet_ids_count : 0
+
+  region = var.region
+
   subnet_id = element(local.accepter_subnet_ids, count.index)
 }
 
@@ -55,6 +65,8 @@ locals {
 }
 
 resource "aws_vpc_peering_connection_accepter" "accepter" {
+  region = var.region
+
   vpc_peering_connection_id = local.vpc_peering_connection_id
   auto_accept               = true
   tags                      = module.accepter_label.tags
@@ -70,7 +82,10 @@ locals {
 }
 
 resource "aws_route" "to_requester" {
-  count                     = local.enabled ? local.accepter_aws_route_table_ids_count * local.requester_cidr_block_associations_count : 0
+  count = local.enabled ? local.accepter_aws_route_table_ids_count * local.requester_cidr_block_associations_count : 0
+
+  region = var.region
+
   route_table_id            = element(local.accepter_aws_route_table_ids, ceil(count.index / local.requester_cidr_block_associations_count))
   destination_cidr_block    = element(local.requester_cidr_block_associations, count.index % local.requester_cidr_block_associations_count)
   vpc_peering_connection_id = local.vpc_peering_connection_id

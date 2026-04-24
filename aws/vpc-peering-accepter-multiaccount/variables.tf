@@ -1,3 +1,9 @@
+variable "region" {
+  type        = string
+  default     = null
+  description = "AWS region where the accepter-side resources are created. When null, uses the provider's configured region."
+}
+
 variable "enabled" {
   default     = "true"
   type        = string

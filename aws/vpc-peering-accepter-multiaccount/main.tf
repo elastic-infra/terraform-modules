@@ -12,7 +12,9 @@
 *
 * ```hcl
 * module "peering_acceptance" {
-*   source = "github.com/elastic-infra/terraform-modules//aws/vpc-peering-accepter-multiaccount?ref=v2.3.0"
+*   source = "github.com/elastic-infra/terraform-modules//aws/vpc-peering-accepter-multiaccount?ref=v10.0.0"
+*
+*   region = "us-east-1"
 *
 *   enabled                   = "true"
 *   namespace                 = "foo"
@@ -26,10 +28,6 @@
 *   tags {
 *     Environment = "development"
 *   }
-*
-*   providers = {
-*     aws = aws.us-east-1
-*   }
 * }
 * ```
 */
@@ -37,14 +35,4 @@
 locals {
   enabled = var.enabled == "true"
   count   = local.enabled ? 1 : 0
-}
-
-terraform {
-  required_version = ">= 0.13"
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = ">= 2"
-    }
-  }
 }
