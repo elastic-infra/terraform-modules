@@ -151,6 +151,17 @@ variable "object_lock_configuration" {
   }
 }
 
+variable "bucket_namespace" {
+  type        = string
+  description = "Namespace for the bucket. Valid values: \"account-regional\", \"global\". Defaults to null (global)."
+  default     = null
+
+  validation {
+    condition     = var.bucket_namespace == null || contains(["account-regional", "global"], var.bucket_namespace)
+    error_message = "Valid values are \"account-regional\" and \"global\"."
+  }
+}
+
 variable "manage_bucket_policy" {
   type        = bool
   description = "Whether to manage bucket policy in this module."
