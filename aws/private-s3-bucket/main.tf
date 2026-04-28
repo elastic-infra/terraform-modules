@@ -214,7 +214,7 @@ data "aws_region" "current" {}
 locals {
   block_access_enabled = !var.disable_private
   object_ownership     = coalesce(var.object_ownership, length(var.grant) > 0 ? "ObjectWriter" : "BucketOwnerEnforced")
-  effective_region     = coalesce(var.region, data.aws_region.current.name)
+  effective_region     = coalesce(var.region, data.aws_region.current.region)
   actual_bucket_name = (
     var.bucket_namespace == "account-regional"
     ? format("%s-%s-%s-an", var.bucket_name, data.aws_caller_identity.current.account_id, local.effective_region)
