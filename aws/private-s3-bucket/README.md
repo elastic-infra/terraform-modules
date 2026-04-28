@@ -31,7 +31,7 @@ module "bucket" {
 
   bucket_name      = "my-bucket"
   bucket_namespace = "account-regional"
-  # => actual bucket name: "my-bucket-{account_id}-{region}"
+  # => actual bucket name: "my-bucket-{account_id}-{region}-an"
 }
 ```
 

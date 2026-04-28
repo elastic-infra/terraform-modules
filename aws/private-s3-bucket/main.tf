@@ -31,7 +31,7 @@
 *
 *   bucket_name      = "my-bucket"
 *   bucket_namespace = "account-regional"
-*   # => actual bucket name: "my-bucket-{account_id}-{region}"
+*   # => actual bucket name: "my-bucket-{account_id}-{region}-an"
 * }
 * ```
 *
@@ -217,7 +217,7 @@ locals {
   effective_region     = coalesce(var.region, data.aws_region.current.name)
   actual_bucket_name = (
     var.bucket_namespace == "account-regional"
-    ? format("%s-%s-%s", var.bucket_name, data.aws_caller_identity.current.account_id, local.effective_region)
+    ? format("%s-%s-%s-an", var.bucket_name, data.aws_caller_identity.current.account_id, local.effective_region)
     : var.bucket_name
   )
 }
