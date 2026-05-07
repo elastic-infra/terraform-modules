@@ -23,6 +23,18 @@
 * }
 * ```
 *
+* #### Account-Regional Namespace
+*
+* ```hcl
+* module "bucket" {
+*   source = "github.com/elastic-infra/terraform-modules//aws/private-s3-bucket?ref=vX.X.X"
+*
+*   bucket_name      = "my-bucket"
+*   bucket_namespace = "account-regional"
+*   # => actual bucket name: "my-bucket-{account_id}-{region}-an"
+* }
+* ```
+*
 * ### Complex Inputs
 *
 * #### grant
@@ -195,16 +207,27 @@
 # For "grant"
 data "aws_canonical_user_id" "current" {}
 
+# For "bucket_namespace"
+data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
+
 locals {
   block_access_enabled = !var.disable_private
   object_ownership     = coalesce(var.object_ownership, length(var.grant) > 0 ? "ObjectWriter" : "BucketOwnerEnforced")
+  effective_region     = coalesce(var.region, data.aws_region.current.region)
+  actual_bucket_name = (
+    var.bucket_namespace == "account-regional"
+    ? format("%s-%s-%s-an", var.bucket_name, data.aws_caller_identity.current.account_id, local.effective_region)
+    : var.bucket_name
+  )
 }
 
 resource "aws_s3_bucket" "b" {
   region = var.region
 
-  bucket = var.bucket_name
-  tags   = var.tags
+  bucket           = local.actual_bucket_name
+  bucket_namespace = var.bucket_namespace
+  tags             = var.tags
 
   force_destroy = var.force_destroy
 }
