@@ -1,0 +1,48 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: AWS DevOps Agent Source Role (deployed via service-managed StackSet)
+
+Parameters:
+  MonitoringAccountId:
+    Type: String
+    Description: AWS DevOps Agent monitoring account id that workload accounts trust.
+    AllowedPattern: "^[0-9]{12}$"
+  MonitoringRegion:
+    Type: String
+    Description: Region in which the AWS DevOps Agent Agent Space lives. Used in aws:SourceArn condition.
+    Default: ap-northeast-1
+  RoleName:
+    Type: String
+    Default: AWSDevOpsAgentSourceRole
+  ManagedPolicyName:
+    Type: String
+    Default: AIDevOpsAgentAccessPolicy
+
+Resources:
+  SourceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Ref RoleName
+      Description: Cross-account role assumed by AWS DevOps Agent monitoring account.
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: aidevops.amazonaws.com
+            Action: sts:AssumeRole
+            Condition:
+              StringEquals:
+                aws:SourceAccount: !Ref MonitoringAccountId
+              ArnLike:
+                aws:SourceArn: !Sub "arn:aws:aidevops:${MonitoringRegion}:${MonitoringAccountId}:agentspace/*"
+      ManagedPolicyArns:
+        - !Sub "arn:aws:iam::aws:policy/${ManagedPolicyName}"
+      Policies:
+        - PolicyName: AllowCreateServiceLinkedRoles
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: AllowCreateResourceExplorerSLR
+                Effect: Allow
+                Action: iam:CreateServiceLinkedRole
+                Resource: !Sub "arn:aws:iam::${AWS::AccountId}:role/aws-service-role/resource-explorer-2.amazonaws.com/AWSServiceRoleForResourceExplorer"
