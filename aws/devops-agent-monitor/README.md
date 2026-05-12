@@ -68,9 +68,9 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_agent_space_name"></a> [agent\_space\_name](#input\_agent\_space\_name) | Name of the AWS DevOps Agent Agent Space. Must be unique within the account/region. | `string` | n/a | yes |
 | <a name="input_agent_space_description"></a> [agent\_space\_description](#input\_agent\_space\_description) | Description of the Agent Space. | `string` | `""` | no |
-| <a name="input_agent_space_managed_policy_arn"></a> [agent\_space\_managed\_policy\_arn](#input\_agent\_space\_managed\_policy\_arn) | AWS managed policy attached to the Agent Space role. | `string` | `"arn:aws:iam::aws:policy/AIDevOpsAgentAccessPolicy"` | no |
+| <a name="input_agent_space_managed_policy_arns"></a> [agent\_space\_managed\_policy\_arns](#input\_agent\_space\_managed\_policy\_arns) | AWS managed policy ARNs attached to the Agent Space role. | `list(string)` | <pre>[<br/>  "arn:aws:iam::aws:policy/AIDevOpsAgentAccessPolicy"<br/>]</pre> | no |
 | <a name="input_agent_space_role_name"></a> [agent\_space\_role\_name](#input\_agent\_space\_role\_name) | IAM role name assumed by the Agent Space (aidevops.amazonaws.com). Defaults to DevOpsAgent-<agent\_space\_name>-Space. | `string` | `null` | no |
-| <a name="input_operator_managed_policy_arn"></a> [operator\_managed\_policy\_arn](#input\_operator\_managed\_policy\_arn) | AWS managed policy attached to the Operator role. | `string` | `"arn:aws:iam::aws:policy/AIDevOpsOperatorAppAccessPolicy"` | no |
+| <a name="input_operator_managed_policy_arns"></a> [operator\_managed\_policy\_arns](#input\_operator\_managed\_policy\_arns) | AWS managed policy ARNs attached to the Operator role. | `list(string)` | <pre>[<br/>  "arn:aws:iam::aws:policy/AIDevOpsOperatorAppAccessPolicy"<br/>]</pre> | no |
 | <a name="input_operator_role_name"></a> [operator\_role\_name](#input\_operator\_role\_name) | IAM role name assumed by the Operator App. Defaults to DevOpsAgent-<agent\_space\_name>-WebappAdmin. | `string` | `null` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags applied to the IAM roles created by this module. | `map(string)` | `{}` | no |
 

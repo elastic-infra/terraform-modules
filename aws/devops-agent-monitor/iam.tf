@@ -40,7 +40,7 @@ resource "aws_iam_role" "agent_space" {
 
 resource "aws_iam_role_policy_attachments_exclusive" "agent_space_managed" {
   role_name   = aws_iam_role.agent_space.name
-  policy_arns = [var.agent_space_managed_policy_arn]
+  policy_arns = var.agent_space_managed_policy_arns
 }
 
 data "aws_iam_policy_document" "agent_space_inline" {
@@ -98,5 +98,5 @@ resource "aws_iam_role" "operator" {
 
 resource "aws_iam_role_policy_attachments_exclusive" "operator_managed" {
   role_name   = aws_iam_role.operator.name
-  policy_arns = [var.operator_managed_policy_arn]
+  policy_arns = var.operator_managed_policy_arns
 }

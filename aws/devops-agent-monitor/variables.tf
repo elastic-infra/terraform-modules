@@ -21,16 +21,16 @@ variable "operator_role_name" {
   default     = null
 }
 
-variable "agent_space_managed_policy_arn" {
-  description = "AWS managed policy attached to the Agent Space role."
-  type        = string
-  default     = "arn:aws:iam::aws:policy/AIDevOpsAgentAccessPolicy"
+variable "agent_space_managed_policy_arns" {
+  description = "AWS managed policy ARNs attached to the Agent Space role."
+  type        = list(string)
+  default     = ["arn:aws:iam::aws:policy/AIDevOpsAgentAccessPolicy"]
 }
 
-variable "operator_managed_policy_arn" {
-  description = "AWS managed policy attached to the Operator role."
-  type        = string
-  default     = "arn:aws:iam::aws:policy/AIDevOpsOperatorAppAccessPolicy"
+variable "operator_managed_policy_arns" {
+  description = "AWS managed policy ARNs attached to the Operator role."
+  type        = list(string)
+  default     = ["arn:aws:iam::aws:policy/AIDevOpsOperatorAppAccessPolicy"]
 }
 
 variable "tags" {
