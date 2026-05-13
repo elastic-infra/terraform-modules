@@ -24,7 +24,6 @@ resource "awscc_devopsagent_association" "primary" {
       assumable_role_arn = aws_iam_role.agent_space.arn
       account_id         = data.aws_caller_identity.current.account_id
       account_type       = "monitor"
-      resources          = []
     }
   }
 }
