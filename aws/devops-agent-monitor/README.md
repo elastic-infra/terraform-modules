@@ -4,6 +4,7 @@
 Provisions resources on the AWS DevOps Agent Monitoring (admin) account side.
 Creates a single Agent Space, two associated IAM roles (Agent Space / Operator App),
 and an Association that registers the Monitoring account itself as primary (monitor).
+Optionally registers workload accounts as source associations via `source_account_ids`.
 
 Instantiate this module multiple times to isolate workloads into separate Agent Spaces.
 
@@ -13,6 +14,8 @@ Instantiate this module multiple times to isolate workloads into separate Agent 
 - Supported regions: us-east-1, us-west-2, ap-southeast-2,
   ap-northeast-1, eu-central-1, eu-west-1
 - IAM Identity Center is enabled in the account (required by Operator App)
+- For each account in `source_account_ids`, AWSDevOpsAgentSourceRole must be
+  deployed (typically via the devops-agent-source-role-stackset module)
 
 ### Usage
 
@@ -22,6 +25,7 @@ module "devops_agent_monitor" {
 
   agent_space_name        = "my-agent-space"
   agent_space_description = "AgentSpace for production workload"
+  source_account_ids      = ["123456789012"]
 }
 ```
 
@@ -37,8 +41,8 @@ module "devops_agent_monitor" {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 6.44.0 |
-| <a name="provider_awscc"></a> [awscc](#provider\_awscc) | 1.83.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 6.46.0 |
+| <a name="provider_awscc"></a> [awscc](#provider\_awscc) | 1.85.0 |
 
 ## Modules
 
@@ -56,6 +60,7 @@ No modules.
 | [aws_iam_role_policy_attachments_exclusive.operator_managed](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachments_exclusive) | resource |
 | [awscc_devopsagent_agent_space.this](https://registry.terraform.io/providers/hashicorp/awscc/latest/docs/resources/devopsagent_agent_space) | resource |
 | [awscc_devopsagent_association.primary](https://registry.terraform.io/providers/hashicorp/awscc/latest/docs/resources/devopsagent_association) | resource |
+| [awscc_devopsagent_association.source](https://registry.terraform.io/providers/hashicorp/awscc/latest/docs/resources/devopsagent_association) | resource |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_iam_policy_document.agent_space_inline](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.agent_space_trust](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
@@ -72,6 +77,7 @@ No modules.
 | <a name="input_agent_space_role_name"></a> [agent\_space\_role\_name](#input\_agent\_space\_role\_name) | IAM role name assumed by the Agent Space (aidevops.amazonaws.com). Defaults to DevOpsAgent-<agent\_space\_name>-Space. | `string` | `null` | no |
 | <a name="input_operator_managed_policy_arns"></a> [operator\_managed\_policy\_arns](#input\_operator\_managed\_policy\_arns) | AWS managed policy ARNs attached to the Operator role. | `list(string)` | <pre>[<br/>  "arn:aws:iam::aws:policy/AIDevOpsOperatorAppAccessPolicy"<br/>]</pre> | no |
 | <a name="input_operator_role_name"></a> [operator\_role\_name](#input\_operator\_role\_name) | IAM role name assumed by the Operator App. Defaults to DevOpsAgent-<agent\_space\_name>-WebappAdmin. | `string` | `null` | no |
+| <a name="input_source_account_ids"></a> [source\_account\_ids](#input\_source\_account\_ids) | AWS account IDs to register as source (workload) accounts on the Agent Space. The AWSDevOpsAgentSourceRole role must already be deployed in each account (typically via the devops-agent-source-role-stackset module). | `list(string)` | `[]` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags applied to the IAM roles created by this module. | `map(string)` | `{}` | no |
 
 ## Outputs

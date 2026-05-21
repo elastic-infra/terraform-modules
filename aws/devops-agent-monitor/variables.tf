@@ -38,3 +38,9 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "source_account_ids" {
+  description = "AWS account IDs to register as source (workload) accounts on the Agent Space. The AWSDevOpsAgentSourceRole role must already be deployed in each account (typically via the devops-agent-source-role-stackset module)."
+  type        = list(string)
+  default     = []
+}
