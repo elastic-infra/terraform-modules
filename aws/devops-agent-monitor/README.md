@@ -20,12 +20,34 @@ Instantiate this module multiple times to isolate workloads into separate Agent 
 ### Usage
 
 ```hcl
-module "devops_agent_monitor" {
-  source = "github.com/elastic-infra/terraform-modules//aws/devops-agent-monitor?ref=v1.0.0"
+locals {
+  agent_spaces = {
+    prod = {
+      description        = "AgentSpace for prod workload"
+      source_account_ids = ["111111111111"]
+    }
+    dev = {
+      description        = "AgentSpace for dev workload"
+      source_account_ids = ["222222222222"]
+    }
+  }
+}
 
-  agent_space_name        = "my-agent-space"
-  agent_space_description = "AgentSpace for production workload"
-  source_account_ids      = ["123456789012"]
+module "devops_agent_source_role_stackset" {
+  source = "github.com/elastic-infra/terraform-modules//aws/devops-agent-source-role-stackset?ref=v1.0.0"
+
+  organizational_unit_ids = ["ou-xxxx-xxxxxxxx"]
+}
+
+module "devops_agent_monitor" {
+  source   = "github.com/elastic-infra/terraform-modules//aws/devops-agent-monitor?ref=v1.0.0"
+  for_each = local.agent_spaces
+
+  agent_space_name        = each.key
+  agent_space_description = each.value.description
+  source_account_ids      = each.value.source_account_ids
+
+  depends_on = [module.devops_agent_source_role_stackset]
 }
 ```
 
@@ -41,8 +63,8 @@ module "devops_agent_monitor" {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 6.46.0 |
-| <a name="provider_awscc"></a> [awscc](#provider\_awscc) | 1.85.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 6.29 |
+| <a name="provider_awscc"></a> [awscc](#provider\_awscc) | >= 1.66 |
 
 ## Modules
 
