@@ -27,3 +27,18 @@ resource "awscc_devopsagent_association" "primary" {
     }
   }
 }
+
+resource "awscc_devopsagent_association" "source" {
+  for_each = toset(var.source_account_ids)
+
+  agent_space_id = awscc_devopsagent_agent_space.this.id
+  service_id     = "aws"
+
+  configuration = {
+    source_aws = {
+      assumable_role_arn = "arn:aws:iam::${each.value}:role/AWSDevOpsAgentSourceRole"
+      account_id         = each.value
+      account_type       = "source"
+    }
+  }
+}
