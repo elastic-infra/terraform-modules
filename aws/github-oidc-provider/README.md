@@ -3,6 +3,21 @@
 
 Create OIDC provider for GitHub Actions
 
+**DEPRECATED**
+
+This module is deprecated and is no longer maintained.
+A plain `aws_iam_openid_connect_provider` resource is now sufficient: AWS verifies
+the GitHub IdP's TLS certificate against its trusted root CA store, so the hardcoded
+thumbprint list this module provides is no longer required. Define the resource
+directly instead:
+
+```hcl
+resource "aws_iam_openid_connect_provider" "github_actions" {
+  url            = "https://token.actions.githubusercontent.com"
+  client_id_list = ["sts.amazonaws.com"]
+}
+```
+
 ### Usage
 
 ```hcl
