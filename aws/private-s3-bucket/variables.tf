@@ -108,6 +108,17 @@ variable "sse_kms_master_key_id" {
   default     = null
 }
 
+variable "sse_bucket_key_enabled" {
+  type        = bool
+  description = "Whether to use an Amazon S3 Bucket Key for SSE-KMS. Reduces KMS request costs. Can only be set when sse_kms_master_key_id is set."
+  default     = null
+
+  validation {
+    condition     = var.sse_bucket_key_enabled == null || var.sse_kms_master_key_id != null
+    error_message = "'sse_bucket_key_enabled' can only be set when 'sse_kms_master_key_id' is set."
+  }
+}
+
 variable "cors_rule" {
   type = list(object({
     allowed_headers = list(string)

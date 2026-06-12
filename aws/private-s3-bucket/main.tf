@@ -133,6 +133,14 @@
 * sse_kms_master_key_id = "aws/s3" # or your CMK ID
 * ```
 *
+* To reduce KMS request costs with SSE-KMS, enable an S3 Bucket Key.
+* This can only be set together with `sse_kms_master_key_id`.
+*
+* ```hcl
+* sse_kms_master_key_id  = "aws/s3" # or your CMK ID
+* sse_bucket_key_enabled = true
+* ```
+*
 * If you want to disable server side encryption, set disable_sse as `true`.
 *
 * ```hcl

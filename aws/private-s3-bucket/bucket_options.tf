@@ -161,6 +161,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "b" {
       kms_master_key_id = var.sse_kms_master_key_id
       sse_algorithm     = var.sse_kms_master_key_id == null ? "AES256" : "aws:kms"
     }
+    bucket_key_enabled = var.sse_bucket_key_enabled
   }
 }
 # CORS
