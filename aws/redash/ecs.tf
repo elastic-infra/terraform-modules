@@ -53,11 +53,11 @@ resource "aws_ecs_service" "server" {
 ## Worker
 resource "aws_ecs_task_definition" "worker" {
   family                   = local.container_names["worker"]
-  container_definitions    = local.redash_major_version >= 10 ? "[${module.worker_container_definition.json_map_encoded}, ${module.scheduler_container_definition[0].json_map_encoded}]" : module.worker_container_definition.json_map_encoded_list
+  container_definitions    = local.scheduler_runs_in_worker ? "[${module.worker_container_definition.json_map_encoded}, ${module.scheduler_container_definition[0].json_map_encoded}]" : module.worker_container_definition.json_map_encoded_list
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  cpu                      = local.redash_major_version >= 10 ? var.worker_container_cpu + var.scheduler_container_cpu : var.worker_container_cpu
-  memory                   = local.redash_major_version >= 10 ? var.worker_container_memory + var.scheduler_container_memory : var.worker_container_memory
+  cpu                      = local.scheduler_runs_in_worker ? var.worker_container_cpu + var.scheduler_container_cpu : var.worker_container_cpu
+  memory                   = local.scheduler_runs_in_worker ? var.worker_container_memory + var.scheduler_container_memory : var.worker_container_memory
   execution_role_arn       = var.ecs_execution_role_arn
   task_role_arn            = var.ecs_task_role_arn
 
@@ -65,13 +65,54 @@ resource "aws_ecs_task_definition" "worker" {
 }
 
 resource "aws_ecs_service" "worker" {
-  name                               = local.container_names["worker"]
-  launch_type                        = "FARGATE"
-  cluster                            = aws_ecs_cluster.redash.id
-  task_definition                    = aws_ecs_task_definition.worker.arn
-  desired_count                      = var.worker_desired_count
-  deployment_minimum_healthy_percent = local.redash_major_version >= 10 ? 0 : 100
-  deployment_maximum_percent         = local.redash_major_version >= 10 ? 100 : 200
+  name            = local.container_names["worker"]
+  launch_type     = "FARGATE"
+  cluster         = aws_ecs_cluster.redash.id
+  task_definition = aws_ecs_task_definition.worker.arn
+  desired_count   = var.worker_desired_count
+  # When the scheduler is co-located, a new task doubles the resources, so stop the old task first instead of a rolling update.
+  deployment_minimum_healthy_percent = local.scheduler_runs_in_worker ? 0 : 100
+  deployment_maximum_percent         = local.scheduler_runs_in_worker ? 100 : 200
+
+  network_configuration {
+    security_groups  = var.ecs_security_group_ids
+    subnets          = var.ecs_subnet_ids
+    assign_public_ip = var.assign_public_ip
+  }
+
+  enable_ecs_managed_tags = var.enable_ecs_managed_tags
+  propagate_tags          = var.propagate_tags
+
+  tags = var.tags
+}
+
+## Scheduler (Redash v10+ and var.standalone_scheduler only)
+resource "aws_ecs_task_definition" "scheduler" {
+  count = local.scheduler_runs_standalone ? 1 : 0
+
+  family                   = local.container_names["scheduler"]
+  container_definitions    = module.scheduler_container_definition[0].json_map_encoded_list
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = var.scheduler_container_cpu
+  memory                   = var.scheduler_container_memory
+  execution_role_arn       = var.ecs_execution_role_arn
+  task_role_arn            = var.ecs_task_role_arn
+
+  tags = var.tags
+}
+
+resource "aws_ecs_service" "scheduler" {
+  count = local.scheduler_runs_standalone ? 1 : 0
+
+  name            = local.container_names["scheduler"]
+  launch_type     = "FARGATE"
+  cluster         = aws_ecs_cluster.redash.id
+  task_definition = aws_ecs_task_definition.scheduler[0].arn
+  desired_count   = var.scheduler_desired_count
+  # rq_scheduler must be a singleton, so stop the old task before starting the new one to avoid running two at once.
+  deployment_minimum_healthy_percent = 0
+  deployment_maximum_percent         = 100
 
   network_configuration {
     security_groups  = var.ecs_security_group_ids

@@ -27,4 +27,9 @@ locals {
   ]
 
   redash_major_version = split(".", split(":", var.container_image_url)[1])[0]
+
+  # Where the scheduler actually runs, derived from the Redash version and var.standalone_scheduler.
+  # Redash v8 is out of scope (both false) because its worker task itself runs the scheduler command.
+  scheduler_runs_standalone = local.redash_major_version >= 10 && var.standalone_scheduler
+  scheduler_runs_in_worker  = local.redash_major_version >= 10 && !var.standalone_scheduler
 }

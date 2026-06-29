@@ -42,3 +42,13 @@ output "ecs_service_worker_name" {
   value       = aws_ecs_service.worker.name
   description = "The Name of ECS Service on which worker is running"
 }
+
+output "ecs_service_scheduler_arn" {
+  value       = local.scheduler_runs_standalone ? aws_ecs_service.scheduler[0].id : null
+  description = "The ARN of ECS Service on which scheduler is running (only when standalone_scheduler is enabled on Redash v10+, null otherwise)"
+}
+
+output "ecs_service_scheduler_name" {
+  value       = local.scheduler_runs_standalone ? aws_ecs_service.scheduler[0].name : null
+  description = "The Name of ECS Service on which scheduler is running (only when standalone_scheduler is enabled on Redash v10+, null otherwise)"
+}
