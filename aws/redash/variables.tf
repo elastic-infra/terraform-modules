@@ -114,6 +114,12 @@ variable "prefix" {
   default     = null
 }
 
+variable "standalone_scheduler" {
+  type        = bool
+  default     = false
+  description = "If true (Redash v10+ only), run the scheduler as its own standalone ECS service instead of co-locating it in the worker task. Has no effect on Redash v8"
+}
+
 variable "scheduler_container_cpu" {
   type        = number
   default     = 1024
@@ -124,6 +130,17 @@ variable "scheduler_container_memory" {
   type        = number
   default     = 2048
   description = "The amount of memory (in MiB) to allow the scheduler container"
+}
+
+variable "scheduler_desired_count" {
+  type        = number
+  default     = 1
+  description = "The number of redash scheduler tasks (Redash v10+ only). 0 disables it; must not exceed 1 because rq_scheduler must be a singleton"
+
+  validation {
+    condition     = var.scheduler_desired_count >= 0 && var.scheduler_desired_count <= 1
+    error_message = "scheduler_desired_count must be 1 or less because rq_scheduler must be a singleton."
+  }
 }
 
 variable "server_container_cpu" {

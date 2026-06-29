@@ -42,4 +42,18 @@
 * }
 * ```
 *
+* ### Standalone scheduler (Redash v10+)
+*
+* By default the scheduler runs as an extra container co-located in the worker task.
+* Set `standalone_scheduler = true` to run it as its own dedicated ECS service instead.
+*
+* **Migrating an existing deployment**: flipping `standalone_scheduler` from `false` to
+* `true` removes the scheduler container from the worker task while the new standalone
+* scheduler service starts up. During the worker's rolling deployment the old worker task
+* (still running the scheduler) and the new scheduler service can run at the same time, so
+* `rq_scheduler` may briefly run as two instances. Since `rq_scheduler` must be a singleton,
+* jobs can be double-scheduled in that window. To avoid it, apply in two steps: first scale
+* the worker down (or otherwise stop the co-located scheduler), then enable
+* `standalone_scheduler`.
+*
 */
