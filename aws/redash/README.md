@@ -152,6 +152,7 @@ the worker down (or otherwise stop the co-located scheduler), then enable
 | <a name="output_ecs_service_server_name"></a> [ecs\_service\_server\_name](#output\_ecs\_service\_server\_name) | The Name of ECS Service on which server is running |
 | <a name="output_ecs_service_worker_arn"></a> [ecs\_service\_worker\_arn](#output\_ecs\_service\_worker\_arn) | The ARN of ECS Service on which worker is running |
 | <a name="output_ecs_service_worker_name"></a> [ecs\_service\_worker\_name](#output\_ecs\_service\_worker\_name) | The Name of ECS Service on which worker is running |
+| <a name="output_https_listener_arn"></a> [https\_listener\_arn](#output\_https\_listener\_arn) | The ARN of the HTTPS (port 443) listener |
 | <a name="output_lb_arn"></a> [lb\_arn](#output\_lb\_arn) | The ARN of LB |
 | <a name="output_lb_dns"></a> [lb\_dns](#output\_lb\_dns) | The DNS name of LB |
 | <a name="output_lb_zone_id"></a> [lb\_zone\_id](#output\_lb\_zone\_id) | The Zone ID of LB |
