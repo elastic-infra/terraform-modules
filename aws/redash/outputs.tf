@@ -13,6 +13,11 @@ output "lb_arn" {
   description = "The ARN of LB"
 }
 
+output "https_listener_arn" {
+  value       = aws_lb_listener.https.arn
+  description = "The ARN of the HTTPS (port 443) listener"
+}
+
 output "ecs_cluster_arn" {
   value       = aws_ecs_cluster.redash.arn
   description = "The ARN of ECS Cluster on which redash is running"
