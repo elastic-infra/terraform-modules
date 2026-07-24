@@ -4,6 +4,17 @@ variable "cloudwatch_logs_retention_in_days" {
   description = "The number of days you want to retain log events"
 }
 
+variable "container_insights" {
+  type        = string
+  default     = "disabled"
+  description = "CloudWatch Container Insights setting for the ECS cluster. One of enabled, enhanced, or disabled"
+
+  validation {
+    condition     = contains(["enabled", "enhanced", "disabled"], var.container_insights)
+    error_message = "The valid values are enabled, enhanced, and disabled"
+  }
+}
+
 variable "container_environments" {
   type = list(object({
     name  = string

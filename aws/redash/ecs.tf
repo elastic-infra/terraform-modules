@@ -2,6 +2,11 @@
 resource "aws_ecs_cluster" "redash" {
   name = local.base_name
 
+  setting {
+    name  = "containerInsights"
+    value = var.container_insights
+  }
+
   tags = var.tags
 }
 
