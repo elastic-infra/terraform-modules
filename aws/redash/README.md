@@ -67,7 +67,7 @@ the worker down (or otherwise stop the co-located scheduler), then enable
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 6.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 6.56.0 |
 
 ## Modules
 
@@ -118,6 +118,7 @@ the worker down (or otherwise stop the co-located scheduler), then enable
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | The ID of VPC where the load balancer is installed | `string` | n/a | yes |
 | <a name="input_assign_public_ip"></a> [assign\_public\_ip](#input\_assign\_public\_ip) | If true, Public IP is assigned to ECS service | `bool` | `false` | no |
 | <a name="input_cloudwatch_logs_retention_in_days"></a> [cloudwatch\_logs\_retention\_in\_days](#input\_cloudwatch\_logs\_retention\_in\_days) | The number of days you want to retain log events | `number` | `90` | no |
+| <a name="input_container_insights"></a> [container\_insights](#input\_container\_insights) | CloudWatch Container Insights setting for the ECS cluster. One of enabled, enhanced, or disabled | `string` | `"disabled"` | no |
 | <a name="input_db_container_cpu"></a> [db\_container\_cpu](#input\_db\_container\_cpu) | The number of cpu units to reserve for the container which is used to kick the DB tasks | `number` | `512` | no |
 | <a name="input_db_container_memory"></a> [db\_container\_memory](#input\_db\_container\_memory) | The amount of memory (in MiB) to allow the container to use the DB tasks | `number` | `1024` | no |
 | <a name="input_ecs_log_max_buffer_size"></a> [ecs\_log\_max\_buffer\_size](#input\_ecs\_log\_max\_buffer\_size) | The maximum size of the in-memory buffer used when mode is set to non-blocking | `string` | `"25m"` | no |
