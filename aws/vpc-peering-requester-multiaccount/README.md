@@ -78,6 +78,7 @@ module "peering-request" {
 | <a name="input_attributes"></a> [attributes](#input\_attributes) | Additional attributes (e.g. `a` or `b`) | `list(string)` | `[]` | no |
 | <a name="input_delimiter"></a> [delimiter](#input\_delimiter) | Delimiter to be used between `namespace`, `stage`, `name`, and `attributes` | `string` | `"-"` | no |
 | <a name="input_enabled"></a> [enabled](#input\_enabled) | Set to false to prevent the module from creating or accessing any resources | `string` | `"true"` | no |
+| <a name="input_excluded_route_table_ids"></a> [excluded\_route\_table\_ids](#input\_excluded\_route\_table\_ids) | Route table IDs to exclude from the requester-side routes. Use it to keep peering routes off specific route tables, such as database subnet route tables. The IDs must be known at plan time, so route tables created in the same run need a two-step apply. | `list(string)` | `[]` | no |
 | <a name="input_peer_region"></a> [peer\_region](#input\_peer\_region) | Region where peer VPC resides; Cannot be set when peering\_auto\_accept is true | `string` | `null` | no |
 | <a name="input_peering_auto_accept"></a> [peering\_auto\_accept](#input\_peering\_auto\_accept) | Set true to enable auto-accept in an AWS account. | `bool` | `false` | no |
 | <a name="input_region"></a> [region](#input\_region) | AWS region where the requester-side resources are created. When null, uses the provider's configured region. Distinct from `peer_region`, which is the region of the peer VPC. | `string` | `null` | no |

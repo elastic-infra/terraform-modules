@@ -81,3 +81,9 @@ variable "peering_auto_accept" {
   description = "Set true to enable auto-accept in an AWS account."
   default     = false
 }
+
+variable "excluded_route_table_ids" {
+  type        = list(string)
+  default     = []
+  description = "Route table IDs to exclude from the requester-side routes. Use it to keep peering routes off specific route tables, such as database subnet route tables. The IDs must be known at plan time, so route tables created in the same run need a two-step apply."
+}
