@@ -41,7 +41,7 @@ variable "threshold" {
 variable "sns" {
   type = object({
     topic_name        = string
-    kms_master_key_id = optional(string, "alias/aws/sns")
+    kms_master_key_id = optional(string)
   })
   description = "SNS topic settings for anomaly notifications."
 }

@@ -86,7 +86,7 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_name"></a> [name](#input\_name) | Base name used for the anomaly monitor and subscription | `string` | n/a | yes |
-| <a name="input_sns"></a> [sns](#input\_sns) | SNS topic settings for anomaly notifications. | <pre>object({<br/>    topic_name        = string<br/>    kms_master_key_id = optional(string, "alias/aws/sns")<br/>  })</pre> | n/a | yes |
+| <a name="input_sns"></a> [sns](#input\_sns) | SNS topic settings for anomaly notifications. | <pre>object({<br/>    topic_name        = string<br/>    kms_master_key_id = optional(string)<br/>  })</pre> | n/a | yes |
 | <a name="input_threshold"></a> [threshold](#input\_threshold) | Anomaly impact threshold settings. At least one of absolute\_usd or percentage must be set; combine\_with (AND or OR) is required when both are set | <pre>object({<br/>    absolute_usd = optional(number)<br/>    percentage   = optional(number)<br/>    combine_with = optional(string)<br/>  })</pre> | n/a | yes |
 | <a name="input_monitor_dimension"></a> [monitor\_dimension](#input\_monitor\_dimension) | Cost dimension to monitor for anomalies. Allowed values: SERVICE, LINKED\_ACCOUNT | `string` | `"SERVICE"` | no |
 
